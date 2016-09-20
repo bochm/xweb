@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.demo.mapper.DemoServiceMapper"> 
+    <cache eviction="LRU" flushInterval="60000" size="512" readOnly="true"/>
+	<select id="querytest" parameterType="int" resultType="java.util.HashMap" useCache="true">       
+	 	select 1 sid,'qqqqss在' sname from sys_user
+	</select>
+	
+	<select id="queryResource" resultType="java.util.HashMap" useCache="false">       
+	 	select name,type,parent_id,permission,url from sys_resource a 
+	 	<where>
+	 		 available = 1
+	 		 <if test="pcompany != null and pcompany !=''">
+	 		 	and parent_id = #{pcompany}
+	 		 </if>
+	 	</where>
+	</select>
+</mapper>
