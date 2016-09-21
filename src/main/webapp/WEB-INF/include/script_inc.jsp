@@ -1,5 +1,6 @@
 <script type="text/javascript">
 var _is_debug = ("${app:getConfig('isDebug')}" === "true");
+
 var require = {
 	    waitSeconds: 15,
 	    urlArgs : _is_debug ? "t="+new Date().getTime() : "v="+"${app:getConfig('jsVersion')}"

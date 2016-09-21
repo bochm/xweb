@@ -30,7 +30,9 @@ define('app/common',['bootstrap','moment'],function() {
 	device.windows = function () {return _findDevice('windows');};
 	device.windowsPhone = function () {return device.windows() && _findDevice('phone');};
 	device.windowsTablet = function () {return device.windows() && (_findDevice('touch') && !device.windowsPhone());};
+
     //部分常量(DATA、MSG等)必须和AppConstants类中定义的一致(取消调用/app/common/constrants获取常量的方式)
+
 	if(! ('APP' in window) ){
 		window['APP'] = {
 			"isIE8" : false,
@@ -134,7 +136,7 @@ define('app/common',['bootstrap','moment'],function() {
 				        error:function(xhr){
 				        	if(typeof errorback === 'function'){
 				        		errorback(xhr.status,xhr.statusText);
-				        	}else{ 
+				        	}else{
 				        		_sysError('系统错误,错误代码['+xhr.status+'] 错误名称['+xhr.statusText+']');
 				        		APP.unblockUI();
 				        		return xhr;
@@ -323,8 +325,6 @@ define('app/common',['bootstrap','moment'],function() {
 	function _sysError(msg){
 		APP.notice("系统错误",msg,"error");
 	}
-	
-	
 	
 	APP.loadPortlet = function(_portlet){
 		var body = _portlet.children('div.portlet-body');
@@ -523,6 +523,7 @@ define('app/common',['bootstrap','moment'],function() {
 			});
 		})
 	};
+
 	/**
 	 * 显示通知 自定义
 	 * @param  {String} title 通知抬头

@@ -1,5 +1,5 @@
+
 define('app/form',["app/common","moment","jquery/validate"],function(APP) {
-	
 	var FORM = {
 			initDatePicker : function(ct){
 	        	APP.queryContainer(ct).find('[form-role="date"]').each(function(){
@@ -130,7 +130,6 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
             }else {
                 error.insertAfter(element);
             }
-			
 		},
 		invalidHandler: function (event, validator) {
 		},
@@ -145,6 +144,9 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
             }else {
             	label.closest('.form-group').removeClass('has-error');
             }
+
+		success: function (label) {
+			label.closest('.form-group').removeClass('has-error');
 		}
 	};
 	//ajaxForm默认初始化设置
@@ -167,15 +169,16 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 		return this.optional(element) || (value != "-1");
 	}, "请选择");
 	
-	
 	/**
 	 * 初始化form
 	 * @param  {Object} opts 初始化参数
 	 */
 	$.fn.initForm = function (opts) {
 		var _this = $(this);
+
 		var validate_settings = $.extend(true,validate_default_settings,opts.validate);
 		_this.validate(validate_settings);
+
 		var isInitValue = (opts.formData != undefined);
 		var formField;
 		_this.find(opts.fieldSelector ? opts.fieldSelector : '*[name]').each(function(){
@@ -203,8 +206,8 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 					if(formField.attr('templateSelection')) _selectOpt.templateSelection = eval(formField.attr('templateSelection'));
 				}catch(e){alert("函数不存在["+e+"]");}
 				
-				
 				formField.select(_selectOpt);
+
 			}
 			if(formField.attr('form-role') == 'treeSelect'){
 				var _treeSelectOpt = {};
@@ -230,7 +233,6 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 		require(['jquery/form'],function(){
 			if(form_opt.ajax) _this.ajaxForm(form_opt);
 		});
-		
 	}
 	
 	/**

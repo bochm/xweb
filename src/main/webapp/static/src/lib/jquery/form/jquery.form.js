@@ -15,6 +15,7 @@
     "use strict";
     if (typeof define === 'function' && define.amd) {
         // using AMD; register as anon module
+
         define([], function () {
 			return factory( jQuery);
 		} );

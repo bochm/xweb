@@ -92,6 +92,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label col-md-3">手机</label>
+
 								<div class="col-md-9"><input type="text" name="mobile" class="form-control digits"></div>
 							</div>
 						</div>
@@ -109,6 +110,7 @@
          </div>
          <div class="modal-footer">
             <button type="button" class="btn  btn-default" data-dismiss="modal">关闭</button>
+
             <button type="button" class="btn btn-primary">提交</button>
          </div>
       </div>
@@ -127,6 +129,7 @@ require(['app/common','app/datatables','app/form'],function(APP,FORM){
 			alert(response);
 		}
 	});
+
 	$('.modal-footer .btn-primary').on('click',function(){
 		$('#bsys-user-edit-form').submit();
 	});
