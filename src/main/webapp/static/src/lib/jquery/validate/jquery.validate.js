@@ -7,11 +7,12 @@
  * Released under the MIT license
  */
 (function( factory ) {
-	if ( typeof define === "function" && define.amd ) {
-		define( [], $,factory );
+	/*if ( typeof define === "function" && define.amd ) {
+		define( [], jQuery,factory );
 	} else {
 		factory( jQuery );
-	}
+	}*/
+	factory( jQuery );
 }(function( $ ) {
 
 $.extend($.fn, {

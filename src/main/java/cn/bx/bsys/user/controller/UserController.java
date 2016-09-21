@@ -15,12 +15,17 @@ import cn.bx.bsys.user.service.UserService;
 
 @Controller
 @RequestMapping("bsys/user")
-public class UserController {
+public class UserController{
 	@Resource(name="UserService")
 	UserService userService;
 	@RequestMapping(value={"list",""})
 	public @ResponseBody List<User> listUser(@RequestBody Map<String,String> param){
 		System.out.println(param.get("pcompany"));
 		return userService.selectList("listUser", param);
+	}
+	@RequestMapping(value="add")
+	public @ResponseBody User addUser(User user){
+		userService.insert("addUser", user);
+		return user;
 	}
 }

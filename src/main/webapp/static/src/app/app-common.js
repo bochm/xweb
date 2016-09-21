@@ -30,7 +30,7 @@ define('app/common',['bootstrap','moment'],function() {
 	device.windows = function () {return _findDevice('windows');};
 	device.windowsPhone = function () {return device.windows() && _findDevice('phone');};
 	device.windowsTablet = function () {return device.windows() && (_findDevice('touch') && !device.windowsPhone());};
-    
+    //部分常量(DATA、MSG等)必须和AppConstants类中定义的一致(取消调用/app/common/constrants获取常量的方式)
 	if(! ('APP' in window) ){
 		window['APP'] = {
 			"isIE8" : false,
@@ -43,6 +43,8 @@ define('app/common',['bootstrap','moment'],function() {
 			"OK" : "seccuss",
 			"FAIL" : "fail",
 			"ERROR" : "error",
+			"WORN" : "warning",
+			"EXCEPTION" : "exception",
 			"ctx" : _ctx,
 			"debug" : _is_debug,
 			"device" : device,
@@ -133,7 +135,7 @@ define('app/common',['bootstrap','moment'],function() {
 				        	if(typeof errorback === 'function'){
 				        		errorback(xhr.status,xhr.statusText);
 				        	}else{ 
-				        		_sysError('系统获取数据错误,错误代码['+xhr.status+'] 错误名称['+xhr.statusText+']');
+				        		_sysError('系统错误,错误代码['+xhr.status+'] 错误名称['+xhr.statusText+']');
 				        		APP.unblockUI();
 				        		return xhr;
 				        	}
@@ -321,6 +323,8 @@ define('app/common',['bootstrap','moment'],function() {
 	function _sysError(msg){
 		APP.notice("系统错误",msg,"error");
 	}
+	
+	
 	
 	APP.loadPortlet = function(_portlet){
 		var body = _portlet.children('div.portlet-body');
@@ -518,6 +522,81 @@ define('app/common',['bootstrap','moment'],function() {
 				class_name: 'gritter-'+((type && type != undefined) ? type : 'info')
 			});
 		})
+	};
+	/**
+	 * 显示通知 自定义
+	 * @param  {String} title 通知抬头
+	 * @param  {String} text  通知主体
+	 * @param  {String} type  通知类型 error|warning|info|light default:info 
+	 */
+	APP.noticeS = function(message, options){
+		var default_options = {
+			    ele: "body",
+			    type: "info",
+			    offset: {
+			      from: "top",
+			      amount: 20
+			    },
+			    align: "right",
+			    width: 250,
+			    delay: 4000,
+			    allow_dismiss: true,
+			    stackup_spacing: 10
+			};
+		var $alert, css, offsetAmount;
+	    options = $.extend({}, default_options, options);
+	    $alert = $("<div>");
+	    $alert.attr("class", "app-noticeS alert");
+	    if (options.type) {
+	      $alert.addClass("alert-" + options.type);
+	    }
+	    if (options.allow_dismiss) {
+	      $alert.addClass("alert-dismissible");
+	      $alert.append("<button  class=\"close\" data-dismiss=\"alert\" type=\"button\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>");
+	    }
+	    $alert.append(message);
+	    if (options.top_offset) {
+	      options.offset = {
+	        from: "top",
+	        amount: options.top_offset
+	      };
+	    }
+	    offsetAmount = options.offset.amount;
+	    $(".app-noticeS").each(function() {
+	      return offsetAmount = Math.max(offsetAmount, parseInt($(this).css(options.offset.from)) + $(this).outerHeight() + options.stackup_spacing);
+	    });
+	    css = {
+	      "position": (options.ele === "body" ? "fixed" : "absolute"),
+	      "margin": 0,
+	      "z-index": "9999",
+	      "display": "none"
+	    };
+	    css[options.offset.from] = offsetAmount + "px";
+	    $alert.css(css);
+	    if (options.width !== "auto") {
+	      $alert.css("width", options.width + "px");
+	    }
+	    $(options.ele).append($alert);
+	    switch (options.align) {
+	      case "center":
+	        $alert.css({
+	          "left": "50%",
+	          "margin-left": "-" + ($alert.outerWidth() / 2) + "px"
+	        });
+	        break;
+	      case "left":
+	        $alert.css("left", "20px");
+	        break;
+	      default:
+	        $alert.css("right", "20px");
+	    }
+	    $alert.fadeIn();
+	    if (options.delay > 0) {
+	      $alert.delay(options.delay).fadeOut(function() {
+	        return $(this).alert("close");
+	      });
+	    }
+	    return $alert;
 	};
 	
 	/**

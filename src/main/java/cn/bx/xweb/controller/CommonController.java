@@ -18,7 +18,7 @@ import cn.bx.bframe.mapper.SqlMapperTemplet;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * 通用请求处理�?
+ * 通用请求处理
  * @author bcm
  *
  */
@@ -28,7 +28,7 @@ public class CommonController {
 	@Resource(name="sqlMapperTemplet")
 	private SqlMapperTemplet<?> sqlMapperTemplet;
 	/*
-	 * 常量 js获取系统常量,使用json注解为js�?化调�?
+	 * 常量 js获取系统常量,使用json注解为js初始化调用
 	 */
 	@RequestMapping("/constrants")
 	public @ResponseBody Map<String,Object> getConstrants() {

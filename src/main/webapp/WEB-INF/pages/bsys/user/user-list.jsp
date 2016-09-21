@@ -34,14 +34,18 @@
             		<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label class="control-label col-md-4">登录账号<span class="required">*</span></label>
-								<div class="col-md-8"><input type="text" name="loginName" class="form-control required"></div>
+								<label class="control-label col-md-4">登录账号</label>
+								<div class="col-md-8">
+								<div class="input-icon right"> <i class="fa validate-icon"></i><input type="text" name="loginName" class="form-control required"></div>
+								</div>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label class="control-label col-md-3">姓名<span class="required">*</span></label>
-								<div class="col-md-9"><input type="text" name="name" class="form-control required"></div>
+								<label class="control-label col-md-3">姓名</label>
+								<div class="col-md-9">
+								<div class="input-icon right"> <i class="fa validate-icon"></i><input type="text" name="name" class="form-control required"></div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -69,7 +73,12 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label col-md-3">email</label>
-								<div class="col-md-9"><input type="text" name="email" class="form-control"></div>
+								<div class="col-md-9">
+									<div class="input-group">
+										<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+										<input type="text" name="email" class="form-control email">
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -83,7 +92,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label col-md-3">手机</label>
-								<div class="col-md-9"><input type="text" name="mobile" class="form-control"></div>
+								<div class="col-md-9"><input type="text" name="mobile" class="form-control digits"></div>
 							</div>
 						</div>
 					</div>
@@ -100,7 +109,7 @@
          </div>
          <div class="modal-footer">
             <button type="button" class="btn  btn-default" data-dismiss="modal">关闭</button>
-            <button type="button" id="demo_datatable_btn_submit" class="btn btn-primary">提交</button>
+            <button type="button" class="btn btn-primary">提交</button>
          </div>
       </div>
 </div>
@@ -117,6 +126,9 @@ require(['app/common','app/datatables','app/form'],function(APP,FORM){
 		success : function(response, status){
 			alert(response);
 		}
+	});
+	$('.modal-footer .btn-primary').on('click',function(){
+		$('#bsys-user-edit-form').submit();
 	});
 })
 </script>

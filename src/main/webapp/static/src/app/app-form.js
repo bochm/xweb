@@ -1,4 +1,4 @@
-define('app/form',["app/common","jquery/form","jquery/validate","moment"],function(APP,$) {
+define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 	
 	var FORM = {
 			initDatePicker : function(ct){
@@ -108,26 +108,55 @@ define('app/form',["app/common","jquery/form","jquery/validate","moment"],functi
 		errorClass: 'help-block help-block-error',
 		focusInvalid: true,
 		errorPlacement: function (error, element) {
-			if(element.siblings("span.input-group-addon").length > 0){//treeselect控件验证时隐藏错误span
+			/*if(element.siblings("span.input-group-addon").size() > 0){//treeselect控件验证时隐藏错误span
 				error.addClass('hide');
-			}
-			element.parent().append(error);
+			}*/
+			if (element.parent(".input-group").size() > 0) {//带图标的输入框
+                error.insertAfter(element.parent(".input-group"));
+            } else if (element.attr("data-error-container")) { //指定container存放错误
+                error.appendTo(element.attr("data-error-container"));
+            } else if (element.parents('.radio-list').size() > 0) { //radio 
+                error.appendTo(element.parents('.radio-list').attr("data-error-container"));
+            } else if (element.parents('.radio-inline').size() > 0) { 
+                error.appendTo(element.parents('.radio-inline').attr("data-error-container"));
+            } else if (element.parents('.checkbox-list').size() > 0) {
+                error.appendTo(element.parents('.checkbox-list').attr("data-error-container"));
+            } else if (element.parents('.checkbox-inline').size() > 0) { 
+                error.appendTo(element.parents('.checkbox-inline').attr("data-error-container"));
+            } else if(element.siblings("i.validate-icon").size() > 0){//图标方式提示错误
+            	var icon = element.siblings("i.validate-icon");
+                icon.removeClass('fa-check').addClass("fa-warning");  
+                icon.attr("data-original-title", error.text()).tooltip();
+            }else {
+                error.insertAfter(element);
+            }
+			
 		},
 		invalidHandler: function (event, validator) {
 		},
 		highlight: function (element) {
 			$(element).closest('.form-group').removeClass("has-success").addClass('has-error');
 		},
-		success: function (label) {
-			label.closest('.form-group').removeClass('has-error');
+		success: function (label,element) {
+			if($(element).siblings("i.validate-icon").size() > 0){//图标方式提示错误
+				var icon = $(element).siblings("i.validate-icon");
+	            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+	            icon.removeClass("fa-warning").addClass("fa-check");
+            }else {
+            	label.closest('.form-group').removeClass('has-error');
+            }
 		}
 	};
 	//ajaxForm默认初始化设置
 	var form_init_default_opts = {
 		ajax:true,
 		error:function(error){
-			console.log(error);
-			APP.notice('系统错误',error.responseText,'error');
+			if(APP.debug){
+				console.log(error);
+				APP.notice('系统错误',error.responseText,'error');
+			}else{
+				APP.notice('系统错误',"错误代码:"+error.status+" 错误名称:"+error.statusText);
+			}
 		}	
 	};
 	
@@ -135,8 +164,9 @@ define('app/form',["app/common","jquery/form","jquery/validate","moment"],functi
 	
 	//jquery.validate增加select2验证方法
 	$.validator.addMethod("selectOpt", function(value, element) {   
-	    return this.optional(element) || (value != "-1");
+		return this.optional(element) || (value != "-1");
 	}, "请选择");
+	
 	
 	/**
 	 * 初始化form
@@ -144,11 +174,8 @@ define('app/form',["app/common","jquery/form","jquery/validate","moment"],functi
 	 */
 	$.fn.initForm = function (opts) {
 		var _this = $(this);
-		if(opts.validate){
-			var validate_settings = $.extend(true,validate_default_settings,opts.validate);
-			_this.validate(validate_settings);
-			
-		}
+		var validate_settings = $.extend(true,validate_default_settings,opts.validate);
+		_this.validate(validate_settings);
 		var isInitValue = (opts.formData != undefined);
 		var formField;
 		_this.find(opts.fieldSelector ? opts.fieldSelector : '*[name]').each(function(){
@@ -177,7 +204,7 @@ define('app/form',["app/common","jquery/form","jquery/validate","moment"],functi
 				}catch(e){alert("函数不存在["+e+"]");}
 				
 				
-				formField.BasicSelect(_selectOpt);
+				formField.select(_selectOpt);
 			}
 			if(formField.attr('form-role') == 'treeSelect'){
 				var _treeSelectOpt = {};
@@ -200,7 +227,10 @@ define('app/form',["app/common","jquery/form","jquery/validate","moment"],functi
 			}
 		});
 		var form_opt = $.extend(true,form_init_default_opts,opts);
-		if(form_opt.ajax) _this.ajaxForm(form_opt);
+		require(['jquery/form'],function(){
+			if(form_opt.ajax) _this.ajaxForm(form_opt);
+		});
+		
 	}
 	
 	/**
