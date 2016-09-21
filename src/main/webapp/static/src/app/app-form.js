@@ -144,9 +144,6 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
             }else {
             	label.closest('.form-group').removeClass('has-error');
             }
-
-		success: function (label) {
-			label.closest('.form-group').removeClass('has-error');
 		}
 	};
 	//ajaxForm默认初始化设置
