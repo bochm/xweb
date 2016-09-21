@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <context:property-placeholder ignore-unresolvable="true" location="classpath:config/app-default.properties" />
+	<!-- 注解映射 -->
+	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
+    	<mvc:message-converters register-defaults="true">
+			<!-- StringHttpMessageConverter的默认编码改为UTF-8 -->
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+		    	<constructor-arg value="UTF-8" />
+			</bean>
+			<!-- 将Jackson2HttpMessageConverter的默认格式化输出为false,使用自定义Jackson mapper -->
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="supportedMediaTypes">
+                	<list><value>application/json;charset=UTF-8</value></list>
+                </property>
+                <property name="prettyPrint" value="false"/>
+                <property name="objectMapper">  
+                    <bean class="cn.bx.bframe.json.JsonMapper"></bean>  
+                </property> 
+            </bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<!-- 扫描 controller-->
+	<context:component-scan base-package="cn.bx.**.controller" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="regex" expression=".*Controller"/>
+	</context:component-scan>
+	
+	<!-- 内容协商管理器  根据请求的path+参数 决定使用什么mediaTypes-->
+    <!--1、首先检查路径扩展名（如my.pdf）；2、其次检查Parameter（如my?format=pdf）；3、检查Accept Header-->
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <!-- 扩展名至mimeType的映射,即 /user.json => application/json -->
+        <property name="favorPathExtension" value="true"/>
+        <!-- 用于开启 /userinfo/123?format=json 的支持 -->
+        <property name="favorParameter" value="true"/>
+        <property name="parameterName" value="format"/>
+        <!-- 是否忽略Accept Header -->
+        <property name="ignoreAcceptHeader" value="false"/>
+        <property name="mediaTypes"> <!--扩展名到MIME的映射；favorPathExtension, favorParameter是true时起作用  -->
+            <value>
+                json=application/json
+                xml=application/xml
+                html=text/html
+            </value>
+        </property>
+        <!-- 默认的content type -->
+        <property name="defaultContentType" value="text/html"/>
+    </bean>
+
+
+    <!-- ========================= VIEW解析定义 ========================= -->
+    <!-- 内容协商视图解析器；根据contentNegotiationManager使用的不同mediaTypes决定不同的 view进行响应  默认使用json-->
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver" p:order="0">
+        <!-- 内容协商管理器 用于决定media type -->
+        <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
+        <!-- 默认视图 解析 -->
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+                <!--<bean class="org.springframework.web.servlet.view.xml.MarshallingView"/>-->
+            </list>
+        </property>
+    </bean>
+	<!-- 默认视图解释类 在内容协商视图解析器无法匹配时使用 (默认html)-->
+    <bean id="defaultViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:order="1">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="contentType" value="text/html"/>
+        <property name="prefix" value="${pages.location}"/>
+        <property name="suffix" value="${pages.suffix}"/>
+    </bean>
+	<!-- ========================= VIEW定义 END ========================= -->
+	
+	<!-- 文件上传大小 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="${uploadfile.maxsize}"></property>
+	</bean>
+	<!-- 图片脚本样式等静态资源处理  发布环境使用/static/dist/-->
+	<mvc:resources mapping="/static/resources/**" location="${resources.location}" cache-period="31536000"/>
+	<!-- 国际化文件 -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>web.system.messages</value>
+				<value>web.app.messages</value>
+			</list>
+		</property>
+	</bean>
+</beans>
