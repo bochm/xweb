@@ -124,10 +124,8 @@ require(['app/common','app/datatables','app/form'],function(APP,FORM){
 		console.log(otable);
 	});
 	
-	$('#bsys-user-edit-form').initForm({
-		success : function(response, status){
-			alert(response);
-		}
+	$('#bsys-user-edit-form').initForm({},function(data){
+		alert(data);
 	});
 
 	$('.modal-footer .btn-primary').on('click',function(){

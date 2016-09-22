@@ -114,7 +114,8 @@ define('app/common',['bootstrap','moment'],function() {
 			 * json数据提交,服务器端接收JSON格式的对象
 			 * @param  {String} url 提交url
 			 * @param  {Boolean} isSync 是否同步
-			 * @param  {Function} callback 回调函数
+			 * @param  {Function} callback 成功回调函数
+			 * @param  {Function} errorback 失败回调函数
 			 */
 			postJson : function(url,data,isSync,callback,errorback){
 				var async = true;
@@ -511,91 +512,93 @@ define('app/common',['bootstrap','moment'],function() {
 	 * @param  {String} title 通知抬头
 	 * @param  {String} text  通知主体
 	 * @param  {String} type  通知类型 error|warning|info|light default:info 
+	 * @param  {String} ele  显示位置 调用alertS
 	 */
-	APP.notice = function(title,text,type){
-		require(['jquery/gritter'],function(){
-			$.gritter.add({
-				title: title,
-				text: text,
-				sticky: (type === 'error'),
-				time: '3000',
-				class_name: 'gritter-'+((type && type != undefined) ? type : 'info')
-			});
-		})
+	APP.notice = function(title,text,type,ele){
+		if(!APP.isEmpty(ele)){
+			APP.alertS(title,text,type,ele);
+		}else{
+			require(['jquery/gritter'],function(){
+				$.gritter.add({
+					title: title,
+					text: text,
+					sticky: (type === 'error'),
+					time: '3000',
+					class_name: 'gritter-'+((type && type != undefined) ? type : 'info')
+				});
+			})
+		}
+		
 	};
 
 	/**
-	 * 显示通知 自定义
-	 * @param  {String} title 通知抬头
-	 * @param  {String} text  通知主体
-	 * @param  {String} type  通知类型 error|warning|info|light default:info 
+	 * 显示通知 自定义显示位置，默认使用在body中
+	 * @param  {String} title 提示标题
+	 * @param  {String} message 提示内容
+	 * @param  {String} type  通知类型 error|warning|info|success default:info 
+	 * @param  {String} ele  显示位置
 	 */
-	APP.noticeS = function(message, options){
+	APP.alertS = function(title,message,type,ele){
 		var default_options = {
-			    ele: "body",
-			    type: "info",
-			    offset: {
-			      from: "top",
-			      amount: 20
-			    },
-			    align: "right",
-			    width: 250,
-			    delay: 4000,
-			    allow_dismiss: true,
-			    stackup_spacing: 10
-			};
+			ele: ele ? ele : "body",
+			type: type ? type : "info",
+			offset: {from: "top",amount: 20},
+			align: "center",
+			width: 250,
+			delay: 4000,
+			allow_dismiss: true,
+			stackup_spacing: 10
+		};
 		var $alert, css, offsetAmount;
-	    options = $.extend({}, default_options, options);
 	    $alert = $("<div>");
-	    $alert.attr("class", "app-noticeS alert");
-	    if (options.type) {
-	      $alert.addClass("alert-" + options.type);
+	    $alert.attr("class", "app-noticeS alert alert-block");
+	    if (default_options.type) {
+	    	$alert.addClass("alert-" + (default_options.type == 'error' ? 'danger' : default_options.type));
 	    }
-	    if (options.allow_dismiss) {
-	      $alert.addClass("alert-dismissible");
-	      $alert.append("<button  class=\"close\" data-dismiss=\"alert\" type=\"button\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>");
+	    if (default_options.allow_dismiss) {
+	    	$alert.addClass("alert-dismissible");
+	    	$alert.append("<button type='button' class='close' data-dismiss='alert'></button>");
 	    }
-	    $alert.append(message);
-	    if (options.top_offset) {
-	      options.offset = {
+	    if(!APP.isEmpty(title))$alert.append("<h4 class='alert-heading>"+title+"</h4>");
+	    $alert.append("<p>"+message+"</p>");
+	    if (default_options.top_offset) {
+	    	default_options.offset = {
 	        from: "top",
-	        amount: options.top_offset
+	        amount: default_options.top_offset
 	      };
 	    }
-	    offsetAmount = options.offset.amount;
+	    offsetAmount = default_options.offset.amount;
 	    $(".app-noticeS").each(function() {
-	      return offsetAmount = Math.max(offsetAmount, parseInt($(this).css(options.offset.from)) + $(this).outerHeight() + options.stackup_spacing);
+	    	return offsetAmount = Math.max(offsetAmount, parseInt($(this).css(default_options.offset.from)) + $(this).outerHeight() + default_options.stackup_spacing);
 	    });
 	    css = {
-	      "position": (options.ele === "body" ? "fixed" : "absolute"),
-	      "margin": 0,
-	      "z-index": "9999",
-	      "display": "none"
+	    	"position": (default_options.ele === "body" ? "fixed" : "absolute"),
+	    	"margin": 0,
+	    	"z-index": "9999",
+	    	"display": "none"
 	    };
-	    css[options.offset.from] = offsetAmount + "px";
+	    css[default_options.offset.from] = offsetAmount + "px";
 	    $alert.css(css);
-	    if (options.width !== "auto") {
-	      $alert.css("width", options.width + "px");
+	    if (default_options.width !== "auto") {
+	    	$alert.css("width", default_options.width + "px");
 	    }
-	    $(options.ele).append($alert);
-	    switch (options.align) {
+	    $(default_options.ele).append($alert);
+	    switch (default_options.align) {
 	      case "center":
-	        $alert.css({
-	          "left": "50%",
-	          "margin-left": "-" + ($alert.outerWidth() / 2) + "px"
-	        });
-	        break;
+	    	  $alert.css({"left": "50%", "margin-left": "-" + ($alert.outerWidth() / 2) + "px" });
+	    	  break;
 	      case "left":
-	        $alert.css("left", "20px");
-	        break;
+	    	  $alert.css("left", "20px");
+	    	  break;
 	      default:
-	        $alert.css("right", "20px");
+	    	  $alert.css("right", "20px");
 	    }
+	    $alert.show();
 	    $alert.fadeIn();
-	    if (options.delay > 0) {
-	      $alert.delay(options.delay).fadeOut(function() {
-	        return $(this).alert("close");
-	      });
+	    if (default_options.delay > 0) {
+	    	$alert.delay(default_options.delay).fadeOut(function() {
+	    		return $(this).alert("close");
+	    	});
 	    }
 	    return $alert;
 	};

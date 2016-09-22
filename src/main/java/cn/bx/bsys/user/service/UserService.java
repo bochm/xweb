@@ -20,6 +20,5 @@ public class UserService extends SimpleService<User>{
 	}
 	public Set<String> findPermissionsByUser(User user){
 		return null;
-		
 	}
 }

@@ -146,18 +146,6 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
             }
 		}
 	};
-	//ajaxForm默认初始化设置
-	var form_init_default_opts = {
-		ajax:true,
-		error:function(error){
-			if(APP.debug){
-				console.log(error);
-				APP.notice('系统错误',error.responseText,'error');
-			}else{
-				APP.notice('系统错误',"错误代码:"+error.status+" 错误名称:"+error.statusText);
-			}
-		}	
-	};
 	
 	
 	
@@ -169,10 +157,12 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 	/**
 	 * 初始化form
 	 * @param  {Object} opts 初始化参数
+	 * @param  {Function} callback 成功回调函数
+	 * @param  {Function} errorback 失败回调函数
 	 */
-	$.fn.initForm = function (opts) {
+	$.fn.initForm = function (opts,callback,errorback) {
 		var _this = $(this);
-
+		if(APP.isEmpty(opts)) opts = {};
 		var validate_settings = $.extend(true,validate_default_settings,opts.validate);
 		_this.validate(validate_settings);
 
@@ -226,7 +216,25 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 				formField.treeSelect(_treeSelectOpt,formField.attr('treeID'));
 			}
 		});
-		var form_opt = $.extend(true,form_init_default_opts,opts);
+		var _in_modal = (_this.parents('.modal-dialog').size() > 0) ? '.modal-dialog' : '';
+		var form_opt = $.extend(true,{
+			ajax:true,
+			error:function(error){
+				if(APP.debug)console.log(error);
+				APP.notice('系统错误',"错误代码:"+error.status+" 错误名称:"+error.statusText,'error',_in_modal);
+				if(typeof errorback === 'function')errorback(error);
+			},
+			success:function(response, status){
+				if(APP.debug)console.log(response);
+				if(response.OK){
+					APP.notice('系统信息',response[APP.MSG],'success',_in_modal);
+					if(typeof callback === 'function')callback(response[APP.DATA]);
+				}else{
+					APP.notice('系统返回',response[APP.MSG],'warning',_in_modal);
+					if(typeof errorback === 'function')errorback(response,status);
+				}
+			}
+		},opts);
 		require(['jquery/form'],function(){
 			if(form_opt.ajax) _this.ajaxForm(form_opt);
 		});
