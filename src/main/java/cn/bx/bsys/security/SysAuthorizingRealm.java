@@ -19,8 +19,9 @@ import org.apache.shiro.util.ByteSource;
 
 import cn.bx.bframe.common.config.AppConstants;
 import cn.bx.bframe.common.security.PasswordUtil;
+import cn.bx.bframe.system.entity.LoginUser;
+import cn.bx.bframe.system.entity.User;
 import cn.bx.bsys.system.service.SystemService;
-import cn.bx.bsys.user.mapper.User;
 
 public class SysAuthorizingRealm extends AuthorizingRealm {
 

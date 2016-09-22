@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.bx.bframe.entity.DataMessage;
-import cn.bx.bsys.user.mapper.User;
+import cn.bx.bframe.system.entity.User;
 import cn.bx.bsys.user.service.UserService;
 
 @Controller

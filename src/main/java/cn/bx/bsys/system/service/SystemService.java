@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.bx.bsys.user.mapper.User;
+import cn.bx.bframe.system.entity.User;
 import cn.bx.bsys.user.service.UserService;
 
 /**

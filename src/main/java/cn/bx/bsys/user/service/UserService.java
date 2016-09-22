@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.bx.bframe.service.SimpleService;
-import cn.bx.bsys.user.mapper.User;
+import cn.bx.bframe.system.entity.User;
 
 @Service("UserService")
 @Transactional(rollbackFor=Exception.class)

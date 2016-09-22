@@ -24,13 +24,13 @@
     </sql>
     <!-- 根据登录名查询用户 -->
     
-	<select id="findUserByLoginName" resultType="cn.bx.bsys.user.mapper.User">
+	<select id="findUserByLoginName" resultType="cn.bx.bframe.system.entity.User">
 		SELECT
 		<include refid="userColumns"/>
 		FROM sys_user a
 		WHERE a.login_name = #{loginname}
 	</select>
-	<select id="listUser" resultType="cn.bx.bsys.user.mapper.User">
+	<select id="listUser" resultType="cn.bx.bframe.system.entity.User">
 		SELECT
 		<include refid="userColumns"/>
 		FROM sys_user a
@@ -58,8 +58,8 @@
 			del_flag
 		) VALUES (
 			#{id}, 
-			#{company.id}, 
-			#{office.id}, 
+			#{companyId}, 
+			#{deptId}, 
 			#{loginName}, 
 			#{password}, 
 			#{no}, 
@@ -68,9 +68,9 @@
 			#{phone}, 
 			#{mobile}, 
 			#{userType}, 
-			#{createBy.id}, 
+			#{createBy}, 
 			#{createDate}, 
-			#{updateBy.id}, 
+			#{updateBy}, 
 			#{updateDate}, 
 			#{remarks}, 
 			#{loginFlag}, 
