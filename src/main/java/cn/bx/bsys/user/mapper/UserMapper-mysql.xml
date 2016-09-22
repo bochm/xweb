@@ -54,28 +54,26 @@
 			update_date, 
 			remarks, 
 			login_flag, 
-			photo, 
-			del_flag
+			photo
 		) VALUES (
 			#{id}, 
-			#{companyId}, 
-			#{deptId}, 
+			111, 
+			222, 
 			#{loginName}, 
 			#{password}, 
 			#{no}, 
 			#{name}, 
 			#{email}, 
-			#{phone}, 
+			#{tel}, 
 			#{mobile}, 
 			#{userType}, 
-			#{createBy}, 
+			1, 
 			#{createDate}, 
-			#{updateBy}, 
+			1, 
 			#{updateDate}, 
 			#{remarks}, 
 			#{loginFlag}, 
-			#{photo}, 
-			#{delFlag}
+			#{photo}
 		)
 	</insert>
 </mapper>
