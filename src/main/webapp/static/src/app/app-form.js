@@ -1,5 +1,5 @@
 
-define('app/form',["app/common","moment","jquery/validate"],function(APP) {
+define('app/form',["app/common","moment","jquery/validate","jquery/form"],function(APP) {
 	var FORM = {
 			initDatePicker : function(ct){
 	        	APP.queryContainer(ct).find('[form-role="date"]').each(function(){
@@ -7,7 +7,27 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 	        	});
 	        }
 	};
-	
+	/**
+	 * 将form格式化为json
+	 * @param  {Object} form form对象
+	 * @return {Object} json对象
+	 */
+	FORM.formToJson = function(form){
+		var serializeObj={};  
+        var array=form.serializeArray();
+        $(array).each(function(){  
+            if(serializeObj[this.name]){  
+                if($.isArray(serializeObj[this.name])){  
+                    serializeObj[this.name].push(this.value);  
+                }else{  
+                    serializeObj[this.name]=[serializeObj[this.name],this.value];  
+                }  
+            }else{  
+                serializeObj[this.name]=this.value;   
+            }  
+        });  
+        return serializeObj;  
+	};
 	//--------------------------------------datePicker------------------------------
 	/**
 	 * 日期 bootstrap datePicker
@@ -45,11 +65,11 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 	
 	/**
 	 * 日期区间 bootstrap dateRangePicker
-	 * @param  {Object} target  需要显示日期区间的对象 
 	 * @param  {Object} opts  设置参数
 	 * @param  {Function} callback  设置后调用的函数
 	 */
-	FORM.dateRangePicker = function(target,opts,callback){
+	$.fn.dateRangePicker = function(opts,callback){
+		var _target = $(this);
 		require(['bootstrap/daterangepicker'],function(){
 			var default_opt = $.extend(true,{
 				opens: (APP.isRTL ? 'left' : 'right'),
@@ -87,14 +107,16 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
                     "firstDay": 1
                 }                
 			},opts);
-			$(target).daterangepicker(default_opt,function(start, end, label){
+			_target.daterangepicker(default_opt,function(start, end, label){
 				if(typeof callback === 'function'){
 					callback(start, end, label);
 	        	}else{
-	        		$(target+' span').html(start.format('YYYY年MM月DD日') + ' - ' + end.format('YYYY年MM月DD日'));
+	        		_target.children('span').html(start.format('YYYY年MM月DD日') + ' - ' + end.format('YYYY年MM月DD日'));
+	        		//$(target+' span')
 	        	}
 			});
-			$(target+' span').html(moment().subtract('days', 29).format('YYYY年MM月DD日') + ' - ' + moment().format('YYYY年MM月DD日'));
+			_target.children('span').html(moment().subtract('days', 29).format('YYYY年MM月DD日') + ' - ' + moment().format('YYYY年MM月DD日'));
+			//$(target+' span').html(moment().subtract('days', 29).format('YYYY年MM月DD日') + ' - ' + moment().format('YYYY年MM月DD日'));
 			
 		})
 	};
@@ -162,6 +184,7 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 	 */
 	$.fn.initForm = function (opts,callback,errorback) {
 		var _this = $(this);
+		_this.clearForm(true);
 		if(APP.isEmpty(opts)) opts = {};
 		var validate_settings = $.extend(true,validate_default_settings,opts.validate);
 		_this.validate(validate_settings);
@@ -174,8 +197,9 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 				if(opts.formData[this.name]){
 					if(this.type == 'checkbox'){
 						formField.attr('checked',opts.formData[this.name] == formField.attr('checkedVal'));
-					}else
-						formField.attr('value',opts.formData[this.name]);
+					}else{
+						formField.val(opts.formData[this.name]);
+					}
 				}
 			}
 			if(formField.attr('form-role') == 'select'){
@@ -217,15 +241,31 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 			}
 		});
 		var _in_modal = (_this.parents('.modal-dialog').size() > 0) ? '.modal-dialog' : '';
+		//提交是初始化bean的提交类型  add save delete  对应BaseBean 的form_action属性
+		if(opts.formAction){
+			if(_this.children(":hidden[name='form_action']").size()>0){
+				_this.children(":hidden[name='form_action']").val(opts.formAction);
+			}else{
+				_this.append("<input type='hidden' name='form_action' value='"+opts.formAction+"'>");
+			}
+		}
+		
 		var form_opt = $.extend(true,{
 			ajax:true,
+			beforeSubmit : function(formData, jqForm, options){
+				APP.blockUI({target:_in_modal ? '.modal-dialog' : 'body',message:'提交中',gif : 'form-submit'});
+				return true;
+			},
+			dataType : 'json',
 			error:function(error){
 				if(APP.debug)console.log(error);
+				APP.unblockUI(_in_modal ? '.modal-dialog' : 'body');
 				APP.notice('系统错误',"错误代码:"+error.status+" 错误名称:"+error.statusText,'error',_in_modal);
 				if(typeof errorback === 'function')errorback(error);
 			},
 			success:function(response, status){
 				if(APP.debug)console.log(response);
+				APP.unblockUI(_in_modal ? '.modal-dialog' : 'body');
 				if(response.OK){
 					APP.notice('系统信息',response[APP.MSG],'success',_in_modal);
 					if(typeof callback === 'function')callback(response[APP.DATA]);
@@ -235,25 +275,24 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 				}
 			}
 		},opts);
-		require(['jquery/form'],function(){
-			if(form_opt.ajax) _this.ajaxForm(form_opt);
-		});
+		if(form_opt.ajax) _this.ajaxForm(form_opt);
 	}
+	
 	
 	/**
 	 * form表单提交
-	 * @param  {String} fid form表单ID
 	 * @param  {String} url form提交url
 	 * @param  {Function} callback 回调函数
 	 */
-	FORM.post = function(fid,url,callback){
-		if($('#'+fid).is('form') ){
+	$.fn.postForm = function(url,callback){
+		var _form = $(this);
+		if(_form.is('form')){
 			$.ajax({ 
 		        type:"POST", 
 		        url:url, 
 		        dataType:"json",      
 		        contentType:"application/json",               
-		        data:JSON.stringify(FORM.formToJson($('#'+fid))), 
+		        data:JSON.stringify(FORM.formToJson(_form)), 
 		        success:function(ret,status){
 		        	callback(result,status);
 		        },
@@ -262,31 +301,9 @@ define('app/form',["app/common","moment","jquery/validate"],function(APP) {
 		        }
 			});
 		}else
-			alert("对象id["+fid+"]不是表单");
+			alert("对象不是表单");
 		  
 	};
-	/**
-	 * 将form格式化为json
-	 * @param  {Object} form form对象
-	 * @return {Object} json对象
-	 */
-	FORM.formToJson = function(form){
-		var serializeObj={};  
-        var array=form.serializeArray();
-        $(array).each(function(){  
-            if(serializeObj[this.name]){  
-                if($.isArray(serializeObj[this.name])){  
-                    serializeObj[this.name].push(this.value);  
-                }else{  
-                    serializeObj[this.name]=[serializeObj[this.name],this.value];  
-                }  
-            }else{  
-                serializeObj[this.name]=this.value;   
-            }  
-        });  
-        return serializeObj;  
-	};
-	
 	
 	
 	//------------------------下拉列表----------------------

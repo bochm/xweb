@@ -220,6 +220,9 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 	} );
 	$.fn.dataTable.Buttons.swfPath = APP.jsPath+'/lib/jquery/datatables/swf/flashExport.swf';
 	
+	DataTable.getTable = function(selector){
+		return new $.fn.dataTable.Api(selector);
+	}
 	
 	/**
     * 基础表格处理
@@ -242,7 +245,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			"fnCreatedRow": function (nRow, aData, iDataIndex) {
 	         }
 		},opts);
-		var otable = _getDataTable(_table,default_opt,function(otable){
+		return _getDataTable(_table,default_opt,function(otable){
 			//初始化表格工具栏 ，增加ID约束
 			var tableid = _table.attr('id');
 			
@@ -261,9 +264,6 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			});
 			if(callback && typeof callback == "function")callback(otable);
 		});
-		
-		
-		return otable;
 	};
 	/**
 	* 表格初始化

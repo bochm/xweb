@@ -1182,6 +1182,9 @@ $.fn.clearFields = $.fn.clearInputs = function(includeHidden) {
     var re = /^(?:color|date|datetime|email|month|number|password|range|search|tel|text|time|url|week)$/i; // 'hidden' is not in this list
     return this.each(function() {
         var t = this.type, tag = this.tagName.toLowerCase();
+        $(this).siblings("i.validate-icon").removeClass('fa-check fa-warning');//删除检测图标 mod bcm
+        $(this).closest('.form-group').removeClass('has-error has-success');
+        $(this).siblings('span.help-block-error').remove();
         if (re.test(t) || tag == 'textarea') {
             this.value = '';
         }
@@ -1205,7 +1208,7 @@ $.fn.clearFields = $.fn.clearInputs = function(includeHidden) {
             // the above would clean hidden inputs that have the class of 'special'
             if ( (includeHidden === true && /hidden/.test(t)) ||
                  (typeof includeHidden == 'string' && $(this).is(includeHidden)) ) {
-                this.value = '';
+            	if(this.name != 'form_action') this.value = ''; //form_action为系统隐藏字段
             }
         }
     });

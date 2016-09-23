@@ -667,6 +667,20 @@ define('app/common',['bootstrap','moment'],function() {
 		});
 	};
 	/**
+	 * APP.alert简单的info
+	 * @param  {String} text 内容
+	 */
+	APP.info = function(text){
+		APP.alert('提示消息',text,'info');
+	};
+	/**
+	 * APP.alert简单的error
+	 * @param  {String} text 内容
+	 */
+	APP.error = function(text){
+		APP.alert('错误消息',text,'error');
+	};
+	/**
 	 * 工具按钮提示 bootstrap.popover调用
 	 * @param  {Object} pobj  需要弹出提示的对象 
 	 * @param  {String} content  提示内容

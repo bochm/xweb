@@ -2,8 +2,8 @@
 <%@ include file="/WEB-INF/include/taglib.jsp" %>
 <div class="table-scrollable">
 <span id="table-bsys-user-list-toolbar">
-<button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#bsys-user-list-edit">新增用户</button>
-<button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#bsys-user-list-edit">修改用户</button>
+<button class="btn btn-sm btn-primary" id="bsys-user-list-add-btn">新增用户</button>
+<button class="btn btn-sm btn-primary" id="bsys-user-list-edit-btn">修改用户</button>
 </span>
 <table id="table-bsys-user-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/bsys/user" 
 	data-paging="true" data-info="true" data-ordering="true">
@@ -28,7 +28,7 @@
             <h4 class="modal-title">用户维护</h4>
          </div>
          <div class="modal-body">
-            <form class="form-horizontal" action="${ctx}/bsys/user/add" role="form" id="bsys-user-edit-form">
+            <form class="form-horizontal" action="${ctx}/bsys/user/add.json" role="form" id="bsys-user-edit-form">
             	<input type="hidden" name="id">
             	<div class="form-body">
             		<div class="row">
@@ -53,13 +53,13 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label col-md-4">登录密码<span class="required">*</span></label>
-								<div class="col-md-8"><input type="password" name="password" maxlength="20" minlength="3" id="sys-user-password" class="form-control required"></div>
+								<div class="col-md-8"><input type="password" name="password" maxlength="50" minlength="3" id="sys-user-password" class="form-control required"></div>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label col-md-4">确认密码</label>
-								<div class="col-md-8"><input type="password" equalTo="#sys-user-password" maxlength="20" minlength="3" name="password_confirm" class="form-control"></div>
+								<div class="col-md-8"><input type="password" equalTo="#sys-user-password" maxlength="50" minlength="3" name="password_confirm" class="form-control"></div>
 							</div>
 						</div>
 					</div>
@@ -117,19 +117,43 @@
 </div>
 </div>
 <script type="text/javascript">
-require(['app/common','app/datatables','app/form'],function(APP,FORM){
+require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
+	var userTable;
 	$('table.datatable').initTable({
 		params : {'pcompany':1}
 	},function(otable){
-		console.log(otable);
-	});
-	
-	$('#bsys-user-edit-form').initForm({},function(data){
-		alert(data);
+		userTable = otable;
 	});
 
 	$('.modal-footer .btn-primary').on('click',function(){
 		$('#bsys-user-edit-form').submit();
 	});
+	$('#bsys-user-list-add-btn').click(function(){
+		if(!$('#sys-user-password').hasClass('required'))$('#sys-user-password').addClass('required');
+		$('#bsys-user-edit-form').initForm({
+			url : '${ctx}/bsys/user/add.json',formAction : 'add',clearForm : true
+		},function(data){
+			userTable.row.add(data).draw();
+		});
+		$('#bsys-user-list-edit').modal('show');
+	})
+	$('#bsys-user-list-edit-btn').click(function(){
+		if(userTable.rows('.selected').count() != 1){
+			APP.info('请选择一条需要修改的用户');
+			return;
+		}
+		$('#sys-user-password').removeClass('required');
+		
+		$('#bsys-user-edit-form').initForm({
+			url : '${ctx}/bsys/user/save.json',formAction : 'save',formData : userTable.rows('.selected').data()[0]
+		},function(data){
+			userTable.row(userTable.rows('.selected')[0]).data(data);
+		});
+		$('#sys-user-password').attr('type','text');
+		$('#sys-user-password').val('');
+		$('#sys-user-password').attr('type','password');
+		$('#bsys-user-list-edit').modal('show');
+		
+	})
 })
 </script>
