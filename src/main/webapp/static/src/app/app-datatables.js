@@ -218,12 +218,62 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 		APP.notice(title,message,'info');
 		return this;
 	} );
+	
+	//-----------------------------------自定义方法---------------------------------
+	/**
+     * 获取选择行数据
+     */
+	DataTable.Api.register( 'selectedRows()', function () {
+		return this.rows('.selected').data();
+	} );
+	
+	/**
+     * 获取选择行的指定列数据 col列名
+     */
+	DataTable.Api.register( 'selectedColumn()', function (col) {
+		var selectedRows = this.rows('.selected');
+		var a = [];
+		for(var i = 0;i<selectedRows.count();i++){
+			a.push(selectedRows.data()[i][col]);
+		}
+		return a;
+	} );
+	
+	/**
+     * 增加一行数据
+     */
+	DataTable.Api.register( 'addRow()', function (row) {
+		return this.row.add(row).draw();
+	} );
+	
+	/**
+     * 修改已选择行数据
+     */
+	DataTable.Api.register( 'updateSelectedRow()', function (row) {
+		return this.row(this.rows('.selected')[0]).data(row);
+	} );
+	/**
+     * 删除已选择行数据
+     */
+	DataTable.Api.register( 'deleteSelectedRow()', function () {
+		return this.rows('.selected').remove().draw();
+	} );
+	
+	/**
+     * 已选总行数
+     */
+	DataTable.Api.register( 'selectedCount()', function () {
+		return this.rows('.selected').count();
+	} );
+	
 	$.fn.dataTable.Buttons.swfPath = APP.jsPath+'/lib/jquery/datatables/swf/flashExport.swf';
 	
 	DataTable.getTable = function(selector){
 		return new $.fn.dataTable.Api(selector);
 	}
 	
+	
+	//------------------------------------------初始化---------------------------------------
 	/**
     * 基础表格处理
     * @param  {Object} opts 初始化参数

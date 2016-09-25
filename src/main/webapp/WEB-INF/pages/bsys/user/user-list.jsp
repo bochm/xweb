@@ -4,10 +4,12 @@
 <span id="table-bsys-user-list-toolbar">
 <button class="btn btn-sm btn-primary" id="bsys-user-list-add-btn">新增用户</button>
 <button class="btn btn-sm btn-primary" id="bsys-user-list-edit-btn">修改用户</button>
+<button class="btn btn-sm btn-warning" id="bsys-user-list-delete-btn">删除用户</button>
 </span>
 <table id="table-bsys-user-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/bsys/user" 
 	data-paging="true" data-info="true" data-ordering="true">
 		<thead><tr>
+			<th data-visible='false' data-column="id">id</th>
 			<th  data-column=loginName >登录账号</th>
 			<th  data-column="name" >姓名</th>
 			<th  data-column="no">工号</th>
@@ -28,7 +30,7 @@
             <h4 class="modal-title">用户维护</h4>
          </div>
          <div class="modal-body">
-            <form class="form-horizontal" action="${ctx}/bsys/user/add.json" role="form" id="bsys-user-edit-form">
+            <form class="form-horizontal" action="${ctx}/bsys/user/add.json" role="form" id="bsys-user-edit-form" >
             	<input type="hidden" name="id">
             	<div class="form-body">
             		<div class="row">
@@ -131,28 +133,42 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	$('#bsys-user-list-add-btn').click(function(){
 		if(!$('#sys-user-password').hasClass('required'))$('#sys-user-password').addClass('required');
 		$('#bsys-user-edit-form').initForm({
-			url : '${ctx}/bsys/user/add.json',formAction : 'add',clearForm : true
+			url : '${ctx}/bsys/user/add.json',formAction : 'add',clearForm : true,type : 'post'
 		},function(data){
-			userTable.row.add(data).draw();
+			userTable.addRow(data);
 		});
 		$('#bsys-user-list-edit').modal('show');
 	})
 	$('#bsys-user-list-edit-btn').click(function(){
-		if(userTable.rows('.selected').count() != 1){
+		if(userTable.selectedCount() != 1){
 			APP.info('请选择一条需要修改的用户');
 			return;
 		}
 		$('#sys-user-password').removeClass('required');
 		
 		$('#bsys-user-edit-form').initForm({
-			url : '${ctx}/bsys/user/save.json',formAction : 'save',formData : userTable.rows('.selected').data()[0]
+			url : '${ctx}/bsys/user/save.json',formAction : 'save',formData : userTable.selectedRows()[0],
+			type : 'post'
 		},function(data){
-			userTable.row(userTable.rows('.selected')[0]).data(data);
+			userTable.updateSelectedRow(data);
 		});
 		$('#sys-user-password').attr('type','text');
 		$('#sys-user-password').val('');
 		$('#sys-user-password').attr('type','password');
 		$('#bsys-user-list-edit').modal('show');
+		
+	})
+	$('#bsys-user-list-delete-btn').click(function(){
+		if(userTable.selectedCount() < 1){
+			APP.info('请选择一条需要删除的用户');
+			return;
+		}
+		APP.confirm('用户删除','是否删除选择的用户',function(){
+			APP.postJson('${ctx}/bsys/user/delete',userTable.selectedColumn('id'),null,function(){
+				APP.success('删除成功');
+				userTable.deleteSelectedRow();
+			});
+		})
 		
 	})
 })

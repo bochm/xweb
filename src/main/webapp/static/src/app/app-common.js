@@ -674,11 +674,34 @@ define('app/common',['bootstrap','moment'],function() {
 		APP.alert('提示消息',text,'info');
 	};
 	/**
+	 * APP.alert简单的success
+	 * @param  {String} text 内容
+	 */
+	APP.success = function(text){
+		APP.alert('操作成功',text,'success');
+	};
+	/**
 	 * APP.alert简单的error
 	 * @param  {String} text 内容
 	 */
 	APP.error = function(text){
 		APP.alert('错误消息',text,'error');
+	};
+	/**
+	 * sweet-alert插件封装，简单的confirm
+	 * @param  {String} title 标题
+	 * @param  {String} text 内容
+	 * @param  {function} confirmCallBack 点击确定后的执行函数
+	 * @param  {String} type error', 'warning', 'info', 'success
+	 */
+	APP.confirm = function(title,text,confirmCallBack){
+		require(['sweetalert'],function(){
+			swal({title : title, text : APP.isEmpty(text) ? '' : text,
+				type: "info",   showCancelButton: true,   closeOnConfirm: false,
+				showLoaderOnConfirm: true},function(){
+					confirmCallBack();
+				});
+		});
 	};
 	/**
 	 * 工具按钮提示 bootstrap.popover调用
