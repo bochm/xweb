@@ -39,7 +39,7 @@
 								<label class="control-label col-md-4">登录账号</label>
 								<div class="col-md-8">
 								<div class="input-icon right"> <i class="fa validate-icon"></i><input type="text" name="loginName" 
-									class="form-control required checkExists"></div>
+									class="form-control required" id="bsys-user-loginName"></div>
 								</div>
 							</div>
 						</div>
@@ -62,7 +62,8 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label col-md-4">确认密码</label>
-								<div class="col-md-8"><input type="password" equalTo="#sys-user-password" maxlength="50" minlength="3" name="password_confirm" class="form-control"></div>
+								<div class="col-md-8"><input type="password" equalTo="#sys-user-password" maxlength="50" minlength="3" name="password_confirm" 
+								class="form-control" data-msg="请输入相同的密码"></div>
 							</div>
 						</div>
 					</div>
@@ -130,10 +131,11 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	
 	var form_validate = {
 		rules : {
-			loginName : {'checkExists' : {url:'${ctx}/bsys/user/checkLoginName'}}
-		},
-		messages: {
-			password_confirm: {equalTo: "输入相同的密码"}
+			loginName : {
+				'checkExists' : {
+					url:'${ctx}/bsys/user/checkLoginName',data:{}
+				}
+			}
 		}
 	}
 	
@@ -142,6 +144,8 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	});
 	$('#bsys-user-list-add-btn').click(function(){
 		if(!$('#sys-user-password').hasClass('required'))$('#sys-user-password').addClass('required');
+		form_validate.rules.loginName.checkExists.data.oldloginname = '';
+		
 		$('#bsys-user-edit-form').initForm({
 			url : '${ctx}/bsys/user/add.json',formAction : 'add',clearForm : true,type : 'post',validate : form_validate
 		},function(data){
@@ -154,12 +158,19 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 			APP.info('请选择一条需要修改的用户');
 			return;
 		}
+		var cur_row = userTable.selectedRows()[0];
+		form_validate.rules.loginName.checkExists.data.oldloginname = cur_row.loginName;
+		
 		$('#sys-user-password').removeClass('required');
 		$('#bsys-user-edit-form').initForm({
-			url : '${ctx}/bsys/user/save.json',formAction : 'save',formData : userTable.selectedRows()[0],
+			url : '${ctx}/bsys/user/save.json',formAction : 'save',formData : cur_row,
 			type : 'post',validate : form_validate
 		},function(data){
 			userTable.updateSelectedRow(data);
+			//动态更新规格，否则会造成重复提交验证不通过
+			$('#bsys-user-loginName').rules( "remove", "checkExists" );
+			$('#bsys-user-loginName').rules( "add", form_validate.rules.loginName);
+			$('#bsys-user-list-edit').modal('hide');
 		});
 		$('#sys-user-password').attr('type','text');
 		$('#sys-user-password').val('');

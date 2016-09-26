@@ -1182,7 +1182,7 @@ $.fn.clearFields = $.fn.clearInputs = function(includeHidden) {
     var re = /^(?:color|date|datetime|email|month|number|password|range|search|tel|text|time|url|week)$/i; // 'hidden' is not in this list
     return this.each(function() {
         var t = this.type, tag = this.tagName.toLowerCase();
-        $(this).siblings("i.validate-icon").removeClass('fa-check fa-warning');//删除检测图标 mod bcm
+        $(this).siblings("i.validate-icon").removeClass('fa-check fa-warning').removeAttr("data-original-title");//删除检测图标 mod bcm
         $(this).closest('.form-group').removeClass('has-error has-success');
         $(this).siblings('span.help-block-error').remove();
         if (re.test(t) || tag == 'textarea') {

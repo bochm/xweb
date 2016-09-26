@@ -129,6 +129,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		errorElement: 'span',
 		errorClass: 'help-block help-block-error',
 		focusInvalid: true,
+		onkeyup: false,
 		errorPlacement: function (error, element) {
 			/*if(element.siblings("span.input-group-addon").size() > 0){//treeselect控件验证时隐藏错误span
 				error.addClass('hide');
@@ -163,6 +164,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				var icon = $(element).siblings("i.validate-icon");
 	            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
 	            icon.removeClass("fa-warning").addClass("fa-check");
+	            icon.removeAttr("data-original-title");
             }else {
             	label.closest('.form-group').removeClass('has-error');
             }
@@ -186,12 +188,17 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			alert('请设置字段校验参数中的url或者stmID');
 			return false;
 		}
-		var ajaxUrl = APP.ctx+'/app/common/selectMapByStmID';
-		var paramData = {param : p};
-		if(!APP.isEmpty(p.url)) ajaxUrl = p.url;
-		else paramData.stmID = p.stmID;
-		paramData.param.value = value;
-		return APP.isEmpty(APP.postJson(ajaxUrl,paramData,false));
+		var paramData;
+		if(!APP.isEmpty(p.url)) {
+			paramData = p.data;
+			paramData.value = value;
+			return APP.postJson(p.url,paramData,false);
+		}else {
+			paramData = {param : p.data};
+			paramData.stmID = p.stmID;
+			paramData.param.value = value;
+			return APP.isEmpty(APP.postJson(APP.ctx+'/app/common/selectMapByStmID',paramData,false));
+		}
 		
 	}, "已存在");
 	
@@ -207,7 +214,6 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		if(APP.isEmpty(opts)) opts = {};
 		var validate_settings = $.extend(true,validate_default_settings,opts.validate);
 		_this.validate(validate_settings);
-
 		var isInitValue = (opts.formData != undefined);
 		var formField;
 		_this.find(opts.fieldSelector ? opts.fieldSelector : '*[name]').each(function(){
