@@ -120,6 +120,7 @@ define('app/common',['bootstrap','moment'],function() {
 			postJson : function(url,data,isSync,callback,errorback){
 				var async = true;
 				if(isSync != undefined || isSync != null) async = isSync;
+				var retData;
 				$.ajax({ 
 				        type:"POST", 
 				        //url:_ctx+url, 
@@ -131,7 +132,7 @@ define('app/common',['bootstrap','moment'],function() {
 				        	if(typeof callback === 'function'){
 				        		callback(ret,status);
 				        	}else{
-				        		return ret;
+				        		retData = ret;
 				        	}
 				        },
 				        error:function(xhr){
@@ -140,11 +141,11 @@ define('app/common',['bootstrap','moment'],function() {
 				        	}else{
 				        		_sysError('系统错误,错误代码['+xhr.status+'] 错误名称['+xhr.statusText+']');
 				        		APP.unblockUI();
-				        		return xhr;
+				        		retData = xhr;
 				        	}
 				        }
 				});
-				  
+				return retData;  
 			},
 			getJsonData : function(url,data){
 				var _data;
@@ -663,7 +664,9 @@ define('app/common',['bootstrap','moment'],function() {
 	 */
 	APP.alert = function(title,text,type){
 		require(['sweetalert'],function(){
-			swal(title, APP.isEmpty(text) ? '' : text, APP.isEmpty(type) ? 'success' : type);
+			swal({title : title, text : APP.isEmpty(text) ? '' : text, 
+					type : APP.isEmpty(type) ? 'success' : type,
+							confirmButtonText:'确定',cancelButtonText : '取消'});
 		});
 	};
 	/**
@@ -671,21 +674,21 @@ define('app/common',['bootstrap','moment'],function() {
 	 * @param  {String} text 内容
 	 */
 	APP.info = function(text){
-		APP.alert('提示消息',text,'info');
+		APP.alert('',text,'info');
 	};
 	/**
 	 * APP.alert简单的success
 	 * @param  {String} text 内容
 	 */
 	APP.success = function(text){
-		APP.alert('操作成功',text,'success');
+		APP.alert('',text,'success');
 	};
 	/**
 	 * APP.alert简单的error
 	 * @param  {String} text 内容
 	 */
 	APP.error = function(text){
-		APP.alert('错误消息',text,'error');
+		APP.alert('',text,'error');
 	};
 	/**
 	 * sweet-alert插件封装，简单的confirm
@@ -697,7 +700,7 @@ define('app/common',['bootstrap','moment'],function() {
 	APP.confirm = function(title,text,confirmCallBack){
 		require(['sweetalert'],function(){
 			swal({title : title, text : APP.isEmpty(text) ? '' : text,
-				type: "info",   showCancelButton: true,   closeOnConfirm: false,
+				type: "info",   showCancelButton: true,   closeOnConfirm: false,confirmButtonText:'确定',cancelButtonText : '取消',
 				showLoaderOnConfirm: true},function(){
 					confirmCallBack();
 				});

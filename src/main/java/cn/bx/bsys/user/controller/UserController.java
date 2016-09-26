@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,9 +20,14 @@ import cn.bx.bsys.user.service.UserService;
 @Controller
 @RequestMapping("bsys/user")
 public class UserController {
-
+	
 	@Resource(name="UserService")
 	UserService userService;
+	
+	@RequestMapping("checkLoginName/{oldname}")
+	public boolean checkLoginName(@PathVariable("oldname") String oldname){
+		return false;
+	}
 	@RequestMapping(value={"list",""})
 	public @ResponseBody List<User> listUser(@RequestBody Map<String,String> param){
 		return userService.selectList("listUser", param);

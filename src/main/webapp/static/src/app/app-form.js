@@ -176,6 +176,25 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		return this.optional(element) || (value != "-1");
 	}, "请选择");
 	
+	$.validator.addMethod("checkExists", function(value, element,p) {   
+		if(APP.isEmpty(value)) return true;
+		if(APP.isEmpty(p)){
+			alert('请设置字段校验参数');
+			return false;
+		}
+		if(APP.isEmpty(p.url) && APP.isEmpty(p.stmID)){
+			alert('请设置字段校验参数中的url或者stmID');
+			return false;
+		}
+		var ajaxUrl = APP.ctx+'/app/common/selectMapByStmID';
+		var paramData = {param : p};
+		if(!APP.isEmpty(p.url)) ajaxUrl = p.url;
+		else paramData.stmID = p.stmID;
+		paramData.param.value = value;
+		return APP.isEmpty(APP.postJson(ajaxUrl,paramData,false));
+		
+	}, "已存在");
+	
 	/**
 	 * 初始化form
 	 * @param  {Object} opts 初始化参数

@@ -38,7 +38,8 @@
 							<div class="form-group">
 								<label class="control-label col-md-4">登录账号</label>
 								<div class="col-md-8">
-								<div class="input-icon right"> <i class="fa validate-icon"></i><input type="text" name="loginName" class="form-control required"></div>
+								<div class="input-icon right"> <i class="fa validate-icon"></i><input type="text" name="loginName" 
+									class="form-control required checkExists"></div>
 								</div>
 							</div>
 						</div>
@@ -126,14 +127,23 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	},function(otable){
 		userTable = otable;
 	});
-
+	
+	var form_validate = {
+		rules : {
+			loginName : {'checkExists' : {url:'${ctx}/bsys/user/checkLoginName'}}
+		},
+		messages: {
+			password_confirm: {equalTo: "输入相同的密码"}
+		}
+	}
+	
 	$('.modal-footer .btn-primary').on('click',function(){
 		$('#bsys-user-edit-form').submit();
 	});
 	$('#bsys-user-list-add-btn').click(function(){
 		if(!$('#sys-user-password').hasClass('required'))$('#sys-user-password').addClass('required');
 		$('#bsys-user-edit-form').initForm({
-			url : '${ctx}/bsys/user/add.json',formAction : 'add',clearForm : true,type : 'post'
+			url : '${ctx}/bsys/user/add.json',formAction : 'add',clearForm : true,type : 'post',validate : form_validate
 		},function(data){
 			userTable.addRow(data);
 		});
@@ -145,10 +155,9 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 			return;
 		}
 		$('#sys-user-password').removeClass('required');
-		
 		$('#bsys-user-edit-form').initForm({
 			url : '${ctx}/bsys/user/save.json',formAction : 'save',formData : userTable.selectedRows()[0],
-			type : 'post'
+			type : 'post',validate : form_validate
 		},function(data){
 			userTable.updateSelectedRow(data);
 		});
@@ -160,10 +169,10 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	})
 	$('#bsys-user-list-delete-btn').click(function(){
 		if(userTable.selectedCount() < 1){
-			APP.info('请选择一条需要删除的用户');
+			APP.error('请选择一条需要删除的用户');
 			return;
 		}
-		APP.confirm('用户删除','是否删除选择的用户',function(){
+		APP.confirm('','是否删除选择的用户',function(){
 			APP.postJson('${ctx}/bsys/user/delete',userTable.selectedColumn('id'),null,function(){
 				APP.success('删除成功');
 				userTable.deleteSelectedRow();
