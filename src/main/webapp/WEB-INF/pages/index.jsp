@@ -2,6 +2,7 @@
 <%@ page import="java.util.Calendar"%>
 <%@ include file="/WEB-INF/include/head_inc.jsp" %>
 <%@ include file="/WEB-INF/include/script_inc.jsp"%>
+
 <body class="page-header-fixed page-sidebar-fixed">
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
