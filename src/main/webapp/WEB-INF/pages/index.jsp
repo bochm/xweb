@@ -24,7 +24,7 @@
 	<div class="top-menu">
 	
 	<ul class="nav navbar-nav pull-right">
-		<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="refresh-page"><i class="iconfont icon-sync"></i></a><ul></ul></li>
+		<li class="dropdown"><a class="dropdown-toggle" data-toggle="refresh-page"><i class="iconfont icon-sync"></i></a><ul></ul></li>
 		<!-- BEGIN NOTIFICATION DROPDOWN -->
 		<li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"><i class="iconfont icon-bell"></i><span class="badge badge-default">2 </span></a>
@@ -74,7 +74,7 @@
 	<div class="page-sidebar-wrapper">
 		<div class="page-sidebar navbar-collapse collapse" >
 			<!-- BEGIN SIDEBAR MENU -->
-			<ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+			<ul class="page-sidebar-menu" id="index-page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
 				<li class="sidebar-search-wrapper">
 					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
 						<a href="javascript:;" class="remove"><i class="icon-close"></i></a>

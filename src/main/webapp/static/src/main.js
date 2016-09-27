@@ -33,6 +33,7 @@ require.config({
 		'jquery/carousel':'lib/jquery/carousel/owl.carousel',//滚动轮播
 		'jquery/form':'lib/jquery/form/jquery.form',//ajax form
 		'jquery/validate':'lib/jquery/validate/jquery.validate',//验证
+		'jquery/select2':'lib/jquery/select2/select2.full',//下拉列表
 		'datatables':'lib/jquery/datatables/jquery.dataTables',
 		'datatables/buttons':'lib/jquery/datatables/dataTables.buttons',
 		'datatables/buttons/flash':'lib/jquery/datatables/buttons.flash',
@@ -49,6 +50,7 @@ require.config({
 	shim:{
 		'jquery/gritter':['css!lib/jquery/gritter/jquery.gritter.css'],
 		'jquery/carousel':['css!lib/jquery/carousel/owl.carousel.css'],
+		'jquery/select2':['css!lib/jquery/select2/select2.css'],
 		'bootstrap/daterangepicker':['bootstrap','moment','css!lib/bootstrap/daterangepicker/daterangepicker.css'],
 		'bootstrap/datepicker':['bootstrap','css!lib/bootstrap/datepicker/bootstrap-datepicker3.css'],
 		'sweetalert':['css!lib/bootstrap/sweetalert/sweet-alert.css']

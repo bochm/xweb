@@ -10,14 +10,11 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      * 默认参数设置
      */
 	var default_opts = {
-			"dom": 
-				"<f><'dataTables_btn_toolbar'>" +
-				"<tr>" +
-				"<i><l><B><p>",
+			"dom": "<f><'dataTables_btn_toolbar'><'table-scrollable'tr<'table-foot-bar' ilp>>",
 			"oLanguage": {
 				"sLengthMenu": "_MENU_/页",
 				"sSearch":"<div class='input-icon input-icon-sm'><i class='iconfont icon-search'></i>_INPUT_</div>",
-				"sInfo": "_START_/_END_共_TOTAL_",
+				"sInfo": " _START_/_END_ 共_TOTAL_条记录",
 				"sLoadingRecords":"",
 				"sProcessing":"<img src='"+APP.imgPath+"/load-tables.gif' />",
 				"sInfoEmpty" : "0/0 共 0条记录",
@@ -309,9 +306,11 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			$('a.buttons-pdf.buttons-flash').attr("title","导出为Pdf");
 			$('a.buttons-print').attr("title","打印");
 			
-			$(window).resize(function(){
+			
+			
+/*			$(window).resize(function(){
 				otable.draw(false);
-			});
+			});*/
 			if(callback && typeof callback == "function")callback(otable);
 		});
 	};

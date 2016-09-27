@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/include/taglib.jsp" %>
-<div class="table-scrollable">
+
 <span id="table-bsys-user-list-toolbar">
 <button class="btn btn-sm btn-primary" id="bsys-user-list-add-btn">新增用户</button>
 <button class="btn btn-sm btn-primary" id="bsys-user-list-edit-btn">修改用户</button>
@@ -20,7 +20,7 @@
 		<tbody>
 		</tbody>
 </table>	
-</div>
+
 <!-- 新增修改 -->
 <div class="modal fade" id="bsys-user-list-edit" tabindex="-1" role="dialog" data-backdrop="static">
 <div class="modal-dialog">
@@ -124,6 +124,7 @@
 require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	var userTable;
 	$('table.datatable').initTable({
+		"scrollY": "100",
 		params : {'pcompany':1}
 	},function(otable){
 		userTable = otable;
@@ -169,8 +170,8 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 			userTable.updateSelectedRow(data);
 			//动态更新规格，否则会造成重复提交验证不通过
 			$('#bsys-user-loginName').rules( "remove", "checkExists" );
+			form_validate.rules.loginName.checkExists.data.oldloginname = userTable.selectedRows()[0].loginName;
 			$('#bsys-user-loginName').rules( "add", form_validate.rules.loginName);
-			$('#bsys-user-list-edit').modal('hide');
 		});
 		$('#sys-user-password').attr('type','text');
 		$('#sys-user-password').val('');

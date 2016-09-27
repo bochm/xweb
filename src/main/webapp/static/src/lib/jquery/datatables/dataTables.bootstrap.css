@@ -10,34 +10,44 @@
 * bx add 增加表格功能按钮样式
 */
 .dataTables_wrapper .dataTables_btn_toolbar{
-  float: right;
+  float: left;
   padding-top: 0.25em;
   padding-bottom: 0.15em;
-  padding-right: 0.15em;
+  padding-left: 0.15em;
+}
+/*
+* bx add 增加表格尾部分页等功能区域统一设置样式
+*/
+.dataTables_wrapper .table-foot-bar{
+	background-color: #F2F2F2;
+	border: 1px solid #dddddd;
+	overflow:hidden;
 }
 .dataTables_wrapper .dataTables_length {
    float: left;
    font-size: 70%;/*bx add 修改每页显示条数字体*/
-   padding-top: 0.1em;/*bx add 修改每页显示条数位置*/
+   padding-top: 0.2em;/*bx add 修改每页显示条数位置*/
    margin-left: 0.5em;/*bx add 修改每页显示条数位置*/
 }
 
 div.dataTables_length label {
 	text-align: left;
 	white-space: nowrap;
-	margin-top:0.2em;
+	margin-top:  0.2em;
 	font-size: 135%;
+	font-weight: bold;
+	color: #364150;
 }
 
 div.dataTables_length select {
-	width: 75px;
+	width: 55px;
 	display: inline-block;
 }
 
 .dataTables_wrapper .dataTables_filter {
-	float: left;
+	float: right;
 	margin-top: 0.3em;
-	margin-right: 15px;/*bx add 修过滤位置 预留出滚动条位置*/
+	/* margin-right: 15px;bx add 修过滤位置 预留出滚动条位置  已使用dom方式修改 */
 }
 
 div.dataTables_filter label {
@@ -53,8 +63,11 @@ div.dataTables_filter input {
 div.dataTables_info {
   clear: both;
   float: left;
-  padding-top: 0.4em;
+  margin-top: 0.5em;
+  margin-left : 0.1em;
   font-size: 100%;/*bx add 修改表格页数信息字体*/
+  font-weight: bold;
+  color: #364150;
 }
 
 
@@ -66,8 +79,9 @@ div.dataTables_info {
 } */
 .dataTables_wrapper .dataTables_paginate {
    float: right;
+   height: 30px;
    /* padding-top: 0.1em;bx add 修改分页位置 */
-   margin-right: 15px;/*bx add 修改分页位置 预留出滚动条位置*/
+   /* margin-right: 0px;bx add 修改分页位置 预留出滚动条位置  已使用dom方式修改 */
 
 }
 div.dataTables_paginate ul.pagination {
@@ -95,8 +109,8 @@ table.dataTable th {
 
 table.dataTable {
 	clear: both;
-	margin-top: 6px !important;
-	margin-bottom: 6px !important;
+	margin-top: 0px !important;
+	margin-bottom: 0px !important;
 	max-width: none !important;
 }
 
@@ -144,9 +158,11 @@ table.dataTable thead .sorting:after {
 }
 table.dataTable thead .sorting_asc:after {
 	content: "\f0de";
+	color: #0000ff;
 }
 table.dataTable thead .sorting_desc:after {
 	content: "\f0dd";
+	color: #0000ff;
 }
 div.dataTables_scrollBody table.dataTable thead .sorting:after,
 div.dataTables_scrollBody table.dataTable thead .sorting_asc:after,
@@ -169,6 +185,7 @@ table.dataTable th:selected {
 }
 
 /* Scrolling */
+
 div.dataTables_scrollHead table {
 	margin-bottom: 0 !important;
 	border-bottom-left-radius: 0;

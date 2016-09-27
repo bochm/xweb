@@ -3537,12 +3537,12 @@ td,
   color: #707070;
   font-weight: normal;
   background: #F2F2F2;
-  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#f8f8f8), to(#ececec));
+/*   background-image: -webkit-gradient(linear, left 0%, left 100%, from(#f8f8f8), to(#ececec));
   background-image: -webkit-linear-gradient(top, #f8f8f8, 0%, #ececec, 100%);
   background-image: -moz-linear-gradient(top, #f8f8f8 0%, #ececec 100%);
   background-image: linear-gradient(to bottom, #f8f8f8 0%, #ececec 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff8f8f8', endColorstr='#ffececec', GradientType=0);
+  background-repeat: repeat-x; */
+  /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff8f8f8', endColorstr='#ffececec', GradientType=0); */
 }
 .table thead tr th {
   border-color: #DDD;

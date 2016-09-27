@@ -174,12 +174,24 @@ define(['app/common'],function(APP) {
         if(actMenu.attr("href")){
         	var url = actMenu.attr("href");
         	if(url.indexOf("/") === 0) url = APP.ctx+url;
-        	APP.loadPage(pageContent,url,function(){
+        	$('.page-content-wrapper>.page-content').children().remove();
+        	APP.loadPage(pageContent,url,{},function(){
         		if (isInSidebar && actMenu.parents('li.open').size() === 0) {
                     $('.page-sidebar-menu > li.open > a').click();
                 }
         		handleSidebarAndContentHeight();
                 $currPage = url;
+                var _page_bar = $("<div class='page-bar'>");
+                var _page_breadcrumb = $("<ul class='page-breadcrumb'>");
+                actMenu.parentsUntil("#index-page-sidebar-menu",'li').each(function(){
+                	var _parent_menu = $(this).children('a');
+                	var _p_menu_icon = _parent_menu.children('i').attr('class');
+                	var _p_menu_text = _parent_menu.text();
+                	_page_breadcrumb.prepend("<li><i class='"+_p_menu_icon+"'></i>"+_p_menu_text+"<i class='fa fa-angle-right'></i></li>");
+                });
+                _page_bar.append(_page_breadcrumb);
+                $(pageContent).prepend(_page_bar);
+                console.log($(pageContent).html());
                 APP.initComponents(pageContent); 
         	});
         }
@@ -398,6 +410,7 @@ define(['app/common'],function(APP) {
     	APP.addResizeHandler(handleFixedSidebar);
     	APP.addResizeHandler(handleSidebarAndContentHeight);
     	$("a[data-toggle='refresh-page']").on('click',function(){
+    		alert("asdasd");
     		if($currPage) APP.loadPage('div.page-content',$currPage);
     	})
     	

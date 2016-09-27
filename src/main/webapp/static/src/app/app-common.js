@@ -543,65 +543,46 @@ define('app/common',['bootstrap','moment'],function() {
 		var default_options = {
 			ele: ele ? ele : "body",
 			type: type ? type : "info",
-			offset: {from: "top",amount: 20},
-			align: "center",
+			offset: {from: "top",amount: 1},
 			width: 250,
-			delay: 4000,
+			delay: 2000,
 			allow_dismiss: true,
-			stackup_spacing: 10
+			stackup_spacing: 2
 		};
+		default_options.width = $(default_options.ele).width();
 		var $alert, css, offsetAmount;
 	    $alert = $("<div>");
-	    $alert.attr("class", "app-noticeS alert alert-block");
+	    $alert.attr("class", "app-noticeS alert alert-block fade in");
 	    if (default_options.type) {
 	    	$alert.addClass("alert-" + (default_options.type == 'error' ? 'danger' : default_options.type));
 	    }
 	    if (default_options.allow_dismiss) {
-	    	$alert.addClass("alert-dismissible");
 	    	$alert.append("<button type='button' class='close' data-dismiss='alert'></button>");
 	    }
-	    if(!APP.isEmpty(title))$alert.append("<h4 class='alert-heading>"+title+"</h4>");
+	    if(!APP.isEmpty(title))$alert.append("<h4 class='alert-heading'>"+title+"</h4>");
 	    $alert.append("<p>"+message+"</p>");
-	    if (default_options.top_offset) {
-	    	default_options.offset = {
-	        from: "top",
-	        amount: default_options.top_offset
-	      };
-	    }
 	    offsetAmount = default_options.offset.amount;
 	    $(".app-noticeS").each(function() {
 	    	return offsetAmount = Math.max(offsetAmount, parseInt($(this).css(default_options.offset.from)) + $(this).outerHeight() + default_options.stackup_spacing);
 	    });
 	    css = {
 	    	"position": (default_options.ele === "body" ? "fixed" : "absolute"),
-	    	"margin": 0,
-	    	"z-index": "9999",
-	    	"display": "none"
+	    	"margin": 1,
+	    	"z-index": "99999",
+	    	"display": "none",
+	    	"width" : default_options.width-2 + "px"
 	    };
 	    css[default_options.offset.from] = offsetAmount + "px";
 	    $alert.css(css);
-	    if (default_options.width !== "auto") {
-	    	$alert.css("width", default_options.width + "px");
-	    }
+
 	    $(default_options.ele).append($alert);
-	    switch (default_options.align) {
-	      case "center":
-	    	  $alert.css({"left": "50%", "margin-left": "-" + ($alert.outerWidth() / 2) + "px" });
-	    	  break;
-	      case "left":
-	    	  $alert.css("left", "20px");
-	    	  break;
-	      default:
-	    	  $alert.css("right", "20px");
-	    }
-	    $alert.show();
-	    $alert.fadeIn();
+
+	    $alert.slideDown("slow");
 	    if (default_options.delay > 0) {
-	    	$alert.delay(default_options.delay).fadeOut(function() {
-	    		return $(this).alert("close");
+	    	$alert.delay(default_options.delay).slideUp('slow',function() {
+	    		$alert.remove();
 	    	});
 	    }
-	    return $alert;
 	};
 	
 	/**

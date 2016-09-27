@@ -2105,7 +2105,7 @@ Page content
 .page-bar {
   padding: 0px;
   background-color: #f7f7f7;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   -ms-border-radius: 4px;
@@ -2215,7 +2215,7 @@ Page content
     margin-left: 235px;
     margin-top: 0px;
     min-height: 600px;
-    padding: 25px 20px 10px 20px;
+    padding: 10px 20px 10px 20px;
   }
   .page-content-wrapper .page-content.no-min-height {
     min-height: auto;

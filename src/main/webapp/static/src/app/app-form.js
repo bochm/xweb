@@ -285,17 +285,17 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			error:function(error){
 				if(APP.debug)console.log(error);
 				APP.unblockUI(_in_modal ? '.modal-dialog' : 'body');
-				APP.notice('系统错误',"错误代码:"+error.status+" 错误名称:"+error.statusText,'error',_in_modal);
+				APP.notice('',"系统错误 错误代码:"+error.status+" 错误名称:"+error.statusText,'error',_in_modal);
 				if(typeof errorback === 'function')errorback(error);
 			},
 			success:function(response, status){
 				if(APP.debug)console.log(response);
 				APP.unblockUI(_in_modal ? '.modal-dialog' : 'body');
 				if(response.OK){
-					APP.notice('系统信息',response[APP.MSG],'success',_in_modal);
+					APP.notice('',response[APP.MSG],'success',_in_modal);
 					if(typeof callback === 'function')callback(response[APP.DATA]);
 				}else{
-					APP.notice('系统返回',response[APP.MSG],'warning',_in_modal);
+					APP.notice('',response[APP.MSG],'warning',_in_modal);
 					if(typeof errorback === 'function')errorback(response,status);
 				}
 			}
