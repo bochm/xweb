@@ -139,14 +139,13 @@
 	<div class="page-footer-inner">2016 &copy; Neusoft by bochm.</div>
 </div>
 <!-- END FOOTER -->
-
-
+</body>
 <script type="text/javascript">
-require(['main'],function(APP){
+$('body').hide();
+require(['domReady!','main'],function(doc,APP){
 	APP.initIndex();
-
-	
+	$('body').fadeIn('fast');
 });
 	
 </script>
-</body>
+

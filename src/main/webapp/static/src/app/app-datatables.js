@@ -14,7 +14,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			"oLanguage": {
 				"sLengthMenu": "_MENU_/页",
 				"sSearch":"<div class='input-icon input-icon-sm'><i class='iconfont icon-search'></i>_INPUT_</div>",
-				"sInfo": " _START_/_END_ 共_TOTAL_条记录",
+				"sInfo": " _START_-_END_ 共_TOTAL_条记录",
 				"sLoadingRecords":"",
 				"sProcessing":"<img src='"+APP.imgPath+"/load-tables.gif' />",
 				"sInfoEmpty" : "0/0 共 0条记录",
