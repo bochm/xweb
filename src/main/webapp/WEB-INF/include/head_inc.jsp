@@ -16,7 +16,5 @@
 <%-- <link rel="shortcut icon" type="image/x-icon" href="${resourcePath}/images/logo-mini.png" /> --%>
 <link rel="stylesheet" href="${resourcePath}/lib/bootstrap/bootstrap.css"  />
 <link rel="stylesheet" href="${resourcePath}/lib/font-awesome/font-awesome.css" />
-<script src="${resourcePath}/lib/pace/pace.js"></script>
-<link href="${resourcePath}/lib/pace/pace-theme-flash.css" rel="stylesheet" />
 </head>
 </html>

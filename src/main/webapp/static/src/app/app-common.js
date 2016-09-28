@@ -171,6 +171,7 @@ define('app/common',['bootstrap','moment'],function() {
 			            	}else{
 			            		APP.initComponents(target);
 			            	}
+			            	$('.loading-page').slideDown('slow');
 			            },
 			            error: function(xhr, ajaxOptions, thrownError) {
 			            	if(typeof errorback === 'function'){
@@ -592,6 +593,7 @@ define('app/common',['bootstrap','moment'],function() {
 	 * @param  {opts} mid为空时指定标题,传递参数
 	 */
 	APP.showModal = function(src,mid,opts){
+		opts = opts || {title : '标题'};
 		require(['bootstrap'],function(){
 			$.ajax({
 	            type: "GET",
@@ -746,6 +748,90 @@ define('app/common',['bootstrap','moment'],function() {
 			});
 		});
 	};
+
+	
+	/**
+	 * 页面进度条
+	 * @param  {String} opts  id  classname target 需要显示的地方
+	 * @returns {Object} progressBar
+	 */
+	APP.progressBar = function(target,id,classname){
+	    var el = document.createElement('div'),applyGo,
+	        progressbar = {
+	        	el: el,
+	        	go: function (p) {
+	        		applyGo(p)
+	        		if (p === 100) init();
+	        	}
+	        };
+	    
+	    function init () {
+	    	var bar = _createProgressBar(el);
+	    	el.appendChild(bar.el);
+	    	applyGo = bar.go;
+	    }
+	    $(el).css({'width':'100%','height':'4px','top':0,'z-index':9999});
+	    if (!APP.isEmpty(id)) el.id = id;
+	    if (!APP.isEmpty(classname)) $(el).addClass(classname);
+
+	    if (target) {
+	    	el.style.position = 'relative';
+	    	$(target).prepend(el);
+	    } else {
+	    	el.style.position = 'fixed';
+	    	document.getElementsByTagName('body')[0].appendChild(el);
+	    }
+	    init();
+	    return progressbar;
+	};
+	/**
+	 * 创建系统精度条 加载页面使用
+	 */
+	function _createProgressBar(parent){
+		var el = document.createElement('div'),
+	    width = 0,here = 0,on = 0,
+	    bar = {
+	    	el: el,
+	    	go: go
+	    }
+		$(el).css({'width':0,'height':'100%','transition':'height .3s','background':'blue'});
+	    function move () {
+	    	var dist = width - here;
+	    	if (dist < 0.1 && dist > -0.1) {
+	    		place(here);
+	    		on = 0;
+	    		if (width === 100) {
+	    			el.style.height = 0;
+	    			setTimeout(function () {
+	    				$(el).remove();
+	    				$(parent).remove();
+	    			}, 300);
+	    		}
+	    	} else {
+	    		place(width - dist / 4);
+	    		setTimeout(go, 16);
+	    	}
+	    }
+
+	    function place (num) {
+	    	width = num;
+	    	el.style.width = width + '%';
+	    }
+
+	    function go (num) {
+	    	if (num >= 0) {
+	    		here = num;
+	    		if (!on) {
+	    			on = 1;
+	    			move();
+	    		}
+	    	} else if (on) {
+	    		move();
+	    	}
+	    }
+	    return bar;
+	}
+	
 	return APP;
 });
 
