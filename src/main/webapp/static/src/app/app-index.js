@@ -1,5 +1,4 @@
 define(['app/common'],function(APP) {
-	
 	var resizeHandlers = [];
 	
 	
@@ -173,8 +172,9 @@ define(['app/common'],function(APP) {
         
         if(actMenu.attr("href")){
         	var url = actMenu.attr("href");
-        	if(url.indexOf("/") === 0) url = APP.ctx+url;
+        	url = APP.ctx+url;
         	$('.page-content-wrapper>.page-content').children().remove();
+        	$('.page-content-wrapper>.page-content').css('display','none');
         	APP.loadPage(pageContent,url,{},function(){
         		if (isInSidebar && actMenu.parents('li.open').size() === 0) {
                     $('.page-sidebar-menu > li.open > a').click();
@@ -187,11 +187,30 @@ define(['app/common'],function(APP) {
                 	var _parent_menu = $(this).children('a');
                 	var _p_menu_icon = _parent_menu.children('i').attr('class');
                 	var _p_menu_text = _parent_menu.text();
-                	_page_breadcrumb.prepend("<li><i class='"+_p_menu_icon+"'></i>"+_p_menu_text+"<i class='fa fa-angle-right'></i></li>");
+                	_page_breadcrumb.prepend("<li><i class='fa fa-angle-right'></i><i class='"+_p_menu_icon+"'></i>"+_p_menu_text+"</li>");
                 });
+                _page_breadcrumb.find('i.fa-angle-right').first().remove();
                 _page_bar.append(_page_breadcrumb);
+                var _page_tool_bar = $('<div class="page-toolbar">');
+                if(APP.debug){
+                	var _page_debug_tool = $("<div class='btn-group pull-right'><button class='btn btn-fit-height grey-salt dropdown-toggle' data-toggle='dropdown' data-hover='dropdown' data-delay='1000' data-close-others='true'>"+
+                			"调试 <i class='fa fa-angle-down'></button></div>");
+                	var _page_debug_tool_menu = $("<ul class='dropdown-menu pull-right' role='menu'>");
+                	var _page_debug_tool_src = $("<li><a><i class='iconfont icon-code'></i> 链接</a></li>");
+                	var _page_debug_tool_ref = $("<li><a><i class='iconfont icon-undo'></i> 刷新</a></li>");
+                	_page_debug_tool_src.click(function(){
+                		APP.info(url);
+                	})
+                	_page_debug_tool_ref.click(function(){
+                		handleMenuAction(true,actMenu);
+                	})
+                	_page_debug_tool_menu.append(_page_debug_tool_src);
+                	_page_debug_tool_menu.append(_page_debug_tool_ref);
+                	_page_debug_tool.append(_page_debug_tool_menu);
+                	_page_tool_bar.append(_page_debug_tool);
+                }
+                _page_bar.append(_page_tool_bar);
                 $(pageContent).prepend(_page_bar);
-                console.log($(pageContent).html());
                 APP.initComponents(pageContent); 
         	});
         }
@@ -409,6 +428,7 @@ define(['app/common'],function(APP) {
     	APP.initScroll('.scroller');
     	APP.addResizeHandler(handleFixedSidebar);
     	APP.addResizeHandler(handleSidebarAndContentHeight);
+    	
     	$("a[data-toggle='refresh-page']").on('click',function(){
     		alert("asdasd");
     		if($currPage) APP.loadPage('div.page-content',$currPage);

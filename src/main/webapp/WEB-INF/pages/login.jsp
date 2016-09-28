@@ -2,8 +2,8 @@
 <%@ page import="java.util.Calendar"%>
 <%@ include file="/WEB-INF/include/head_inc.jsp" %>
 <%@ include file="/WEB-INF/include/script_inc.jsp"%>
-<body class="login">
-<div>
+<body class="login" >
+<div style="display: none;">
 <div class="content">
 	<form class="login-form" action="${ctx }/login" method="post">
 		<h3 class="form-title">登&nbsp;&nbsp;录</h3>
@@ -29,7 +29,6 @@
 </div>
 </div>
 <script type="text/javascript">
-$('body>div').hide();
 require(['domReady!','main'],function(doc,APP){
 	var _login_msg = "${loginMsg}";
 	if(_login_msg != ""){

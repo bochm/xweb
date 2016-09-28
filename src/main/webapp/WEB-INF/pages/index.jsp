@@ -2,7 +2,7 @@
 <%@ page import="java.util.Calendar"%>
 <%@ include file="/WEB-INF/include/head_inc.jsp" %>
 <%@ include file="/WEB-INF/include/script_inc.jsp"%>
-<body class="page-header-fixed page-sidebar-fixed">
+<body class="page-header-fixed page-sidebar-fixed" style="display: none">
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
 	<!-- BEGIN HEADER INNER -->
@@ -117,8 +117,8 @@
 				</li>
 				<li><a href="javascript:;"><i class="iconfont icon-cog"></i><span class="title">系统管理</span><span class="selected"></span><span class="arrow"></span></a>
 					<ul class="sub-menu">
-						<li><a href="/pages/bsys/user/user-list" class="act-menu"><i class="iconfont icon-users"></i>用户管理</a></li>
-						<li><a href="/pages/sys/curd-table" class="act-menu"><i class="iconfont icon-heart"></i>表格应用</a></li>
+						<li><a href="pages/bsys/user/user-list" class="act-menu"><i class="iconfont icon-users"></i>用户管理</a></li>
+						<li><a href="pages/sys/curd-table" class="act-menu"><i class="iconfont icon-heart"></i>表格应用</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -141,7 +141,6 @@
 <!-- END FOOTER -->
 </body>
 <script type="text/javascript">
-$('body').hide();
 require(['domReady!','main'],function(doc,APP){
 	APP.initIndex();
 	$('body').fadeIn('fast');

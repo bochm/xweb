@@ -2135,12 +2135,12 @@ Page content
 .page-bar .page-breadcrumb > li > a,
 .page-bar .page-breadcrumb > li > span {
   color: #888;
-  font-size: 14px;
+  font-size: 15px;
   text-shadow: none;
 }
 .page-bar .page-breadcrumb > li > i {
   color: #aaa;
-  font-size: 14px;
+  font-size: 15px;
   text-shadow: none;
 }
 .page-bar .page-breadcrumb > li > i[class^="icon-"],
@@ -3185,4 +3185,8 @@ General User Record Listing
   }
 }
 
+
+.loading-page{
+	display: none;
+}
 

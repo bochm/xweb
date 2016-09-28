@@ -23,12 +23,12 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 				"sZeroRecords":"没有数据",
 				"sEmptyTable":"没有数据",
 				"buttons":{
-						"pdf":"<i class='fa fa-file-pdf-o'></i>",
-						"copy":"<i class='fa fa-copy'/>",
+						"pdf":"<i class='fa fa-file-pdf-o'></i> 导出PDF",
+						"copy":"<i class='fa fa-copy'></i> <a>复制</a>",
 						"copyTitle":"复制到剪贴板",
 						"copyInfo":{_: '以复制 %d 行到剪贴板',1: '复制 1 行到剪贴板'},
-						"excel":"<i class='fa fa-file-excel-o'></i>",
-						"print":"<i class='fa fa-print'></i>"
+						"excel":"<i class='fa fa-file-excel-o'></i> <a>导出EXCEL</a>",
+						"print":"<i class='fa fa-print'></i> <a>打印</a>"
 				},
 				"oPaginate":{
 					"sNext":">",
@@ -190,7 +190,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 				className: 'dt-buttons btn-group'
 			},
 			button: {
-				className: 'btn btn-white btn-xs'
+				className: 'btn btn-sm'
 			},
 			collection: {
 				tag: 'ul',
@@ -288,7 +288,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			"autoWidth": false,
 			"select": {style: 'os',info:false},
 			//"buttons": ['copyFlash','excelFlash','print'],
-			"buttons":[],
+			"buttons":[ opts.btns],
 			"fnCreatedRow": function (nRow, aData, iDataIndex) {
 	         }
 		},opts);
@@ -297,7 +297,12 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			var tableid = _table.attr('id');
 			
 			var toolbar = $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar");
+			
 			var pageToolbar = $("#"+(default_opt.toolbar ? default_opt.toolbar : (tableid+"-toolbar")));
+			if(opts.exportBtns){
+				var _export_btn = $("<div class='btn-group btn-group-circle'>");
+				pageToolbar.prepend(_export_btn);
+			}
 			toolbar.append(pageToolbar);
 			
 			

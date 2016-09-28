@@ -59,11 +59,16 @@ require.config({
 
 //$("body").append("<div  id=\"pageLoadTop\" style=\"width:100%;height:100%;left:0;top:0;position:absolute;z-index:20000;background:#000000 url('"+_app_img_base_url+"/logo.png') no-repeat center;\"></div>");
 
-define(['app/index','jquery/scrolltotop',
+define(['app/index','moment','jquery/scrolltotop',
         'css!app/main.css',
         'css!app/main-layout.css',
-        'css!app/main-component.css',
-        'css!app/main-themes-default.css'],function(APP){
+        'css!app/main-component.css'],function(APP,moment){
+	var _now_hour = moment().format('H');
+	if(_now_hour > 19 && _now_hour < 6){
+		require(['css!app/main-themes-default.css']);
+	}else{
+		require(['css!app/main-themes-light.css']);
+	}
 	/*setTimeout(function(){
 		$('#pageLoadTop').fadeOut(1000,function(){
 			$(this).remove();

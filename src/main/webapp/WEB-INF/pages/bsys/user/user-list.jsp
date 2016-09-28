@@ -1,7 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/include/taglib.jsp" %>
-
+<div class="loading-page">
 <span id="table-bsys-user-list-toolbar">
+<div class="btn-group">
+	<button type="button" class="btn btn-sm btn-info">导出</button>
+	<button type="button" class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown"><i class="fa fa-angle-down"></i></button>
+	<ul class="dropdown-menu" role="menu">
+	<li><a href="#">Action </a></li>
+	<li><a href="#">Another action </a></li>
+	<li><a href="#">Something else here </a></li>
+</ul>
+</div>
 <button class="btn btn-sm btn-primary" id="bsys-user-list-add-btn">新增用户</button>
 <button class="btn btn-sm btn-primary" id="bsys-user-list-edit-btn">修改用户</button>
 <button class="btn btn-sm btn-warning" id="bsys-user-list-delete-btn">删除用户</button>
@@ -120,12 +129,13 @@
       </div>
 </div>
 </div>
+</div>
 <script type="text/javascript">
 require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	var userTable;
 	$('table.datatable').initTable({
-		"scrollY": "100",
-		params : {'pcompany':1}
+		params : {'pcompany':1},
+		"btns": ['excelFlash','copyFlash','print',{text: 'Toggle start date'}]
 	},function(otable){
 		userTable = otable;
 	});
@@ -139,7 +149,6 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 			}
 		}
 	}
-	
 	$('.modal-footer .btn-primary').on('click',function(){
 		$('#bsys-user-edit-form').submit();
 	});
