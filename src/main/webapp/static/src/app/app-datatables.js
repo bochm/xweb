@@ -6,6 +6,15 @@
 define(["app/common","datatables","datatables/buttons/flash","datatables/buttons/print","datatables/select",
         "datatables/responsive","datatables/fixedHeader",
         "css!lib/jquery/datatables/dataTables.bootstrap.css"],function(APP,DataTable) {
+	//工具按钮设置
+	var btn_opts = {
+			"pdf": {"icon":"<i class='fa fa-file-pdf-o'></i> ","text":"导出PDF"},
+			"copy":{"icon":"<i class='fa fa-copy'></i> ","text":"复制"},
+			"copyFlash":{"icon":"<i class='fa fa-copy'></i> ","text":"复制"},
+			"excel":{"icon":"<i class='fa fa-file-excel-o'></i> ","text":"导出EXCEL"},
+			"excelFlash":{"icon":"<i class='fa fa-file-excel-o'></i> ","text":"导出EXCEL"},
+			"print":{"icon":"<i class='fa fa-print'></i> ","text":"打印"}
+	}
 	/**
      * 默认参数设置
      */
@@ -23,12 +32,12 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 				"sZeroRecords":"没有数据",
 				"sEmptyTable":"没有数据",
 				"buttons":{
-						"pdf":"<i class='fa fa-file-pdf-o'></i> 导出PDF",
-						"copy":"<i class='fa fa-copy'></i> <a>复制</a>",
+						"pdf":btn_opts.pdf.icon,
+						"copy":btn_opts.copy.icon,
 						"copyTitle":"复制到剪贴板",
 						"copyInfo":{_: '以复制 %d 行到剪贴板',1: '复制 1 行到剪贴板'},
-						"excel":"<i class='fa fa-file-excel-o'></i> <a>导出EXCEL</a>",
-						"print":"<i class='fa fa-print'></i> <a>打印</a>"
+						"excel":btn_opts.excel.icon,
+						"print":btn_opts.print.icon
 				},
 				"oPaginate":{
 					"sNext":">",
@@ -190,6 +199,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 				className: 'dt-buttons btn-group'
 			},
 			button: {
+				tag: 'a',
 				className: 'btn btn-sm'
 			},
 			collection: {
@@ -216,52 +226,6 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 		return this;
 	} );
 	
-	//-----------------------------------自定义方法---------------------------------
-	/**
-     * 获取选择行数据
-     */
-	DataTable.Api.register( 'selectedRows()', function () {
-		return this.rows('.selected').data();
-	} );
-	
-	/**
-     * 获取选择行的指定列数据 col列名
-     */
-	DataTable.Api.register( 'selectedColumn()', function (col) {
-		var selectedRows = this.rows('.selected');
-		var a = [];
-		for(var i = 0;i<selectedRows.count();i++){
-			a.push(selectedRows.data()[i][col]);
-		}
-		return a;
-	} );
-	
-	/**
-     * 增加一行数据
-     */
-	DataTable.Api.register( 'addRow()', function (row) {
-		return this.row.add(row).draw();
-	} );
-	
-	/**
-     * 修改已选择行数据
-     */
-	DataTable.Api.register( 'updateSelectedRow()', function (row) {
-		return this.row(this.rows('.selected')[0]).data(row);
-	} );
-	/**
-     * 删除已选择行数据
-     */
-	DataTable.Api.register( 'deleteSelectedRow()', function () {
-		return this.rows('.selected').remove().draw();
-	} );
-	
-	/**
-     * 已选总行数
-     */
-	DataTable.Api.register( 'selectedCount()', function () {
-		return this.rows('.selected').count();
-	} );
 	
 	$.fn.dataTable.Buttons.swfPath = APP.jsPath+'/lib/jquery/datatables/swf/flashExport.swf';
 	
@@ -297,23 +261,36 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			var tableid = _table.attr('id');
 			
 			var toolbar = $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar");
+			console.log(otable.buttons(0).nodes());
 			
 			var pageToolbar = $("#"+(default_opt.toolbar ? default_opt.toolbar : (tableid+"-toolbar")));
+			
 			if(opts.exportBtns){
-				var _export_btn = $("<div class='btn-group btn-group-circle'>");
-				pageToolbar.prepend(_export_btn);
+				var _export_btn_group = $("<div class='btn-group'>");
+				var _export_btn_main = $("<button type='button' class='btn btn-sm btn-info'></button>");
+				/*_export_btn_main.append(otable.buttons(0).nodes());*/
+				otable.button(0).node().addClass('btn-info');
+				_export_btn_group.append(otable.button(0).node());
+				if(opts.exportBtns.length > 1){
+					_export_btn_group.append("<button type='button' class='btn btn-sm btn-info dropdown-toggle' data-toggle='dropdown'><i class='fa fa-angle-down'></i></button>");
+					var __export_btn_dropdown = $("<ul class='dropdown-menu' role='menu'>");
+					for(var i=0;i<opts.exportBtns.length;i++){
+						__export_btn_dropdown.append("<li><a href='#'>"+btn_opts[opts.exportBtns[i]].icon+btn_opts[opts.exportBtns[i]].text+"</a></li>");
+					}
+					_export_btn_group.append(__export_btn_dropdown);
+				}
+				
+				pageToolbar.prepend(_export_btn_group);
 			}
 			toolbar.append(pageToolbar);
 			
 			
-			$('a.buttons-copy.buttons-flash').attr("title","复制");
+			/*$('a.buttons-copy.buttons-flash').attr("title","复制");
 			$('a.buttons-excel.buttons-flash').attr("title","导出为Excel");
 			$('a.buttons-pdf.buttons-flash').attr("title","导出为Pdf");
-			$('a.buttons-print').attr("title","打印");
+			$('a.buttons-print').attr("title","打印");*/
 			
-			
-			
-/*			$(window).resize(function(){
+			/*$(window).resize(function(){
 				otable.draw(false);
 			});*/
 			if(callback && typeof callback == "function")callback(otable);
@@ -375,5 +352,54 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 		}
 
 	}
+	
+	
+	
+	//-----------------------------------自定义方法---------------------------------
+	/**
+     * 获取选择行数据
+     */
+	DataTable.Api.register( 'selectedRows()', function () {
+		return this.rows('.selected').data();
+	} );
+	
+	/**
+     * 获取选择行的指定列数据 col列名
+     */
+	DataTable.Api.register( 'selectedColumn()', function (col) {
+		var selectedRows = this.rows('.selected');
+		var a = [];
+		for(var i = 0;i<selectedRows.count();i++){
+			a.push(selectedRows.data()[i][col]);
+		}
+		return a;
+	} );
+	
+	/**
+     * 增加一行数据
+     */
+	DataTable.Api.register( 'addRow()', function (row) {
+		return this.row.add(row).draw();
+	} );
+	
+	/**
+     * 修改已选择行数据
+     */
+	DataTable.Api.register( 'updateSelectedRow()', function (row) {
+		return this.row(this.rows('.selected')[0]).data(row);
+	} );
+	/**
+     * 删除已选择行数据
+     */
+	DataTable.Api.register( 'deleteSelectedRow()', function () {
+		return this.rows('.selected').remove().draw();
+	} );
+	
+	/**
+     * 已选总行数
+     */
+	DataTable.Api.register( 'selectedCount()', function () {
+		return this.rows('.selected').count();
+	} );
 	return DataTable;
 });

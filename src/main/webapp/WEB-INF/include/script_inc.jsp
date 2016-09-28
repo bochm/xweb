@@ -27,4 +27,3 @@ window.jQuery || document.write("<script type='text/javascript' src='${resourceP
 </script>
 <![endif]-->
 <script type="text/javascript" data-main="${resourcePath}/main" src="${resourcePath}/require.js"></script>
-<script type='text/javascript' src="${resourcePath}/lib/jquery/jquery.pjax.js"></script>
