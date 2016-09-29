@@ -254,7 +254,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			"autoWidth": false,
 			"select": {style: 'os',info:false},
 			//"buttons": ['copyFlash','excelFlash','print'],
-			"buttons":[{extend: 'collection',text: '导出', buttons : ['selectAll']},'excelFlash','pdf','print'],
+			"buttons":[{extend: 'collection',text: '导出', buttons : ['selectAll','selectNone','print']}],
 			"fnCreatedRow": function (nRow, aData, iDataIndex) {
 	         }
 		},opts);
