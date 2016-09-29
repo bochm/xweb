@@ -293,11 +293,15 @@ div.dt-button-info > div {
 div.dt-buttons {
    position: relative;
    float: left;
-   padding-top: 0.2em;/*bx add 修改工具栏位置*/
-   margin-left: 0.5em;/*bx add 修改工具栏位置*/
+  /*bx add 修改工具栏位置*/
+/*    padding-top: 0.1em;
+  padding-bottom: 0.15em;
+  padding-left: 0.15em; */
 }
-
-ul.dt-button-collection.dropdown-menu {
+div.dt-buttons a{
+   margin-right: 0.2em;/*bx add 修改工具栏位置*/
+}
+/* ul.dt-button-collection.dropdown-menu {
   display: block;
   z-index: 2002;
   -webkit-column-gap: 8px;
@@ -361,7 +365,7 @@ div.dt-button-background {
   width: 100%;
   height: 100%;
   z-index: 2001;
-}
+} */
  /*bx delete 去除分辨率响应*/
 /* 
 @media screen and (max-width: 767px) {

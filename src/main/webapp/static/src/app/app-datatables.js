@@ -10,16 +10,14 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 	var btn_opts = {
 			"pdf": {"icon":"<i class='fa fa-file-pdf-o'></i> ","text":"导出PDF"},
 			"copy":{"icon":"<i class='fa fa-copy'></i> ","text":"复制"},
-			"copyFlash":{"icon":"<i class='fa fa-copy'></i> ","text":"复制"},
 			"excel":{"icon":"<i class='fa fa-file-excel-o'></i> ","text":"导出EXCEL"},
-			"excelFlash":{"icon":"<i class='fa fa-file-excel-o'></i> ","text":"导出EXCEL"},
 			"print":{"icon":"<i class='fa fa-print'></i> ","text":"打印"}
 	}
 	/**
      * 默认参数设置
      */
 	var default_opts = {
-			"dom": "<f><'dataTables_btn_toolbar'><'table-scrollable'tr<'table-foot-bar' ilp>>",
+			"dom": "<f><'dataTables_btn_toolbar'B><'table-scrollable'tr<'table-foot-bar' il<'flash_btns'>p>>",
 			"oLanguage": {
 				"sLengthMenu": "_MENU_/页",
 				"sSearch":"<div class='input-icon input-icon-sm'><i class='iconfont icon-search'></i>_INPUT_</div>",
@@ -36,7 +34,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 						"copy":btn_opts.copy.icon,
 						"copyTitle":"复制到剪贴板",
 						"copyInfo":{_: '以复制 %d 行到剪贴板',1: '复制 1 行到剪贴板'},
-						"excel":btn_opts.excel.icon,
+						"excel":btn_opts.excel.icon+btn_opts.excel.text,
 						"print":btn_opts.print.icon
 				},
 				"oPaginate":{
@@ -200,10 +198,14 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			},
 			button: {
 				tag: 'a',
-				className: 'btn btn-sm'
+				className: 'btn btn-sm btn-info'
+			},
+			buttonLiner: {
+				tag: '',
+				className: ''
 			},
 			collection: {
-				tag: 'ul',
+				tag: "ul role='menu'",
 				className: 'dt-button-collection dropdown-menu',
 				button: {
 					tag: 'li',
@@ -252,43 +254,44 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			"autoWidth": false,
 			"select": {style: 'os',info:false},
 			//"buttons": ['copyFlash','excelFlash','print'],
-			"buttons":[ opts.btns],
+			"buttons":[{extend: 'collection',text: '导出', buttons : ['selectAll']},'excelFlash','pdf','print'],
 			"fnCreatedRow": function (nRow, aData, iDataIndex) {
 	         }
 		},opts);
 		return _getDataTable(_table,default_opt,function(otable){
 			//初始化表格工具栏 ，增加ID约束
 			var tableid = _table.attr('id');
-			
 			var toolbar = $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar");
-			console.log(otable.buttons(0).nodes());
-			
 			var pageToolbar = $("#"+(default_opt.toolbar ? default_opt.toolbar : (tableid+"-toolbar")));
 			
-			if(opts.exportBtns){
+			/*if(opts.exportBtns){
 				var _export_btn_group = $("<div class='btn-group'>");
-				var _export_btn_main = $("<button type='button' class='btn btn-sm btn-info'></button>");
-				/*_export_btn_main.append(otable.buttons(0).nodes());*/
-				otable.button(0).node().addClass('btn-info');
-				_export_btn_group.append(otable.button(0).node());
+				var _export_btn_main = $("<button type='button' class='btn btn-sm btn-info'>测试</button>");
+				_export_btn_main.click(function(){
+					console.log(otable.button(2));
+					otable.button(1).trigger();
+				});
+				_export_btn_group.append(_export_btn_main);
 				if(opts.exportBtns.length > 1){
 					_export_btn_group.append("<button type='button' class='btn btn-sm btn-info dropdown-toggle' data-toggle='dropdown'><i class='fa fa-angle-down'></i></button>");
 					var __export_btn_dropdown = $("<ul class='dropdown-menu' role='menu'>");
 					for(var i=0;i<opts.exportBtns.length;i++){
-						__export_btn_dropdown.append("<li><a href='#'>"+btn_opts[opts.exportBtns[i]].icon+btn_opts[opts.exportBtns[i]].text+"</a></li>");
+						var _export_btn_menu = $("<li>");
+						_export_btn_menu.append(otable.button(i).node());
+						__export_btn_dropdown.append(_export_btn_menu);
 					}
 					_export_btn_group.append(__export_btn_dropdown);
 				}
 				
 				pageToolbar.prepend(_export_btn_group);
-			}
+			}*/
 			toolbar.append(pageToolbar);
 			
 			
-			/*$('a.buttons-copy.buttons-flash').attr("title","复制");
+			$('a.buttons-copy.buttons-flash').attr("title","复制");
 			$('a.buttons-excel.buttons-flash').attr("title","导出为Excel");
 			$('a.buttons-pdf.buttons-flash').attr("title","导出为Pdf");
-			$('a.buttons-print').attr("title","打印");*/
+			$('a.buttons-print').attr("title","打印");
 			
 			/*$(window).resize(function(){
 				otable.draw(false);

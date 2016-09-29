@@ -126,6 +126,8 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	var userTable;
 	$('table.datatable').initTable({
 		params : {'pcompany':1},
+		"scrollY": "500px",
+		"scrollCollapse": true,
 		"btns": ['excelFlash','copyFlash','print',{text: 'Toggle start date'}],
 		"exportBtns" : ['excelFlash','copyFlash','print']
 	},function(otable){

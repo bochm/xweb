@@ -1,5 +1,5 @@
 /*! Buttons for DataTables 1.1.0
- * ©2015 SpryMedia Ltd - datatables.net/license
+ * ?2015 SpryMedia Ltd - datatables.net/license
  */
 
 (function( factory ){
@@ -514,7 +514,7 @@ $.extend( Buttons.prototype, {
 
 			if ( conf.buttons ) {
 				var collectionDom = this.c.dom.collection;
-				conf._collection = $('<'+collectionDom.tag+'/>')
+				conf._collection = $("<"+collectionDom.tag+"/>")
 					.addClass( collectionDom.className );
 
 				this._buildButtons( conf.buttons, conf._collection, i );
@@ -1107,8 +1107,29 @@ $.extend( _dtButtons, {
 			return dt.i18n( 'buttons.collection', 'Collection' );
 		},
 		className: 'buttons-collection',
+		//修改下拉菜单式按钮 原有会与bootstrap冲突 mod by bcm
+		init: function ( dt, node, config ) {
+            //console.log(node.parent('div.dt-buttons'));
+           /* var _col_parent_group = $("<div class='btn-group'>");
+            node.appendTo(_col_parent_group);
+            node.parent('div.dt-buttons').append(_col_parent_group);*/
+            //console.log(config._collection);
+            var _col_parent_group = $("<div class='btn-group'>");
+            node.addClass("dropdown-toggle");
+            node.attr("data-toggle","dropdown");
+            node.append(" <i class='fa fa-angle-down'></i>");
+            
+            node.parent('div.dt-buttons').append(_col_parent_group);
+            node.appendTo(_col_parent_group);
+            config._collection.insertAfter(node);
+            //_col_parent_group.append(node);
+            //_col_parent_group.append(config._collection);
+            
+            //console.log(node.parent('div.dt-buttons'));
+        },
 		action: function ( e, dt, button, config ) {
-			var background;
+			//console.log(config._collection);
+			/*var background;
 			var host = button;
 			var hostOffset = host.offset();
 			var tableContainer = $( dt.table().container() );
@@ -1158,11 +1179,11 @@ $.extend( _dtButtons, {
 
 			if ( config.background ) {
 				Buttons.background( true, config.backgroundClassName, config.fade );
-			}
-
+			}*/
+			//alert("qw123");
 			// Need to break the 'thread' for the collection button being
 			// activated by a click - it would also trigger this event
-			setTimeout( function () {
+			/*setTimeout( function () {
 				// This is bonkers, but if we don't have a click listener on the
 				// background element, iOS Safari will ignore the body click
 				// listener below. An empty function here is all that is
@@ -1182,9 +1203,9 @@ $.extend( _dtButtons, {
 						$('body').off( 'click.dtb-collection' );
 					}
 				} );
-			}, 10 );
+			}, 10 );*/
 		},
-		background: true,
+		background: false,
 		collectionLayout: '',
 		backgroundClassName: 'dt-button-background',
 		fade: 400

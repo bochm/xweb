@@ -626,6 +626,9 @@ var flashButton = {
 		_glue( flash, button );
 
 		config._flash = flash;
+		console.log(button);
+		$('div.flash_btns').append(button);
+		alert("asd");
 	},
 
 	destroy: function ( dt, button, config ) {
