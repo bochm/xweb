@@ -6,6 +6,8 @@
 define(["app/common","datatables","datatables/buttons/flash","datatables/buttons/print","datatables/select",
         "datatables/responsive","datatables/fixedHeader",
         "css!lib/jquery/datatables/dataTables.bootstrap.css"],function(APP,DataTable) {
+	//-------------------默认参数初始化及修改----------------------------------
+	
 	//工具按钮设置
 	var btn_opts = {
 			"pdf": {"icon":"<i class='fa fa-file-pdf-o'></i> ","text":"导出PDF"},
@@ -187,6 +189,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			buttons
 		);
 	};
+	//--------------------------------按钮设置--------------------------------
 	/**
 	 * @override
      * 设置Buttons默认属性
@@ -198,7 +201,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			},
 			button: {
 				tag: 'a',
-				className: 'btn btn-sm btn-info'
+				className: 'btn btn-sm'
 			},
 			buttonLiner: {
 				tag: '',
@@ -231,6 +234,88 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 	
 	$.fn.dataTable.Buttons.swfPath = APP.jsPath+'/lib/jquery/datatables/swf/flashExport.swf';
 	
+	/**
+     * 表格默认新增修改方法
+     */
+	function _addEditTable(e, dt, node, config,type){
+		var _options = dt.init();
+		if(typeof _options.addRecord === 'function' && type == 'add'){
+			_options.addRecord(dt,node,e);
+		}else if(typeof _options.saveRecord === 'function' && type == 'save'){
+			_options.saveRecord(dt,node,e);
+		}else if(!APP.isEmpty(_options.addModal) || !APP.isEmpty(_options.addEditModal)){
+			var _modal = _options.addModal || _options.addEditModal;
+			if(_modal.url){
+				APP.showModal(_modal.url,_modal.id,_modal);
+			}else{
+				$(_modal).modal('show');
+			}
+		}else if(!APP.isEmpty(_options.addForm) || !APP.isEmpty(_options.addEditForm)){
+			var _form = _options.addForm || _options.addEditForm;
+			require(['app/form'],function(FORM){
+				$(_form.el).initForm({
+					formAction : type,clearForm : true,type : 'post',validate : _form.validate
+				},function(data){
+					if(type == 'add') dt.addRow(data);
+					else dt.updateSelectedRow(data);
+				});
+			});
+			$(_form).closest('.modal.fade').modal('show');
+		}else{
+			alert("请初始化表格参数中的addForm|addEditForm|addModal|addEditModal|addRecord|saveRecord选项");
+		}
+	}
+	/**
+     * 自定义按钮--新增
+     */
+	$.fn.dataTable.ext.buttons.addRecord = {
+		text: "<i class='fa fa-copy'></i> 新增",
+		className: 'btn btn-sm btn-primary',
+		action: function ( e, dt, node, config ) {
+			_addEditTable(e, dt, node, config,'add');
+		}
+	};
+	/**
+     * 自定义按钮--修改
+     */
+	$.fn.dataTable.ext.buttons.saveRecord = {
+		text: "<i class='fa fa-copy'></i> 修改",
+		className: 'btn btn-sm btn-primary',
+		action: function ( e, dt, node, config ) {
+			if(dt.selectedCount() != 1){
+				APP.info('请选择一条需要修改的记录');
+				return;
+			}
+			_addEditTable(e, dt, node, config,'save');
+		}
+	};
+	/**
+     * 自定义按钮--删除
+     */
+	$.fn.dataTable.ext.buttons.deleteRecord = {
+		text: "<i class='fa fa-copy'></i> 删除",
+		className: 'btn btn-sm btn-warning',
+		action: function ( e, dt, node, config ) {
+			if(dt.selectedCount() < 1){
+				APP.info('请选择需要删除的记录');
+				return;
+			}
+			var _options = dt.init();
+			if(typeof _options.deleteRecord === 'function'){
+				_options.deleteRecord(dt,node,e);
+			}else if(!APP.isEmpty(_options.deleteRecord) && !APP.isEmpty(_options.deleteRecord.url)){
+				APP.confirm('','是否删除选择的记录?',function(){
+					var _id_column = _options.deleteRecord.id ? _options.deleteRecord.id : 'id';
+					APP.postJson(_options.deleteRecord.url,dt.selectedColumn(_id_column),null,function(){
+						dt.deleteSelectedRow();
+						APP.success('删除成功');
+					});
+				})
+			}else{
+				alert("请初始化表格参数中的deleteRecord选项");
+			}
+		}
+	};
 	DataTable.getTable = function(selector){
 		return new $.fn.dataTable.Api(selector);
 	}
@@ -252,9 +337,10 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "全部"]],
 			"pageLength": 10,
 			"autoWidth": false,
+			"scrollCollapse": true,
 			"select": {style: 'os',info:false},
-			//"buttons": ['copyFlash','excelFlash','print'],
-			"buttons":[{extend: 'collection',text: '导出', buttons : ['selectAll','selectNone','print']}],
+			"buttons": [],
+			//"buttons":[{extend: 'collection',text: '导出', buttons : ['selectAll','selectNone','print']},"addRecord","deleteRecord"],
 			"fnCreatedRow": function (nRow, aData, iDataIndex) {
 	         }
 		},opts);
@@ -287,12 +373,11 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			}*/
 			toolbar.append(pageToolbar);
 			
-			
-			$('a.buttons-copy.buttons-flash').attr("title","复制");
+			//按钮使用文字标识，暂时不使用title
+			/*$('a.buttons-copy.buttons-flash').attr("title","复制");
 			$('a.buttons-excel.buttons-flash').attr("title","导出为Excel");
 			$('a.buttons-pdf.buttons-flash').attr("title","导出为Pdf");
-			$('a.buttons-print').attr("title","打印");
-			
+			$('a.buttons-print').attr("title","打印");*/
 			/*$(window).resize(function(){
 				otable.draw(false);
 			});*/

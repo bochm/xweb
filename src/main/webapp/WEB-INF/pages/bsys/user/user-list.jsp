@@ -4,7 +4,6 @@
 <span id="table-bsys-user-list-toolbar">
 <button class="btn btn-sm btn-primary" id="bsys-user-list-add-btn">新增用户</button>
 <button class="btn btn-sm btn-primary" id="bsys-user-list-edit-btn">修改用户</button>
-<button class="btn btn-sm btn-warning" id="bsys-user-list-delete-btn">删除用户</button>
 </span>
 <table id="table-bsys-user-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/bsys/user" 
 	data-paging="true" data-info="true" data-ordering="true">
@@ -126,10 +125,10 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	var userTable;
 	$('table.datatable').initTable({
 		params : {'pcompany':1},
-		"scrollY": "500px",
-		"scrollCollapse": true,
-		"btns": ['excelFlash','copyFlash','print',{text: 'Toggle start date'}],
-		"exportBtns" : ['excelFlash','copyFlash','print']
+		"scrollY": "400px",
+		"buttons":["addRecord","deleteRecord"],
+		"deleteRecord" : {url : '${ctx}/bsys/user/delete',id : 'id'}
+		
 	},function(otable){
 		userTable = otable;
 	});
@@ -180,19 +179,6 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 		$('#sys-user-password').val('');
 		$('#sys-user-password').attr('type','password');
 		$('#bsys-user-list-edit').modal('show');
-		
-	})
-	$('#bsys-user-list-delete-btn').click(function(){
-		if(userTable.selectedCount() < 1){
-			APP.error('请选择一条需要删除的用户');
-			return;
-		}
-		APP.confirm('','是否删除选择的用户',function(){
-			APP.postJson('${ctx}/bsys/user/delete',userTable.selectedColumn('id'),null,function(){
-				APP.success('删除成功');
-				userTable.deleteSelectedRow();
-			});
-		})
 		
 	})
 })
