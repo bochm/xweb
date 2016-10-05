@@ -2,8 +2,8 @@
 <%@ include file="/WEB-INF/include/taglib.jsp" %>
 <div class="loading-page">
 <span id="table-bsys-user-list-toolbar">
-<button class="btn btn-sm btn-primary" id="bsys-user-list-add-btn">新增用户</button>
 <button class="btn btn-sm btn-primary" id="bsys-user-list-edit-btn">修改用户</button>
+<button class="btn btn-sm btn-warning" data-role="deleteRecord">删除用户</button>
 </span>
 <table id="table-bsys-user-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/bsys/user" 
 	data-paging="true" data-info="true" data-ordering="true">
@@ -122,40 +122,41 @@
 </div>
 <script type="text/javascript">
 require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
+	var form_validate = {
+			rules : {
+				loginName : {
+					'checkExists' : {
+						url:'${ctx}/bsys/user/checkLoginName',data:{}
+					}
+				}
+			}
+		};
+	$('.modal-footer .btn-primary').on('click',function(){
+		$('#bsys-user-edit-form').submit();
+	});
 	var userTable;
 	$('table.datatable').initTable({
 		params : {'pcompany':1},
 		"scrollY": "400px",
-		"buttons":["addRecord","deleteRecord"],
-		"deleteRecord" : {url : '${ctx}/bsys/user/delete',id : 'id'}
+		"buttons":["addRecord"],
+		"deleteRecord" : {url : '${ctx}/bsys/user/delete',id : 'id'},
+		"addRecord" : function(dt){
+			if(!$('#sys-user-password').hasClass('required'))$('#sys-user-password').addClass('required');
+			form_validate.rules.loginName.checkExists.data.oldloginname = '';
+			$('#bsys-user-edit-form').initForm({
+				url : '${ctx}/bsys/user/add.json',formAction : 'add',clearForm : true,type : 'post',validate : form_validate
+			},function(data){
+				dt.addRow(data);
+			});
+			$('#bsys-user-list-edit').modal('show');
+		}
 		
 	},function(otable){
 		userTable = otable;
 	});
 	
-	var form_validate = {
-		rules : {
-			loginName : {
-				'checkExists' : {
-					url:'${ctx}/bsys/user/checkLoginName',data:{}
-				}
-			}
-		}
-	}
-	$('.modal-footer .btn-primary').on('click',function(){
-		$('#bsys-user-edit-form').submit();
-	});
-	$('#bsys-user-list-add-btn').click(function(){
-		if(!$('#sys-user-password').hasClass('required'))$('#sys-user-password').addClass('required');
-		form_validate.rules.loginName.checkExists.data.oldloginname = '';
-		
-		$('#bsys-user-edit-form').initForm({
-			url : '${ctx}/bsys/user/add.json',formAction : 'add',clearForm : true,type : 'post',validate : form_validate
-		},function(data){
-			userTable.addRow(data);
-		});
-		$('#bsys-user-list-edit').modal('show');
-	})
+	
+	
 	$('#bsys-user-list-edit-btn').click(function(){
 		if(userTable.selectedCount() != 1){
 			APP.info('请选择一条需要修改的用户');
@@ -163,7 +164,6 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 		}
 		var cur_row = userTable.selectedRows()[0];
 		form_validate.rules.loginName.checkExists.data.oldloginname = cur_row.loginName;
-		
 		$('#sys-user-password').removeClass('required');
 		$('#bsys-user-edit-form').initForm({
 			url : '${ctx}/bsys/user/save.json',formAction : 'save',formData : cur_row,

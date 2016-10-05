@@ -237,7 +237,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 	/**
      * 表格默认新增修改方法
      */
-	function _addEditTable(e, dt, node, config,type){
+	function _addEditRecord(dt, node,e,type){
 		var _options = dt.init();
 		if(typeof _options.addRecord === 'function' && type == 'add'){
 			_options.addRecord(dt,node,e);
@@ -266,13 +266,36 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 		}
 	}
 	/**
+     * 表格默认删除方法
+     */
+	function _deleteRecord(dt,node,e){
+		if(dt.selectedCount() < 1){
+			APP.info('请选择需要删除的记录');
+			return;
+		}
+		var _options = dt.init();
+		if(typeof _options.deleteRecord === 'function'){
+			_options.deleteRecord(dt,node,e);
+		}else if(!APP.isEmpty(_options.deleteRecord) && !APP.isEmpty(_options.deleteRecord.url)){
+			APP.confirm('','是否删除选择的记录?',function(){
+				var _id_column = _options.deleteRecord.id ? _options.deleteRecord.id : 'id';
+				APP.postJson(_options.deleteRecord.url,dt.selectedColumn(_id_column),null,function(){
+					dt.deleteSelectedRow();
+					APP.success('删除成功');
+				});
+			})
+		}else{
+			alert("请初始化表格参数中的deleteRecord选项");
+		}
+	}
+	/**
      * 自定义按钮--新增
      */
 	$.fn.dataTable.ext.buttons.addRecord = {
 		text: "<i class='fa fa-copy'></i> 新增",
 		className: 'btn btn-sm btn-primary',
 		action: function ( e, dt, node, config ) {
-			_addEditTable(e, dt, node, config,'add');
+			_addEditRecord(dt, node,e,'add');
 		}
 	};
 	/**
@@ -286,7 +309,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 				APP.info('请选择一条需要修改的记录');
 				return;
 			}
-			_addEditTable(e, dt, node, config,'save');
+			_addEditRecord( dt, node,e,'save');
 		}
 	};
 	/**
@@ -296,24 +319,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 		text: "<i class='fa fa-copy'></i> 删除",
 		className: 'btn btn-sm btn-warning',
 		action: function ( e, dt, node, config ) {
-			if(dt.selectedCount() < 1){
-				APP.info('请选择需要删除的记录');
-				return;
-			}
-			var _options = dt.init();
-			if(typeof _options.deleteRecord === 'function'){
-				_options.deleteRecord(dt,node,e);
-			}else if(!APP.isEmpty(_options.deleteRecord) && !APP.isEmpty(_options.deleteRecord.url)){
-				APP.confirm('','是否删除选择的记录?',function(){
-					var _id_column = _options.deleteRecord.id ? _options.deleteRecord.id : 'id';
-					APP.postJson(_options.deleteRecord.url,dt.selectedColumn(_id_column),null,function(){
-						dt.deleteSelectedRow();
-						APP.success('删除成功');
-					});
-				})
-			}else{
-				alert("请初始化表格参数中的deleteRecord选项");
-			}
+			_deleteRecord(dt,node,e);
 		}
 	};
 	DataTable.getTable = function(selector){
@@ -349,7 +355,15 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			var tableid = _table.attr('id');
 			var toolbar = $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar");
 			var pageToolbar = $("#"+(default_opt.toolbar ? default_opt.toolbar : (tableid+"-toolbar")));
-			
+			pageToolbar.find('.btn[data-role]').each(function(){
+				var _btn = $(this);
+				var _btn_type = _btn.attr('data-role');
+				_btn.click(function(e){
+					if(_btn_type == 'addRecord') _addEditRecord(otable, _btn.get(),e,'add');
+					else if(_btn_type == 'saveRecord') _addEditRecord(otable, _btn.get(),e,'save');
+					else if(_btn_type == 'deleteRecord') _deleteRecord(otable, _btn.get(),e);
+				});
+			});
 			/*if(opts.exportBtns){
 				var _export_btn_group = $("<div class='btn-group'>");
 				var _export_btn_main = $("<button type='button' class='btn btn-sm btn-info'>测试</button>");

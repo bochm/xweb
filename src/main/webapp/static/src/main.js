@@ -64,7 +64,7 @@ define(['app/index','moment','jquery/scrolltotop',
         'css!app/main-layout.css',
         'css!app/main-component.css'],function(APP,moment){
 	var _now_hour = moment().format('H');
-	if(_now_hour > 19 && _now_hour < 6){
+	if(_now_hour > 14 || _now_hour < 6){
 		require(['css!app/main-themes-default.css']);
 	}else{
 		require(['css!app/main-themes-light.css']);
