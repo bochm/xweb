@@ -1,4 +1,4 @@
-define(['app/common','app/datatables','css!../css/treetable/treetable.css'],function(APP,DataTable){
+define(['app/common','app/datatables'],function(APP,DataTable){
 	var Node, Tree, methods;
 
 	  Node = (function() {
@@ -615,8 +615,6 @@ define(['app/common','app/datatables','css!../css/treetable/treetable.css'],func
 				   	//"ajax" : {"async":false,"url":method.url,"dataSrc" : APP_CONF.DATA},//取消同步,树形初始化时间会无法加载样式,ajax返回json结果取值为 APP_CONF.DATA = "data"
 					"processing" : true,
 					"serverSide" : false,
-					"ordering": false,//暂时不支持排序
-					"paging": false,//暂时不支持分页
 					"language": {
 					    "info": "共_TOTAL_条记录",
 					    "infoEmpty": ""
@@ -629,18 +627,19 @@ define(['app/common','app/datatables','css!../css/treetable/treetable.css'],func
 			        	 
 			         }
 				},method);
+			  init_opts.ordering = false;//暂时不支持排序
+			  init_opts.paging = false;//暂时不支持分页
 			  var _table = $(_this);
 			  var tableid = _table.attr('id');
 			  _table.initTable(init_opts,function(otable){
 				  var treetable = methods.init.apply(_this, arguments);
 				  //初始化按钮
-				  var pageToolbar = $("#"+(init_opts.toolbar ? init_opts.toolbar : (tableid+"-toolbar")));
-				  $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar").append(pageToolbar);
-				  if(init_opts.expand_btn){
-						pageToolbar.prepend("<div class='btn-group'><a data-toggle='dropdown' class='btn btn-primary dropdown-toggle'>展开<i class='icon-angle-down icon-on-right'></i></a>"+
+				  if(init_opts.expandBtn){
+					  $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar>.dt-buttons").prepend(
+						"<div class='btn-group'><a data-toggle='dropdown' class='btn btn-sm btn-primary dropdown-toggle'>展开<i class='icon-angle-down icon-on-right'></i></a>"+
 						"<ul class='dropdown-menu'>"+
-						"<li><a href='#' id='"+tableid+"_expand_all'><i class='icon-resize-full'></i>&nbsp; 全部展开</a></li>"+
-						"<li><a href='#' id='"+tableid+"_collapse_all'><i class='icon-resize-small'></i>&nbsp; 全部收起</a></li></ul></div>");
+						"<li><a href='#' id='"+tableid+"_expand_all'><i class='fa fa-minus-square'></i>&nbsp; 全部展开</a></li>"+
+						"<li><a href='#' id='"+tableid+"_collapse_all'><i class='fa fa-plus-square'></i>&nbsp; 全部收起</a></li></ul></div>");
 						$('#'+tableid+'_expand_all').click(function(){
 							methods.expandAll.apply(_this);
 						});

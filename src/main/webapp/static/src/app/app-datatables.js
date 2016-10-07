@@ -293,7 +293,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      */
 	$.fn.dataTable.ext.buttons.addRecord = {
 		text: "<i class='fa fa-copy'></i> 新增",
-		className: 'btn btn-sm btn-primary',
+		className: 'btn btn-sm btn-primary btn-addRecord',
 		action: function ( e, dt, node, config ) {
 			_addEditRecord(dt, node,e,'add');
 		}
@@ -303,7 +303,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      */
 	$.fn.dataTable.ext.buttons.saveRecord = {
 		text: "<i class='fa fa-copy'></i> 修改",
-		className: 'btn btn-sm btn-primary',
+		className: 'btn btn-sm btn-primary btn-saveRecord',
 		action: function ( e, dt, node, config ) {
 			if(dt.selectedCount() != 1){
 				APP.info('请选择一条需要修改的记录');
@@ -317,7 +317,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      */
 	$.fn.dataTable.ext.buttons.deleteRecord = {
 		text: "<i class='fa fa-copy'></i> 删除",
-		className: 'btn btn-sm btn-warning',
+		className: 'btn btn-sm btn-warning btn-deleteRecord',
 		action: function ( e, dt, node, config ) {
 			_deleteRecord(dt,node,e);
 		}
@@ -355,6 +355,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			var tableid = _table.attr('id');
 			var toolbar = $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar");
 			var pageToolbar = $("#"+(default_opt.toolbar ? default_opt.toolbar : (tableid+"-toolbar")));
+			
 			pageToolbar.find('.btn[data-role]').each(function(){
 				var _btn = $(this);
 				var _btn_type = _btn.attr('data-role');
@@ -364,6 +365,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 					else if(_btn_type == 'deleteRecord') _deleteRecord(otable, _btn.get(),e);
 				});
 			});
+			
 			/*if(opts.exportBtns){
 				var _export_btn_group = $("<div class='btn-group'>");
 				var _export_btn_main = $("<button type='button' class='btn btn-sm btn-info'>测试</button>");
@@ -386,6 +388,36 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 				pageToolbar.prepend(_export_btn_group);
 			}*/
 			toolbar.append(pageToolbar);
+			//修改删除按钮禁用约束
+			var _save_btn = toolbar.find('.btn-saveRecord');
+			var _delete_btn = toolbar.find('.btn-deleteRecord');
+			APP.disableBtn(_save_btn);
+			APP.disableBtn(_delete_btn);
+			otable.on( 'draw.dt', function () {
+				if(otable.selectedCount() == 0){
+					APP.disableBtn(_save_btn);
+					APP.disableBtn(_delete_btn);
+				}
+			});
+			otable.on( 'select', function ( e, dt, type, indexes ) {
+				if(type === 'row'){
+					APP.enableBtn(_delete_btn);
+					if(otable.selectedCount() == 1) APP.enableBtn(_save_btn);
+					else APP.disableBtn(_save_btn);
+				}
+			});
+			otable.on( 'deselect', function ( e, dt, type, indexes ) {
+				if(type === 'row'){
+					if(otable.selectedCount() == 1) APP.enableBtn(_save_btn);
+					else if(otable.selectedCount() > 1) {
+						APP.disableBtn(_save_btn);
+						APP.enableBtn(_delete_btn);
+					}else{
+						APP.disableBtn(_save_btn);
+						APP.disableBtn(_delete_btn);
+					}
+				}
+			});
 			
 			//按钮使用文字标识，暂时不使用title
 			/*$('a.buttons-copy.buttons-flash').attr("title","复制");

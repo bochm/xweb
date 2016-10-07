@@ -1,7 +1,7 @@
 [
 {"id":"-1","text":""},
-{"id":"icon-cloud-download","text":"云下载"},
-{"id":"icon-cloud-upload",  "text":"云上传"},
+{"id":"fa-bank","text":"银行"},
+{"id":"fa-language",  "text":"语言"},
 {"id":"icon-lightbulb",		"text":"灯泡"},
 {"id":"icon-exchange",		"text":"交换箭头"},
 {"id":"icon-bell-alt",		"text":"钟"},

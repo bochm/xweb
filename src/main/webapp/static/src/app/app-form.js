@@ -212,12 +212,14 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		var _this = $(this);
 		_this.clearForm(true);
 		if(APP.isEmpty(opts)) opts = {};
+		if(APP.isEmpty(opts.fieldOpts)) opts.fieldOpts = {};//fieldOpts表单元素的初始化参数
 		var validate_settings = $.extend(true,validate_default_settings,opts.validate);
 		_this.validate(validate_settings);
 		var isInitValue = (opts.formData != undefined);
 		var formField;
 		_this.find(opts.fieldSelector ? opts.fieldSelector : '*[name]').each(function(){
 			formField = $(this);
+			var _fieldName = formField.attr('name');
 			if(isInitValue){
 				if(opts.formData[this.name]){
 					if(this.type == 'checkbox'){
@@ -228,38 +230,23 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				}
 			}
 			if(formField.attr('form-role') == 'select'){
-				var _selectOpt = {};
+				var _selectOpt = opts.fieldOpts[_fieldName] || {};
 				try{
 					if(formField.attr('placeholder') && !isInitValue) _selectOpt.placeholder = JSON.parse(formField.attr('placeholder'));
 				}catch(e){alert("placeholder属性值必须为json字符串");}
-				
 				if(formField.attr('jsonData')) _selectOpt.jsonData = formField.attr('jsonData');
-				
 				if(formField.attr('stmID')) _selectOpt.stmID = formField.attr('stmID');
-				
-				try{
-					if(formField.attr('templateResult')) _selectOpt.templateResult = eval(formField.attr('templateResult'));
-					if(formField.attr('templateSelection')) _selectOpt.templateSelection = eval(formField.attr('templateSelection'));
-				}catch(e){alert("函数不存在["+e+"]");}
-				
 				formField.select(_selectOpt);
-
 			}
 			if(formField.attr('form-role') == 'treeSelect'){
-				var _treeSelectOpt = {};
+				var _treeSelectOpt = opts.fieldOpts[_fieldName] || {};
 				if(formField.attr('stmID')) _treeSelectOpt.stmID = formField.attr('stmID');
 				try{
 					if(formField.attr('view')) _treeSelectOpt.view = JSON.parse(formField.attr('view'));
 				}catch(e){alert("view属性值必须为json字符串");}
-
-				_treeSelectOpt.callback = {};
-				try{
-					if(formField.attr('beforeClick')) _treeSelectOpt.callback.beforeClick = eval(formField.attr('beforeClick'));
-					if(formField.attr('beforeExpand')) _treeSelectOpt.callback.beforeExpand = eval(formField.attr('beforeExpand'));
-				}catch(e){alert("函数不存在["+e+"]");}
 				
 				if(!formField.attr('treeID')){
-					alert("请指定treeID属性");
+					alert("请指定表单元素的treeID属性");
 					return;
 				}
 				formField.treeSelect(_treeSelectOpt,formField.attr('treeID'));
@@ -374,9 +361,8 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 	$.fn.select = function ( opts ) {
 		var _select = $(this);
 		if(opts){
-			
 			if((opts.jsonData||opts.stmID) && opts.data === undefined){//增加jsonData选项获取静态.json文件或者直接通过sqlMapper的sqlID获取数组数据
-				var url = "app/common/selectArrayByStmID";
+				var url = APP.ctx+"app/common/selectArrayByStmID";
 				var type = "POST";
 				if(opts.jsonData && opts.jsonData != ""){
 					url = opts.jsonData;
@@ -385,20 +371,9 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				var paramData = {};
 				if(opts.stmID) paramData.stmID=opts.stmID;
 				if(opts.param) paramData.param=opts.param;
-				$.ajax({
-					url:url,
-					async:false,//同步方式防止数据量大是无法加载
-					dataType:"json",
-					type : type,
-					contentType : 'application/json;charset=utf-8',
-					data: JSON.stringify(paramData),
-					success:function(result){
-						opts.data = bx.parseArrayResult(result);
-					},
-					error:function(xhr,status,error){
-						alert("下拉列表获取服务端数据错误["+status+"]");
-						return $.error(xhr);
-					}
+				//同步方式防止数据量大是无法加载
+				APP.ajax(url,paramData,type,false,function(ret){
+					opts.data = ret;
 				});
 			}else if(opts.url && opts.ajax === undefined){//默认ajax方法
 				opts.ajax = {
@@ -409,9 +384,6 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 					      q: params.term
 					    }
 					    return queryParameters;
-					},
-					processResults : function(result){
-						return {result:bx.parseArrayResult(result)};
 					}
 				};
 			}

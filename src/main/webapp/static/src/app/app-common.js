@@ -117,12 +117,12 @@ define('app/common',['bootstrap','moment'],function() {
 			 * @param  {Function} callback 成功回调函数
 			 * @param  {Function} errorback 失败回调函数
 			 */
-			postJson : function(url,data,isSync,callback,errorback){
+	        ajax : function(url,data,type,isSync,callback,errorback){
 				var async = true;
 				if(isSync != undefined || isSync != null) async = isSync;
 				var retData;
 				$.ajax({ 
-				        type:"POST", 
+				        type:type, 
 				        //url:_ctx+url, 
 				        url: (url.indexOf("?") >0) ? (url.split("?")[0]+".json?" + url.split("?")[1]) : url+".json", 
 				        contentType : 'application/json;charset=utf-8',             
@@ -147,9 +147,15 @@ define('app/common',['bootstrap','moment'],function() {
 				});
 				return retData;  
 			},
+			postJson : function(url,data,isSync,callback,errorback){
+				return this.ajax(url,data,'POST',isSync,callback,errorback);  
+			},
+			getJson : function(url,data,isSync,callback,errorback){
+				return this.ajax(url,data,'GET',isSync,callback,errorback);  
+			},
 			getJsonData : function(url,data){
 				var _data;
-				this.postJson(url,data,false,function(ret){
+				this.getJson(url,data,false,function(ret){
 					_data = ret;
 				});
 				return _data;
@@ -215,6 +221,14 @@ define('app/common',['bootstrap','moment'],function() {
 	            $('html,body').animate({
 	                scrollTop: pos
 	            }, 'slow');
+	        },
+	        disableBtn : function(btn){
+	        	if(!btn.hasClass('disabled')) btn.addClass('disabled');
+	        	btn.attr('disabled','disabled');
+	        },
+	        enableBtn : function(btn){
+	        	if(btn.hasClass('disabled')) btn.removeClass('disabled');
+	        	btn.removeAttr('disabled');
 	        },
 	        initScroll: function(el,ct) {
 	        	require(['jquery/scrollbar'],function(){

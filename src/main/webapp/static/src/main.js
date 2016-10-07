@@ -19,6 +19,7 @@ require.config({
 		'app/common':'app/app-common',
 		'app/form':'app/app-form',
 		'app/datatables':'app/app-datatables',
+		'app/treetable':'app/app-treeTable',
 		'bootstrap':'lib/bootstrap/bootstrap',
 		'bootstrap/daterangepicker':'lib/bootstrap/daterangepicker/daterangepicker',
 		'bootstrap/datepicker':'lib/bootstrap/datepicker/bootstrap-datepicker',
@@ -41,7 +42,6 @@ require.config({
 		'datatables/select':'lib/jquery/datatables/dataTables.select',
 		'datatables/responsive':'lib/jquery/datatables/dataTables.responsive',
 		'datatables/fixedHeader':'lib/jquery/datatables/dataTables.fixedHeader',
-
 		'echarts':'lib/echarts/echarts'
 	},
 	map: {

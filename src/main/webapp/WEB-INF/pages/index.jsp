@@ -119,8 +119,8 @@
 				</li>
 				<li><a href="javascript:;"><i class="iconfont icon-cog"></i><span class="title">系统管理</span><span class="selected"></span><span class="arrow"></span></a>
 					<ul class="sub-menu">
-						<li><a href="pages/bsys/user/user-list" class="act-menu"><i class="iconfont icon-users"></i>用户管理</a></li>
-						<li><a href="pages/sys/curd-table" class="act-menu"><i class="iconfont icon-heart"></i>表格应用</a></li>
+						<li><a href="pages/bsys/user/user-list" class="act-menu"><i class="iconfont icon-users"></i> 用户管理</a></li>
+						<li><a href="pages/bsys/menu/menu-list" class="act-menu"><i class="iconfont icon-heart"></i> 菜单管理</a></li>
 					</ul>
 				</li>
 			</ul>
