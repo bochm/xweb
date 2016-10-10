@@ -313,7 +313,23 @@ define('app/common',['bootstrap','moment'],function() {
 	        		});
 	        	});
 	        },
-	        
+	        initSwitch : function(ct){
+	        	require(['switch'],function(){
+	        		_queryContainer(ct).find('.bs-switch').each(function(){
+	        			var _this = $(this);
+	        			if(_this.attr('checked')) {
+	        				_this.attr('checked','checked')
+	        				_this.val(_this.data('on-value') ? _this.data('on-value') : '1');
+	        			}
+	        			_this.bootstrapSwitch({
+	        				'onSwitchChange' : function(event, state){
+	        					if(state) _this.val(_this.data('on-value') ? _this.data('on-value') : '1');
+	        					else _this.val(_this.data('off-value') ? _this.data('off-value') : '0');
+	        				}
+	        			});
+	        		});
+	        	});
+	        },
 	        //初始化控件
 	        initComponents: function(target){
 	        	this.initTab(target,false);
@@ -323,6 +339,7 @@ define('app/common',['bootstrap','moment'],function() {
 	        	APP.initPortletPanel(target);
 	        	APP.initDropdowns(target);
 	        	APP.initScroll('.scroller',target);
+	        	this.initSwitch(target);
 	        }
 		};
 	}
@@ -620,6 +637,7 @@ define('app/common',['bootstrap','moment'],function() {
 		            	$('#'+mid).remove();
 		            	$('body').append(html);
 						$('#'+mid).modal('show');
+						APP.initComponents('#'+mid);
 	            	}else{
 	            		var _modal = $("<div class='modal fade' tabindex='-1' data-focus-on='input:first' role='dialog' data-backdrop='static'></div>");
 	            		var _modal_width = opts.width ? "style='width:"+opts.width+"px;'" : "";
@@ -636,7 +654,9 @@ define('app/common',['bootstrap','moment'],function() {
 	            		_modal.on('hide.bs.modal', function () {
 	            			_modal.remove();
 	            		 });
+	            		APP.initComponents(_modal_body.get());
 	            	}
+	            	
 	            },
 	            error: function(xhr, ajaxOptions, thrownError) {
 	            	_sysError("页面加载错误:状态["+xhr.status+"]错误["+xhr.statusText+"]");

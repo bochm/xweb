@@ -24,6 +24,7 @@ require.config({
 		'bootstrap/daterangepicker':'lib/bootstrap/daterangepicker/daterangepicker',
 		'bootstrap/datepicker':'lib/bootstrap/datepicker/bootstrap-datepicker',
 		'sweetalert':'lib/bootstrap/sweetalert/sweet-alert',
+		'switch':'lib/bootstrap/switch/bootstrap-switch',
 		'moment':'lib/utils/moment',
 		'jquery/migrate':'lib/jquery/jquery-migrate-min',//jquery版本迁移插件
 		'jquery/scrolltotop':'lib/jquery/scrolltotop',//返回顶部

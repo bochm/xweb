@@ -55,8 +55,7 @@
 					<div class="form-group">
 						<label class="control-label col-md-4">是否启用</label>
 						<div class="col-md-8">
-						<input type="checkbox" class="make-switch form-control" data-on-text="Yes" data-off-text="No" checked>
-						<input type="checkbox" checkedVal="1" name="status" class="bx bx-switch bx-switch-yn-1  form-control" checked="checked"  />
+						<input type="checkbox" class="bs-switch form-control" data-on-text="是的"  data-off-text="不是" checked>
 						</div>
 					</div>
 				</div>
@@ -80,6 +79,9 @@ require(['app/common','app/form'],function(APP,FORM){
 	}
 	
 	var act = '${param.act}';
+	$('.modal-footer .btn-primary').click(function(){
+		$('#bsys-menu-edit-form').submit();
+	});
 	
 /* 	var menuTable = $("#sys_menu").dataTable().api(); 
 	var _formInitOpt = {};
