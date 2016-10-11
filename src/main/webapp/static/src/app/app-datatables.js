@@ -358,7 +358,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			
 			pageToolbar.find('.btn[data-role]').each(function(){
 				var _btn = $(this);
-				var _btn_type = _btn.attr('data-role');
+				var _btn_type = _btn.data('role');
 				_btn.click(function(e){
 					if(_btn_type == 'addRecord') _addEditRecord(otable, _btn.get(),e,'add');
 					else if(_btn_type == 'saveRecord') _addEditRecord(otable, _btn.get(),e,'save');
@@ -439,16 +439,16 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 		
 		if(APP.isMobile)  default_opt.buttons = [];
 		
-		default_opt.dataUrl = $table.attr('data-url');
-		default_opt.serverSide = ($table.attr('data-server-side') != undefined && $table.attr('data-server-side') == "true");
+		default_opt.dataUrl = $table.data('url');
+		default_opt.serverSide = ($table.data('server-side') != undefined && $table.data('server-side') == "true");
 		
 		var ajax_params = {};
 		if(default_opt.params) ajax_params = default_opt.params;//页面定义Ajax请求参数
 		
 		if(default_opt.dataUrl != undefined){
-			var columnArray = new Array();
+			var columnArray = (default_opt.columns ? default_opt.columns : new Array());
 			$table.find('th[data-column]').each(function(){
-				columnArray.push({'data' : $(this).attr('data-column')});
+				columnArray.push({'data' : $(this).data('column')});
 			});
 			default_opt['columns'] = columnArray;
 			//启用data-server-side时表格,不启用搜索框,适合于数据量较大，需要物理分页	

@@ -3,7 +3,7 @@
 <mapper namespace="cn.bx.bsys.menu.mapper.MenuMapper"> 
     <sql id="menuColumns">
     	a.id,
-		a.parent_id AS "parent.id",
+		a.parent_id,
 		a.name,
 		a.target,
 		a.icon,
@@ -23,5 +23,13 @@
 		FROM sys_menu a
 		<include refid="menuJoins"/>
 		ORDER BY a.sort
+	</select>
+	<select id="selectAllMenuTree" parameterType="map" resultType="map">
+		select id,name,parent_id,icon icons from sys_menu
+		<where>
+			<if test="parentMenu != null and parentMenu != ''">
+				parent_id = #{parentMenu}
+			</if>
+		</where>
 	</select>
 </mapper>

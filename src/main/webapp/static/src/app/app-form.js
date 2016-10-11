@@ -223,7 +223,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			if(isInitValue){
 				if(opts.formData[this.name]){
 					if(this.type == 'checkbox'){
-						formField.attr('checked',opts.formData[this.name] == formField.attr('checkedVal'));
+						formField.attr('checked',opts.formData[this.name] == (formField.data('on-value') ? formField.data('on-value') : '1'));
 					}else{
 						formField.val(opts.formData[this.name]);
 					}
@@ -234,22 +234,20 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				try{
 					if(formField.attr('placeholder') && !isInitValue) _selectOpt.placeholder = JSON.parse(formField.attr('placeholder'));
 				}catch(e){alert("placeholder属性值必须为json字符串");}
-				if(formField.attr('jsonData')) _selectOpt.jsonData = formField.attr('jsonData');
-				if(formField.attr('stmID')) _selectOpt.stmID = formField.attr('stmID');
+				if(formField.data('json')) _selectOpt.jsonData = formField.data('json');
+				if(formField.data('stmid')) _selectOpt.stmID = formField.data('stmid');
 				formField.select(_selectOpt);
 			}
 			if(formField.attr('form-role') == 'treeSelect'){
 				var _treeSelectOpt = opts.fieldOpts[_fieldName] || {};
-				if(formField.attr('stmID')) _treeSelectOpt.stmID = formField.attr('stmID');
-				try{
-					if(formField.attr('view')) _treeSelectOpt.view = JSON.parse(formField.attr('view'));
-				}catch(e){alert("view属性值必须为json字符串");}
-				
-				if(!formField.attr('treeID')){
-					alert("请指定表单元素的treeID属性");
+				if(formField.data('stmid')) _treeSelectOpt.stmID = formField.data('stmid');
+				if(!formField.data('treeid')){
+					alert("请指定表单元素的data-treeid属性");
 					return;
 				}
-				formField.treeSelect(_treeSelectOpt,formField.attr('treeID'));
+				require(['app/tree'],function(){
+					formField.treeSelect(_treeSelectOpt,formField.data('treeid'));
+				});
 			}
 		});
 		var _in_modal = (_this.parents('.modal-dialog').size() > 0) ? '.modal-dialog' : '';

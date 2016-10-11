@@ -1,7 +1,7 @@
 /**
  * 基于Ztree的基本封装
  */
-define(['app/common','ztree'],function(APP){
+define(['app/common','jquery/ztree'],function(APP){
 	$.fn.tree = function(settings,zNodes){
 		var _this = $(this);
 		var _nodeData = zNodes;
@@ -11,27 +11,17 @@ define(['app/common','ztree'],function(APP){
 				var paramData = {};
 				if(settings.stmID) paramData.stmID=settings.stmID;
 				if(settings.param) paramData.param=settings.param;
-				$.ajax({
-					url:url,
-					async:false,//同步方式防止数据量大是无法加载
-					dataType:"json",
-					type : "POST",
-					contentType : 'application/json;charset=utf-8',
-					data: JSON.stringify(paramData),
-					success:function(result){
-						_nodeData = bx.parseArrayResult(result);
-					},
-					error:function(xhr,status,error){
-						alert("树形控件获取服务端数据错误["+status+"]");
-						return $.error(xhr);
-					}
+				//同步方式防止数据量大是无法加载
+				APP.ajax(url,paramData,'POST',false,function(ret){
+					_nodeData = ret;
 				});
 			}
 		}
 		var tree_settings = $.extend(true,{
 			view: {
 				dblClickExpand: true,
-				nameIsHTML: true
+				nameIsHTML: true,
+				showIcon: false
 			},
 			data: {
 				simpleData: {
@@ -40,6 +30,7 @@ define(['app/common','ztree'],function(APP){
 			},
 			callback: {
 				onNodeCreated : function(event, treeId, treeNode) {
+					console.log(treeNode);
 			        if (treeNode.icons) {
 			            $('#'+ treeNode.tId +'_a').addClass("icons")
 			            						  .find('> span.button').append('<i class="'+ treeNode.icons +'"></i>');
@@ -93,6 +84,14 @@ define(['app/common','ztree'],function(APP){
 			if(settings.data.simpleData && settings.data.simpleData.idKey) _key_id = settings.data.simpleData.idKey;
 		}
 		var treesel_settings = $.extend(true,{
+			data : {
+				key : {name : 'name'},
+				simpleData: {
+					enable: true,
+					idKey: "id",
+					pIdKey: "pId"
+				}
+			},
 			callback: {//点击时将数据传入显示控件
 				onClick: function(e, tree_id, treeNode){
 					var zTree = $.fn.zTree.getZTreeObj(tree_id),
@@ -106,19 +105,31 @@ define(['app/common','ztree'],function(APP){
 					}
 					if (_name.length > 0 ) _name = _name.substring(0, _name.length-1);
 					if (_id.length > 0 ) _id = _id.substring(0, _id.length-1);
-					_this.attr("value", _name);
+					_this.val(_name);
 					//validate字段去除
-					_this.closest('span.form-field').removeClass('has-error');
-					_this.siblings("span[for='"+_this.attr("id")+"']").remove();
-					_id_filed.attr("value",_id);
+					_this.closest('.form-group').removeClass('has-error');
+					_this.parent().siblings("span#"+_this.attr("id")+"-error").remove();
+					_id_filed.val(_id);
 				}
 			}
 		},settings);
+		//自定义id、pid、name属性名称
+		if(!APP.isEmpty(_this.attr('tree-id'))){
+			treesel_settings.data.simpleData.idKey = _this.attr('tree-id');
+			_key_id = _this.attr('tree-id');
+		}
+		if(!APP.isEmpty(_this.attr('tree-name'))){
+			treesel_settings.data.key.name = _this.attr('tree-name');
+			_key_name = _this.attr('tree-name');
+		}
+		if(!APP.isEmpty(_this.attr('tree-pid'))){
+			treesel_settings.data.simpleData.pIdKey = _this.attr('tree-pid');
+		}
 		
 		
 		//为当前控件增加必要的显示控件和树形下拉菜单
 		var inputGroup = $("<div class='input-group'></div>");//为当前控件增加图标
-		var selBtn = $("<span class='input-group-addon' style='cursor: pointer;'><i class='icon-list'></i></span>");//图标-点击显示下拉菜单
+		var selBtn = $("<span class='input-group-addon' style='cursor: pointer;'><i class='fa fa-list'></i></span>");//图标-点击显示下拉菜单
 		_this.appendTo(inputGroup);//将当前控件放入input-group
 		inputGroup.append(selBtn);//增加图标
 		_parent.append(inputGroup);//将input-group放入当前控件原父节点
@@ -170,5 +181,4 @@ define(['app/common','ztree'],function(APP){
 		}
 		return _this;
 	};
-	return bx;
 });

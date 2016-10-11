@@ -620,8 +620,8 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 					    "infoEmpty": ""
 					},
 					"fnCreatedRow": function (nRow, aData, iDataIndex) {
-						$(nRow).attr("data-tt-id",aData[method.tid]);
-						$(nRow).attr("data-tt-parent-id",aData[method.tpid]);
+						$(nRow).data("tt-id",aData[method.tid]);
+						$(nRow).data("tt-parent-id",aData[method.tpid]);
 			         },
 			         "fnInitComplete":function(oSettings, json){
 			        	 

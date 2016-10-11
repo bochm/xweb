@@ -23,7 +23,7 @@
 					<label class="control-label col-md-4">菜单图标</label>
 					<div class="col-md-8">
 					<select id="sys_menu_forms_icons" name="icon" form-role='select' placeholder='{"id":"icon-suitcase"}' 
-					jsonData='${resourcePath}/jsons/icons' class="form-control required selectOpt"/>
+					data-json='${resourcePath}/jsons/icons' class="form-control required selectOpt"/>
 					</div>
 				</div>
 			</div>
@@ -42,10 +42,9 @@
 						<label class="control-label col-md-2">上级菜单</label>
 						<div class="col-md-10">
 						<input type="hidden"  name="parentMenu"/>
-						<input type="text" id="sys_menu_forms_parentSel" name="parentMenuName" form-role="" 
-						readonly="readonly"  class="form-control required selectOpt"  treeID="sys_menu_forms_parentTree"
-						view='{"selectedMulti": false}'
-						stmID="com.bx.app.sys.menu.mapper.MenuServiceMapper.selectAllMenuTree"/>
+						<input type="text" id="sys_menu_forms_parentSel" name="parentMenuName" form-role="treeSelect" tree-pid="parent_id"
+						readonly="readonly"  class="form-control required selectOpt"  data-treeid="sys_menu_forms_parentTree"
+						data-stmid="cn.bx.bsys.menu.mapper.MenuMapper.selectAllMenuTree"/>
 						</div>
 					</div>
 				</div>
@@ -107,7 +106,8 @@ require(['app/common','app/form'],function(APP,FORM){
 	 $('#bsys-menu-edit-form').initForm({
 		 validate : {},
 		 fieldOpts : {
-			 "icon" : {"templateResult" : sys_menuedit_formatResult, "templateSelection":sys_menuedit_formatResult}
+			 "icon" : {"templateResult" : sys_menuedit_formatResult, "templateSelection":sys_menuedit_formatResult},
+			 "parentMenuName" : {"view" : {"selectedMulti": false}}
 		 }
 	 });
 
