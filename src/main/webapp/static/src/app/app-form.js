@@ -391,8 +391,11 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			_select.select2(default_opt);
 			if(_select.attr("value"))_select.val(_select.attr("value")).trigger("change");
 			_select.on("select2:select", function (e) { 
-				_select.closest('span.form-field').removeClass('has-error');
-				_select.siblings("span[for='"+_select.attr("id")+"']").remove();
+				if(_select.val() != '-1' && _select.val() != ''){
+					_select.closest('.form-group').removeClass('has-error');
+					_select.siblings("span#"+_select.attr("id")+"-error").remove();
+					_select.siblings("i.validate-icon").removeClass("fa-check fa-warning").removeAttr("data-original-title");
+				}
 			});
 		});
 		

@@ -22,8 +22,10 @@
 				<div class="form-group">
 					<label class="control-label col-md-4">菜单图标</label>
 					<div class="col-md-8">
+					<div class="input-icon left"> <i class="fa validate-icon"></i>
 					<select id="sys_menu_forms_icons" name="icon" form-role='select' placeholder='{"id":"icon-suitcase"}' 
 					data-json='${resourcePath}/jsons/icons' class="form-control required selectOpt"/>
+					</div>
 					</div>
 				</div>
 			</div>
@@ -41,7 +43,7 @@
 					<div class="form-group">
 						<label class="control-label col-md-2">上级菜单</label>
 						<div class="col-md-10">
-						<input type="hidden"  name="parentMenu"/>
+						<input type="hidden"  name="parentMenu" data-for="parentMenuName"/>
 						<input type="text" id="sys_menu_forms_parentSel" name="parentMenuName" form-role="treeSelect" tree-pid="parent_id"
 						readonly="readonly"  class="form-control required selectOpt"  data-treeid="sys_menu_forms_parentTree"
 						data-stmid="cn.bx.bsys.menu.mapper.MenuMapper.selectAllMenuTree"/>

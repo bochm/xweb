@@ -20,8 +20,7 @@ define(['app/common','jquery/ztree'],function(APP){
 		var tree_settings = $.extend(true,{
 			view: {
 				dblClickExpand: true,
-				nameIsHTML: true,
-				showIcon: false
+				nameIsHTML: true
 			},
 			data: {
 				simpleData: {
@@ -71,10 +70,11 @@ define(['app/common','jquery/ztree'],function(APP){
 	$.fn.treeSelect = function(settings,treeId){
 		var _this = $(this);
 		var _parent = _this.parent();
+		var _sel_name = _this.attr("name");
 		//保存ID的隐藏控件
-		var _id_filed = _this.prev("input[type='hidden']");
-		if(_id_filed.length == 0){
-			alert("请在treeSelect元素之前添加id隐藏控件");
+		var _id_filed = _this.prevAll("input[data-for='"+_sel_name+"']");
+		if(_id_filed.length != 1){
+			alert("请在treeSelect元素之前添加id值控件");
 			return _this;
 		}
 		var _key_id = "id";
@@ -109,6 +109,7 @@ define(['app/common','jquery/ztree'],function(APP){
 					//validate字段去除
 					_this.closest('.form-group').removeClass('has-error');
 					_this.parent().siblings("span#"+_this.attr("id")+"-error").remove();
+					_this.parent().siblings("i.validate-icon").removeClass("fa-check fa-warning").removeAttr("data-original-title");
 					_id_filed.val(_id);
 				}
 			}

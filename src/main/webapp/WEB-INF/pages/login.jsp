@@ -2,7 +2,7 @@
 <%@ page import="java.util.Calendar"%>
 <%@ include file="/WEB-INF/include/head_inc.jsp" %>
 <%@ include file="/WEB-INF/include/script_inc.jsp"%>
-<body class="login" >
+<body class="login">
 <div style="display: none;">
 <div class="content">
 	<form class="login-form" action="${ctx }/login" method="post">
@@ -35,6 +35,7 @@ require(['domReady!','main'],function(doc,APP){
 		APP.alert("",_login_msg,"error");
 	}
 	$('body>div').slideDown('fast',function(){
+		document.forms[0].username.focus();
 		$('form.login-form').on('submit',function(){
 			if(document.forms[0].username.value == "" || document.forms[0].password.value == ""){
 				APP.alert("","请输入用户名和密码","error");
