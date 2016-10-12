@@ -22,7 +22,11 @@ public class MenuController {
 	MenuService menuService;
 	@RequestMapping(value={"list",""})
 	public @ResponseBody List<Menu> listMenu(@RequestBody Map<String,String> param){
-		return menuService.selectList("listMenu", param);
+		List<Menu> list =  menuService.selectList("listMenu", param);
+		for(Menu m : list){
+			System.out.println(m.getParentId());
+		}
+		return list;
 	}
 	@RequestMapping(value="add")
 	public @ResponseBody DataMessage addMenu(Menu menu){

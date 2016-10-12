@@ -17,7 +17,8 @@
 		</div>
 		<div class="form-actions">
 			<button type="submit" class="btn btn-success uppercase">登录</button>
-			<span class="x-check check-success rememberme"><input type="checkbox" name="rememberMe" id="login-rememberMe" value="1"><label for="login-rememberMe">记住</label></span>
+			<span class="x-check check-success rememberme"><input type="checkbox" name="rememberMe" id="login-rememberMe" value="1" checked="checked"><label for="login-rememberMe">记住</label></span>
+			
 		</div>
 		<div class="create-account">
 			<p><a href="javascript:;" id="register-btn" class="uppercase">创建账号</a></p>

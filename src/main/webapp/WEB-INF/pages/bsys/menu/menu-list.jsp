@@ -17,7 +17,7 @@ require(['app/common','app/treetable'],function(APP,DT){
 	var columnDefs = [	{"targets": 1,"render": function ( data, type, row ) {return "<i class='"+data+"'></i>";}},
 						{"targets": 3,"render": function ( data, type, row ) {return data == "1" ? "启用" : "停用";}}]
 	$('table.datatable').treetable({
-		"tid":"id","tpid":"parent_id",
+		"tid":"id","tpid":"parentId",
 		"expandable": true,"expandBtn" : true,
 		"columns": columns,"columnDefs": columnDefs,
 		"buttons" : ['addRecord'],

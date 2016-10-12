@@ -84,7 +84,9 @@ define('app/common',['bootstrap','moment'],function() {
 	                height: e[a + 'Height']
 	            };
 	        },
-	        
+	        log : function(obj){
+	        	if(_is_debug) console.log(obj);
+	        },
 	        getUniqueID: function(prefix) {
 	            return 'webapp_' + Math.floor(Math.random() * (new Date()).getTime());
 	        },
@@ -328,7 +330,6 @@ define('app/common',['bootstrap','moment'],function() {
 		        				 else _this.val(_this.data('off-value') ? _this.data('off-value') : '0');
 	        				 }
 	        			});
-	        			_this.click();
 	        			
 	        		});
 	        	});

@@ -163,7 +163,8 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			if($(element).siblings("i.validate-icon").size() > 0){//图标方式提示错误
 				var icon = $(element).siblings("i.validate-icon");
 	            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
-	            icon.removeClass("fa-warning").addClass("fa-check");
+	            icon.removeClass("fa-warning");
+	            if($(element).tagName == 'INPUT') icon.addClass("fa-check");
 	            icon.removeAttr("data-original-title");
             }else {
             	label.closest('.form-group').removeClass('has-error');
@@ -210,7 +211,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 	 */
 	$.fn.initForm = function (opts,callback,errorback) {
 		var _this = $(this);
-		_this.clearForm(true);
+		//_this.clearForm(true);
 		if(APP.isEmpty(opts)) opts = {};
 		if(APP.isEmpty(opts.fieldOpts)) opts.fieldOpts = {};//fieldOpts表单元素的初始化参数
 		var validate_settings = $.extend(true,validate_default_settings,opts.validate);
@@ -219,7 +220,6 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		var formField;
 		_this.find(opts.fieldSelector ? opts.fieldSelector : '*[name]').each(function(){
 			formField = $(this);
-			
 			var _fieldName = formField.attr('name');
 			if(isInitValue){
 				if(opts.formData[this.name]){
@@ -240,16 +240,13 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				formField.select(_selectOpt);
 			}
 			if(formField.attr('form-role') == 'treeSelect'){
-				
-					console.log(formField);
-					var _treeSelectOpt = opts.fieldOpts[_fieldName] || {};
-					if(formField.data('stmid')) _treeSelectOpt.stmID = formField.data('stmid');
-					if(!formField.data('treeid')){
-						alert("请指定表单元素的data-treeid属性");
-						return;
-					}
-				
-					formField.treeSelect(_treeSelectOpt,formField.data('treeid'));
+				var _treeSelectOpt = opts.fieldOpts[_fieldName] || {};
+				if(formField.data('stmid')) _treeSelectOpt.stmID = formField.data('stmid');
+				if(!formField.data('treeid')){
+					alert("请指定表单元素的data-treeid属性");
+					return;
+				}
+				formField.treeSelect(_treeSelectOpt,formField.data('treeid'));
 			}
 		});
 		var _in_modal = (_this.parents('.modal-dialog').size() > 0) ? '.modal-dialog' : '';

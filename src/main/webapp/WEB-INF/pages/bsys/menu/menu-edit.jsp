@@ -61,7 +61,7 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						<label class="control-label col-md-4">是否启用</label>
-						<div class="col-md-8"><input type="checkbox" name="status" data-on-value="1" class="bs-switch form-control" data-off-text="不是" checked></div>
+						<div class="col-md-8"><input type="checkbox" name="status" data-on-value="1" checked class="bs-switch form-control" data-off-text="不是"></div>
 					</div>
 				</div>
 			</div>
@@ -110,7 +110,7 @@ require(['app/common','app/form'],function(APP,FORM){
 	 } */
 	 
 	 $('#bsys-menu-edit-form').initForm({
-		 formAction : '${param.act}',clearForm : true,
+		 formAction : act,clearForm : true,
 		 validate : {},
 		 fieldOpts : {
 			 "icon" : {"templateResult" : sys_menuedit_formatResult, "templateSelection":sys_menuedit_formatResult},
