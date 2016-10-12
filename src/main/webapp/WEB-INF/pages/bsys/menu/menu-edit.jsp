@@ -8,7 +8,7 @@
 	   <h4 class="modal-title">菜单维护</h4>
 	</div>
 	<div class="modal-body">
-	   	<form  role="form" class="form-horizontal" id="bsys-menu-edit-form" action="${ctx}/bsys/menu/${param.act}">
+	   	<form  role="form" class="form-horizontal" id="bsys-menu-edit-form" action="${ctx}/bsys/menu/${param.act}.json">
 	   	<input type="hidden" name="id">
 	   	<div class="form-body">
 	   		<div class="row">
@@ -43,9 +43,9 @@
 					<div class="form-group">
 						<label class="control-label col-md-2">上级菜单</label>
 						<div class="col-md-10">
-						<input type="hidden"  name="parentMenu" data-for="parentMenuName"/>
-						<input type="text" id="sys_menu_forms_parentSel" name="parentMenuName" form-role="treeSelect" tree-pid="parent_id"
-						readonly="readonly"  class="form-control required selectOpt"  data-treeid="sys_menu_forms_parentTree"
+						<input type="hidden"  name="parent_id" data-for="parentMenuName"/>
+						<input type="text" name="parentMenuName" form-role="treeSelect" tree-pid="parent_id"
+						readonly="readonly"  class="form-control required selectOpt"  data-treeid="bsys_menu_forms_parentTree"
 						data-stmid="cn.bx.bsys.menu.mapper.MenuMapper.selectAllMenuTree"/>
 						</div>
 					</div>
@@ -54,10 +54,14 @@
 			<div class="row">
 				<div class="col-md-6">
 					<div class="form-group">
+						<label class="control-label col-md-4">排序号</label>
+						<div class="col-md-8"><input type="text" name="sort" class="form-control digits"></div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
 						<label class="control-label col-md-4">是否启用</label>
-						<div class="col-md-8">
-						<input type="checkbox" class="bs-switch form-control" data-on-text="是的"  data-off-text="不是" checked>
-						</div>
+						<div class="col-md-8"><input type="checkbox" name="status" data-on-value="1" class="bs-switch form-control" data-off-text="不是" checked></div>
 					</div>
 				</div>
 			</div>
@@ -76,7 +80,7 @@ require(['app/common','app/form'],function(APP,FORM){
 	function sys_menuedit_formatResult(data){
 		if (!data.id && !data.icons) { return data.text; }
 		var icons = data.icons ? data.icons : data.id;
-		return $("<span align='left'><i class='fa "+icons+"'></i>&nbsp;"+data.text+"</span>");
+		return $("<span align='left'><i class='"+icons+"'></i>&nbsp;"+data.text+"</span>");
 	}
 	
 	var act = '${param.act}';
@@ -106,12 +110,13 @@ require(['app/common','app/form'],function(APP,FORM){
 	 } */
 	 
 	 $('#bsys-menu-edit-form').initForm({
+		 formAction : '${param.act}',clearForm : true,
 		 validate : {},
 		 fieldOpts : {
 			 "icon" : {"templateResult" : sys_menuedit_formatResult, "templateSelection":sys_menuedit_formatResult},
 			 "parentMenuName" : {"view" : {"selectedMulti": false}}
 		 }
 	 });
-
+	
 });
 </script>

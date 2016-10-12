@@ -317,16 +317,19 @@ define('app/common',['bootstrap','moment'],function() {
 	        	require(['switch'],function(){
 	        		_queryContainer(ct).find('.bs-switch').each(function(){
 	        			var _this = $(this);
-	        			if(_this.attr('checked')) {
-	        				_this.attr('checked','checked')
-	        				_this.val(_this.data('on-value') ? _this.data('on-value') : '1');
-	        			}
 	        			_this.bootstrapSwitch({
+	        				'state' : _this.attr('checked') == 'checked',
 	        				'onSwitchChange' : function(event, state){
 	        					if(state) _this.val(_this.data('on-value') ? _this.data('on-value') : '1');
 	        					else _this.val(_this.data('off-value') ? _this.data('off-value') : '0');
-	        				}
+	        				 },
+	        				 'onInit' : function(event, state){
+	        					 if(state) _this.val(_this.data('on-value') ? _this.data('on-value') : '1');
+		        				 else _this.val(_this.data('off-value') ? _this.data('off-value') : '0');
+	        				 }
 	        			});
+	        			_this.click();
+	        			
 	        		});
 	        	});
 	        },

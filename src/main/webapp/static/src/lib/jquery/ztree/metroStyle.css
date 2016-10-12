@@ -75,6 +75,9 @@ website:    http://code.google.com/p/jquerytree/
 /*自定义图标修改  bcm*/
 .ztree li a.icons > span.button > i{font-family:'FontAwesome' !important;}
 .ztree li a.icons > span.button{text-indent:-3px; font-size:15px; margin-top:2px; line-height:17px; text-align:center; background:none !important;}
+.ztree li a.icon_fonts > span.button > i{font-family:'iconfont' !important;}
+.ztree li a.icon_fonts > span.button{text-indent:-3px; font-size:15px; margin-top:2px; line-height:17px; text-align:center; background:none !important;}
+
 .ztree li span.button.edit {margin-left:2px; margin-right: -1px; background-position: -189px -21px; vertical-align:top; *vertical-align:middle}
 .ztree li span.button.edit:hover {
   background-position: -168px -21px;

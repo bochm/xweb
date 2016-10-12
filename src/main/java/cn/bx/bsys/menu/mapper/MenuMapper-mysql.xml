@@ -32,4 +32,11 @@
 			</if>
 		</where>
 	</select>
+	<insert id="addMenu">
+		insert into sys_menu(id,parent_id, name, target, icon, sort, type, permission, create_by, create_date, update_by, update_date, remarks, status)
+		values(#{id},#{parent_id},#{name},#{target},#{icon},#{sort},#{type},#{permission},#{createBy},#{createDate},#{updateBy},#{updateDate},
+		#{remarks},#{status})
+	</insert>
+	
+	
 </mapper>

@@ -128,7 +128,7 @@
   /* border-radius: 4px; */ }
   .select2-container--default .select2-selection--single .select2-selection__rendered {
     color: #444;
-    line-height: 30px; }
+    line-height: 35px; } /*30改为35 显示水平居中*/
   .select2-container--default .select2-selection--single .select2-selection__clear {
     cursor: pointer;
     float: right;
