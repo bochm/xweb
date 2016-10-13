@@ -128,7 +128,6 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 	      var handler,
 	          settings = this.settings,
 	          target;
-
 	      if (settings.expandable === true && this.isBranchNode()) {
 	        handler = function(e) {
 	          $(this).parents("table").treetable("node", $(this).parents("tr").data(settings.nodeIdAttr)).toggle();
@@ -415,7 +414,7 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 	  methods = {
 	    init: function(options, force) {
 	      var settings;
-
+	      APP.log(options);
 	      settings = $.extend({
 	        branchAttr: "ttBranch",
 	        clickableNodeNames: false,
@@ -615,6 +614,7 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 				   	//"ajax" : {"async":false,"url":method.url,"dataSrc" : APP_CONF.DATA},//取消同步,树形初始化时间会无法加载样式,ajax返回json结果取值为 APP_CONF.DATA = "data"
 					"processing" : true,
 					"serverSide" : false,
+					"tableType" : "treetable",//treetable排序使用TreeBean中的treeSort(parentIds + sort + id),否则显示层级不正确
 					"language": {
 					    "info": "共_TOTAL_条记录",
 					    "infoEmpty": ""
@@ -622,7 +622,6 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 					"fnCreatedRow": function (nRow, aData, iDataIndex) {
 						$(nRow).attr("data-tt-id",aData[method.tid]);
 						$(nRow).attr("data-tt-parent-id",aData[method.tpid]);
-						APP.log(aData);
 			         },
 			         "fnInitComplete":function(oSettings, json){
 			        	 
@@ -630,10 +629,13 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 				},method);
 			  init_opts.ordering = false;//暂时不支持排序
 			  init_opts.paging = false;//暂时不支持分页
+			  
 			  var _table = $(_this);
 			  var tableid = _table.attr('id');
+			  
 			  _table.initTable(init_opts,function(otable){
-				  var treetable = methods.init.apply(_this, arguments);
+				  
+				  var treetable = methods.init.call(_this, method);
 				  //初始化按钮
 				  if(init_opts.expandBtn){
 					  $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar>.dt-buttons").prepend(

@@ -414,11 +414,16 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		var _parent = _this.parent();
 		var _sel_name = _this.attr("name");
 		//保存ID的隐藏控件
-		var _id_filed = _this.prevAll("input[data-for='"+_sel_name+"']");
-		if(_id_filed.length != 1){
-			alert("请在treeSelect元素之前添加id值控件");
-			return _this;
+		var _id_filed = _this.prevAll("input[data-id-for='"+_sel_name+"']");
+		if(_id_filed.length == 0){
+			_id_filed = $("<input type='hidden' name='parent.id'/>");
+			_parent.prepend(_id_filed);
+			alert("treeSelect元素之前添加id值控件已自动添加");
+			//return _this;
 		}
+		//保存IDS的隐藏控件
+		var _ids_filed = _this.prevAll("input[data-ids-for='"+_sel_name+"']");
+		
 		var _key_id = "id";
 		var _key_name = "name";
 		if(settings && settings.data ){
@@ -440,11 +445,20 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 						var zTree = $.fn.zTree.getZTreeObj(tree_id),
 						nodes = zTree.getSelectedNodes(),
 						_name = "",
-						 _id = ""
+						 _id = "",
+						 _ids = "";
 						nodes.sort(function compare(a,b){return a[_key_id]-b[_key_id];});
 						for (var i=0, l=nodes.length; i<l; i++) {
 							_name += nodes[i][_key_name] + ",";
 							_id += nodes[i][_key_id] + ",";
+						}
+						if(_ids_filed.length == 1 ){ //如果为单选且页面定义了ids隐藏域,则为parentIds赋值
+							var _parent_arr = treeNode.getPath();
+							for(var i=0;i<_parent_arr.length;i++){
+								_ids += _parent_arr[i][_key_id] + "-";
+							}
+							if (_ids.length > 0 ) _ids = _ids.substring(0, _ids.length-1);
+							_ids_filed.val(_ids);
 						}
 						if (_name.length > 0 ) _name = _name.substring(0, _name.length-1);
 						if (_id.length > 0 ) _id = _id.substring(0, _id.length-1);

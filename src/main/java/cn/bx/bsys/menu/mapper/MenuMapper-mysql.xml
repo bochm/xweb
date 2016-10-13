@@ -3,7 +3,8 @@
 <mapper namespace="cn.bx.bsys.menu.mapper.MenuMapper"> 
     <sql id="menuColumns">
     	a.id,
-		a.parent_id,
+		a.parent_id "parent.id",
+		a.parent_ids,
 		a.name,
 		a.target,
 		a.icon,
@@ -22,7 +23,6 @@
 			<include refid="menuColumns"/>
 		FROM sys_menu a
 		<include refid="menuJoins"/>
-		ORDER BY a.sort
 	</select>
 	<select id="selectAllMenuTree" parameterType="map" resultType="map">
 		select id,name,parent_id,icon icons from sys_menu
@@ -33,8 +33,8 @@
 		</where>
 	</select>
 	<insert id="addMenu">
-		insert into sys_menu(id,parent_id, name, target, icon, sort, type, permission, create_by, create_date, update_by, update_date, remarks, status)
-		values(#{id},#{parent_id},#{name},#{target},#{icon},#{sort},#{type},#{permission},#{createBy},#{createDate},#{updateBy},#{updateDate},
+		insert into sys_menu(id,parent_id,parent_ids, name, target, icon, sort, type, permission, create_by, create_date, update_by, update_date, remarks, status)
+		values(#{id},#{parent.id},#{parentIds},#{name},#{target},#{icon},#{sort},#{type},#{permission},#{createBy},#{createDate},#{updateBy},#{updateDate},
 		#{remarks},#{status})
 	</insert>
 	

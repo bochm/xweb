@@ -1,13 +1,11 @@
 package cn.bx.bsys.menu.mapper;
 
 
-import cn.bx.bframe.entity.BaseBean;
+import cn.bx.bframe.entity.TreeBean;
 
-public class Menu extends BaseBean{
+public class Menu extends TreeBean<Menu>{
 	private static final long serialVersionUID = 1L;
-	private Menu parent;	// 父级菜单
 	private String name; 	// 名称
-	private String parentId; 	// 父菜单id
 	private String target; 	// 链接
 	private String icon; 	// 图标
 	private String type; 	// 0:模块 1:功能
@@ -53,12 +51,4 @@ public class Menu extends BaseBean{
 	public void setPermission(String permission) {
 		this.permission = permission;
 	}
-	public String getParentId() {
-		return parentId;
-	}
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
-	}
-
-	
 }
