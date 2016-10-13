@@ -451,10 +451,10 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 				columnArray.push({'data' : $(this).data('column')});
 			});
 			//treetable排序使用TreeBean中的treeSort(parentIds + sort + id),否则显示层级不正确
-			if(default_opt.tableType == 'treetable'){
+			/*if(default_opt.tableType == 'treetable'){
 				columnArray.push({'data' : 'treeSort','visible' : false});
 				default_opt.order = [[columnArray.length-1, 'asc']];
-			}
+			}*/
 			default_opt['columns'] = columnArray;
 			//启用data-server-side时表格,不启用搜索框,适合于数据量较大，需要物理分页	
 			if(default_opt.serverSide){ 

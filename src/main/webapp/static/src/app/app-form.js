@@ -455,7 +455,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 						if(_ids_filed.length == 1 ){ //如果为单选且页面定义了ids隐藏域,则为parentIds赋值
 							var _parent_arr = treeNode.getPath();
 							for(var i=0;i<_parent_arr.length;i++){
-								_ids += _parent_arr[i][_key_id] + "-";
+								_ids += _parent_arr[i][_key_id] + ",";
 							}
 							if (_ids.length > 0 ) _ids = _ids.substring(0, _ids.length-1);
 							_ids_filed.val(_ids);

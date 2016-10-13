@@ -414,7 +414,6 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 	  methods = {
 	    init: function(options, force) {
 	      var settings;
-	      APP.log(options);
 	      settings = $.extend({
 	        branchAttr: "ttBranch",
 	        clickableNodeNames: false,

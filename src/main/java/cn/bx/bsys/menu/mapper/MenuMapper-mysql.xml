@@ -23,6 +23,7 @@
 			<include refid="menuColumns"/>
 		FROM sys_menu a
 		<include refid="menuJoins"/>
+		order by a.parent_ids
 	</select>
 	<select id="selectAllMenuTree" parameterType="map" resultType="map">
 		select id,name,parent_id,icon icons from sys_menu
