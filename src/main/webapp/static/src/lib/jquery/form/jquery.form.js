@@ -1181,7 +1181,7 @@ $.fn.clearForm = function(includeHidden) {
 $.fn.clearFields = $.fn.clearInputs = function(includeHidden) {
     var re = /^(?:color|date|datetime|email|month|number|password|range|search|tel|text|time|url|week)$/i; // 'hidden' is not in this list
     return this.each(function() {
-        var t = this.type, tag = this.tagName.toLowerCase();
+        var t = this.type, tag = this.tagName.toLowerCase(),_field = $(this);
         $(this).siblings("i.validate-icon").removeClass('fa-check fa-warning').removeAttr("data-original-title");//删除检测图标 mod bcm
         $(this).closest('.form-group').removeClass('has-error has-success');
         $(this).siblings('span.help-block-error').remove();
@@ -1189,10 +1189,17 @@ $.fn.clearFields = $.fn.clearInputs = function(includeHidden) {
             this.value = '';
         }
         else if (t == 'checkbox' || t == 'radio') {
-            this.checked = false;
+        	if(_field.hasClass('bs-switch')){ //bs switch暂时不处理 mod bcm
+        		
+        	}else{
+        		this.checked = false;
+        	}
         }
         else if (tag == 'select') {
             this.selectedIndex = -1;
+            if(_field.attr('form-role') == 'select'){ //select2处理  mod bcm
+            	_field.val('').trigger("change");
+            }
         }
         else if (t == "file") {
             if (/MSIE/.test(navigator.userAgent)) {

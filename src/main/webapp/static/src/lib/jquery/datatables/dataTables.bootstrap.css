@@ -59,6 +59,9 @@ div.dataTables_filter label {
 div.dataTables_filter input {
 	display: inline-block;
 }
+div.dataTables_filter .icon-search {
+	margin-top: -1.3em;/*bx add Í¼±êÎ»ÖÃÉÏÒÆ */
+}
 
 div.dataTables_info {
   clear: both;

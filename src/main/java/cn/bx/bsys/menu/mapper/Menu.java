@@ -12,7 +12,6 @@ public class Menu extends TreeBean<Menu>{
 	private String permission; // 权限标识
 	public Menu(){
 		super();
-		this.sort = 10;
 		this.type = "0";
 	}
 	public Menu getParent() {

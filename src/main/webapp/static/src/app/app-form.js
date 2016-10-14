@@ -418,7 +418,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		if(_id_filed.length == 0){
 			_id_filed = $("<input type='hidden' name='parent.id'/>");
 			_parent.prepend(_id_filed);
-			alert("treeSelect元素之前添加id值控件已自动添加");
+			APP.log("treeSelect元素之前添加id值控件已自动添加");
 			//return _this;
 		}
 		//保存IDS的隐藏控件

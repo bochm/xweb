@@ -18,7 +18,12 @@ require(['app/common','app/treetable'],function(APP,DT){
 	];
 	var columnDefs = [	{"targets": 2,
 		"render": function ( data, type, row ) {
-			return "<i class='"+row.icon+"'> "+data+"</i>";
+			if(row.type == '1'){ //0:模块 1:功能
+				return "<i class='fa fa-pencil-square-o'></i> "+data;
+			}else{
+				if(row.target == '#') return "<i class='fa fa-cog'></i> "+data;
+				else return "<i class='fa fa-link'></i> "+data;
+			}
 		}},
 	    {"targets": 3,"render": function ( data, type, row ) {
 	    	return "<i class='"+data+"'></i>";

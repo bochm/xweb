@@ -19,7 +19,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      * 默认参数设置
      */
 	var default_opts = {
-			"dom": "<f><'dataTables_btn_toolbar'B><'table-scrollable'tr<'table-foot-bar' il<'flash_btns'>p>>",
+			"dom": "<'dataTables_btn_toolbar'B><'dataTables_filter'><'table-scrollable'tr<'table-foot-bar' ilp>>",//f改为自定义回车搜索
 			"oLanguage": {
 				"sLengthMenu": "_MENU_/页",
 				"sSearch":"<div class='input-icon input-icon-sm'><i class='iconfont icon-search'></i>_INPUT_</div>",
@@ -335,6 +335,11 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
     **/
 	$.fn.initTable = function (opts,callback) {
 		var _table = $(this);
+		var tableid = _table.attr('id');
+		if(APP.isEmpty(tableid)){
+			alert("请指定table id");
+			return;
+		}
 		var default_opt = $.extend(true,{
 			"processing" : true,
 			"serverSide" : false,
@@ -347,12 +352,29 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			"select": {style: 'os',info:false},
 			"buttons": [],
 			//"buttons":[{extend: 'collection',text: '导出', buttons : ['selectAll','selectNone','print']},"addRecord","deleteRecord"],
-			"fnCreatedRow": function (nRow, aData, iDataIndex) {
+			"createdRow": function (nRow, aData, iDataIndex) {},
+	        "initComplete":function(oSettings, json){
+	        	if(oSettings.searching == undefined || oSettings.searching){ //未定义则为默认启用
+	        		var searchHTML = "<label><div class='input-icon right'><input type='search' class='form-control input-sm' placeholder='请输入搜索内容' aria-controls='"+tableid+"'><i class='iconfont icon-search'></i></div></label>"; 
+		            $("div#"+tableid+"_wrapper .dataTables_filter").html(searchHTML);
+		            //搜索事件
+		            $("div#"+tableid+"_wrapper .dataTables_filter input").on('keyup',function(e) {
+		                if (e.keyCode == 13 || (e.keyCode == 8 && (this.value.length == 0))) {
+		                	_table.dataTable().api().search(this.value).draw();
+		                }
+		            });
+		            $("div#"+tableid+"_wrapper .dataTables_filter .icon-search").on('click',function(e) {
+		            	var _input = $(this).prev('input');
+		                if (_input.val().length > 0) {
+		                	_table.dataTable().api().search(_input.val()).draw();
+		                }
+		            });
+	        	}
 	         }
 		},opts);
 		return _getDataTable(_table,default_opt,function(otable){
 			//初始化表格工具栏 ，增加ID约束
-			var tableid = _table.attr('id');
+			
 			var toolbar = $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar");
 			var pageToolbar = $("#"+(default_opt.toolbar ? default_opt.toolbar : (tableid+"-toolbar")));
 			
@@ -450,11 +472,16 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			$table.find('th[data-column]').each(function(){
 				columnArray.push({'data' : $(this).data('column')});
 			});
-			//treetable排序使用TreeBean中的treeSort(parentIds + sort + id),否则显示层级不正确
-			/*if(default_opt.tableType == 'treetable'){
-				columnArray.push({'data' : 'treeSort','visible' : false});
+			//treetable排序使用TreeBean中的treeSort(parentIds + id),否则显示层级不正确
+			if(default_opt.tableType == 'treetable'){
+				default_opt.ordering = true;//暂时只能使用treeSort列排序
+				for(var i=0;i<columnArray.length;i++){
+					columnArray[i].orderable = false;
+				}
+				columnArray.push({'data' : 'treeSort','visible' : false,'name':'treeSort'});
 				default_opt.order = [[columnArray.length-1, 'asc']];
-			}*/
+			}
+			
 			default_opt['columns'] = columnArray;
 			//启用data-server-side时表格,不启用搜索框,适合于数据量较大，需要物理分页	
 			if(default_opt.serverSide){ 

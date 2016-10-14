@@ -618,22 +618,17 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 					    "info": "共_TOTAL_条记录",
 					    "infoEmpty": ""
 					},
-					"fnCreatedRow": function (nRow, aData, iDataIndex) {
+					"createdRow": function (nRow, aData, iDataIndex) {
 						$(nRow).attr("data-tt-id",aData[method.tid]);
 						$(nRow).attr("data-tt-parent-id",aData[method.tpid]);
-			         },
-			         "fnInitComplete":function(oSettings, json){
-			        	 
 			         }
 				},method);
-			  init_opts.ordering = false;//暂时不支持排序
 			  init_opts.paging = false;//暂时不支持分页
 			  
 			  var _table = $(_this);
 			  var tableid = _table.attr('id');
 			  
 			  _table.initTable(init_opts,function(otable){
-				  
 				  var treetable = methods.init.call(_this, method);
 				  //初始化按钮
 				  if(init_opts.expandBtn){

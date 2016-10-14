@@ -18,7 +18,7 @@
     <sql id="menuJoins">
 		LEFT JOIN sys_menu p ON p.id = a.parent_id
     </sql>
-    <select id="listMenu" resultType="cn.bx.bsys.menu.mapper.Menu">
+    <select id="list" resultType="cn.bx.bsys.menu.mapper.Menu">
 		SELECT
 			<include refid="menuColumns"/>
 		FROM sys_menu a
@@ -33,7 +33,7 @@
 			</if>
 		</where>
 	</select>
-	<insert id="addMenu">
+	<insert id="add">
 		insert into sys_menu(id,parent_id,parent_ids, name, target, icon, sort, type, permission, create_by, create_date, update_by, update_date, remarks, status)
 		values(#{id},#{parent.id},#{parentIds},#{name},#{target},#{icon},#{sort},#{type},#{permission},#{createBy},#{createDate},#{updateBy},#{updateDate},
 		#{remarks},#{status})

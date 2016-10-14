@@ -45,7 +45,7 @@
 						<div class="col-md-10">
 						<input type="hidden"  name="parentIds" data-ids-for="parentMenuName"/>
 						<input type="text" name="parentMenuName" form-role="treeSelect" tree-pid="parent_id"
-						readonly="readonly"  class="form-control required selectOpt"  data-treeid="bsys_menu_forms_parentTree"
+						readonly="readonly"  class="form-control"  data-treeid="bsys_menu_forms_parentTree"
 						data-stmid="cn.bx.bsys.menu.mapper.MenuMapper.selectAllMenuTree"/>
 						</div>
 					</div>
@@ -55,7 +55,7 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						<label class="control-label col-md-4">排序号</label>
-						<div class="col-md-8"><input type="text" name="sort" class="form-control digits"></div>
+						<div class="col-md-8"><input type="text" name="sort" class="form-control required digits"></div>
 					</div>
 				</div>
 				<div class="col-md-6">
@@ -116,6 +116,8 @@ require(['app/common','app/form'],function(APP,FORM){
 			 "icon" : {"templateResult" : sys_menuedit_formatResult, "templateSelection":sys_menuedit_formatResult},
 			 "parentMenuName" : {"view" : {"selectedMulti": false}}
 		 }
+	 },function(ret){
+		 $.fn.zTree.getZTreeObj('bsys_menu_forms_parentTree').reAsyncChildNodes(null, "refresh");
 	 });
 	
 });
