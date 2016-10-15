@@ -45,7 +45,7 @@
 						<div class="col-md-10">
 						<input type="hidden"  name="parentIds" data-ids-for="parentMenuName"/>
 						<input type="text" name="parentMenuName" form-role="treeSelect" tree-pid="parent_id"
-						readonly="readonly"  class="form-control"  data-treeid="bsys_menu_forms_parentTree"
+						readonly="readonly"  class="form-control"  id="bsys_menu_forms_parentTree"
 						data-stmid="cn.bx.bsys.menu.mapper.MenuMapper.selectAllMenuTree"/>
 						</div>
 					</div>
@@ -76,7 +76,7 @@
 </div>
 </div>
 <script>
-require(['app/common','app/form'],function(APP,FORM){
+require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 	function sys_menuedit_formatResult(data){
 		if (!data.id && !data.icons) { return data.text; }
 		var icons = data.icons ? data.icons : data.id;
@@ -118,6 +118,9 @@ require(['app/common','app/form'],function(APP,FORM){
 		 }
 	 },function(ret){
 		 $.fn.zTree.getZTreeObj('bsys_menu_forms_parentTree').reAsyncChildNodes(null, "refresh");
+		 var table = DT.getTable('#table-bsys-menu-list');
+		 var newRow = table.addRow(ret).node();
+		 $("#table-bsys-menu-list").treetable("move",newRow, ret.parentId);
 	 });
 	
 });

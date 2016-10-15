@@ -6,15 +6,23 @@ define(['app/common','jquery/ztree'],function(APP){
 		var _this = $(this);
 		var _nodeData = zNodes;
 		if(settings){
-			if((settings.stmID||settings.async) && zNodes === undefined){//增加stmID选项获取sqlMapper的sqlID获取数组数据
-				var url = "app/common/selectArrayByStmID";
+			if(settings.stmID && settings.async === undefined && zNodes === undefined){//增加stmID选项获取sqlMapper的sqlID获取数组数据
+				var url = "app/common/selectArrayByStmID.json";
 				var paramData = {};
 				if(settings.stmID) paramData.stmID=settings.stmID;
 				if(settings.param) paramData.param=settings.param;
+				settings.async = {
+					'enable' : true,
+					'contentType': "application/json;charset=utf-8",
+					'otherParam' : paramData,
+					'url' : APP.ctx + url,
+					'autoParam'  : ["id"],
+					'dataType' : "json" 
+				}
 				//同步方式防止数据量大是无法加载
-				APP.ajax(url,paramData,'POST',false,function(ret){
+				/*APP.ajax(url,paramData,'POST',false,function(ret){
 					_nodeData = ret;
-				});
+				});*/
 			}
 		}
 		var tree_settings = $.extend(true,{

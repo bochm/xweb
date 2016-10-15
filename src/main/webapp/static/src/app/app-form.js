@@ -242,11 +242,11 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			if(formField.attr('form-role') == 'treeSelect'){
 				var _treeSelectOpt = opts.fieldOpts[_fieldName] || {};
 				if(formField.data('stmid')) _treeSelectOpt.stmID = formField.data('stmid');
-				if(!formField.data('treeid')){
-					alert("请指定表单元素的data-treeid属性");
+				if(!formField.attr('id')){
+					alert("请指定treeSelect表单元素的id属性");
 					return;
 				}
-				formField.treeSelect(_treeSelectOpt,formField.data('treeid'));
+				formField.treeSelect(_treeSelectOpt);
 			}
 		});
 		var _in_modal = (_this.parents('.modal-dialog').size() > 0) ? '.modal-dialog' : '';
@@ -409,8 +409,9 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 	 * @param  {Object} settings ztree参数
 	 * @param  {String} treeId ztree控件ID
 	 */
-	$.fn.treeSelect = function(settings,treeId){
+	$.fn.treeSelect = function(settings){
 		var _this = $(this);
+		var treeId = _this.attr('id');
 		var _parent = _this.parent();
 		var _sel_name = _this.attr("name");
 		//保存ID的隐藏控件

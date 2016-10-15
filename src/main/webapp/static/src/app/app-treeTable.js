@@ -489,7 +489,7 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 	        if (!node.initialized) {
 	          node._initialize();
 	        }
-
+	        
 	        node.expand();
 	      } else {
 	        throw new Error("Unknown node '" + id + "'");
@@ -529,11 +529,34 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 
 	    move: function(nodeId, destinationId) {
 	      var destination, node;
-
-	      node = this.data("treetable").tree[nodeId];
 	      destination = this.data("treetable").tree[destinationId];
+	      if(typeof nodeId === 'object'){//新增节点,用于新增的行追加至treetable中的某个节点
+	    	  this.data("treetable").loadRows([nodeId]);
+	    	  var _nid = $(nodeId).data(this.data("treetable").settings.nodeIdAttr);
+	    	  node = this.data("treetable").tree[_nid];
+	    	  //父节点及祖先节点同时展开  add by bcm
+	    	  if (destination) {
+	    		  if (!destination.initialized) {
+	    			  destination._initialize();
+	    		  }
+	    		  var parentNd = destination.parentNode();
+			      while(parentNd != null){
+			    	  if (!parentNd.initialized) {
+			    		  parentNd._initialize();
+			    	  }
+			          parentNd.expand();
+			          parentNd = parentNd.parentNode();
+			      }
+			      if(destination.children.length >= 1) destination.collapse(); //父节点需要重新闭合渲染
+	    		  destination.expand();
+	  	      }
+		        
+	      }else{
+	    	  node = this.data("treetable").tree[nodeId];
+	      }
 	      this.data("treetable").move(node, destination);
-
+	      //新增节点时父节点如果没有子节点则需要渲染
+	      if(typeof nodeId === 'object' && destination.children.length === 1) destination.render();
 	      return this;
 	    },
 
@@ -656,6 +679,6 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 	  this.TreeTable.Node = Node;
 	  this.TreeTable.Tree = Tree;
 	  
-	  $.fn.dataTable.TreeTable = this.TreeTable;
-	  return this.TreeTable;
+	  DataTable.TreeTable = this.TreeTable;
+	  return DataTable;
 });
