@@ -549,6 +549,8 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 			      }
 			      if(destination.children.length >= 1) destination.collapse(); //父节点需要重新闭合渲染
 	    		  destination.expand();
+	  	      }else{
+	  	    	  return this;
 	  	      }
 		        
 	      }else{

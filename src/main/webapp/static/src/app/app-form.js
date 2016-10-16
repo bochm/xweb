@@ -211,26 +211,36 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 	 */
 	$.fn.initForm = function (opts,callback,errorback) {
 		var _this = $(this);
-		//_this.clearForm(true);
+		if(opts.autoClear)_this.clearForm(true); //静态modal中的form 先清空再初始化
 		if(APP.isEmpty(opts)) opts = {};
 		if(APP.isEmpty(opts.fieldOpts)) opts.fieldOpts = {};//fieldOpts表单元素的初始化参数
 		var validate_settings = $.extend(true,validate_default_settings,opts.validate);
 		_this.validate(validate_settings);
-		var isInitValue = (opts.formData != undefined);
+		var isInitValue = !APP.isEmpty(opts.formData);
 		var formField;
 		_this.find(opts.fieldSelector ? opts.fieldSelector : '*[name]').each(function(){
 			formField = $(this);
 			var _fieldName = formField.attr('name');
+			var _fieldRole = formField.attr('form-role');
 			if(isInitValue){
-				if(opts.formData[this.name]){
+				var _fieldValue = opts.formData[_fieldName];
+				if(_fieldName.indexOf(".") > 0){
+					var _fieldNameSp = _fieldName.split(".");
+					_fieldValue = opts.formData[_fieldNameSp[0]];
+					for(var i=1;_fieldValue && i<_fieldNameSp.length;i++){
+						_fieldValue = _fieldValue[_fieldNameSp[i]]
+					}
+				}
+				if(_fieldValue != undefined){
 					if(this.type == 'checkbox'){
-						formField.attr('checked',opts.formData[this.name] == (formField.data('on-value') ? formField.data('on-value') : '1'));
+						formField.attr('checked',_fieldValue == (formField.data('on-value') ? formField.data('on-value') : '1'));
 					}else{
-						formField.val(opts.formData[this.name]);
+						formField.val(_fieldValue);
+						formField.attr('value',_fieldValue);
 					}
 				}
 			}
-			if(formField.attr('form-role') == 'select'){
+			if(_fieldRole == 'select'){
 				var _selectOpt = opts.fieldOpts[_fieldName] || {};
 				try{
 					if(formField.attr('placeholder') && !isInitValue) _selectOpt.placeholder = JSON.parse(formField.attr('placeholder'));
@@ -239,7 +249,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				if(formField.data('stmid')) _selectOpt.stmID = formField.data('stmid');
 				formField.select(_selectOpt);
 			}
-			if(formField.attr('form-role') == 'treeSelect'){
+			if(_fieldRole == 'treeSelect'){
 				var _treeSelectOpt = opts.fieldOpts[_fieldName] || {};
 				if(formField.data('stmid')) _treeSelectOpt.stmID = formField.data('stmid');
 				if(!formField.attr('id')){
@@ -417,10 +427,8 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		//保存ID的隐藏控件
 		var _id_filed = _this.prevAll("input[data-id-for='"+_sel_name+"']");
 		if(_id_filed.length == 0){
-			_id_filed = $("<input type='hidden' name='parent.id'/>");
-			_parent.prepend(_id_filed);
-			APP.log("treeSelect元素之前添加id值控件已自动添加");
-			//return _this;
+			alert("请在treeSelect元素之前添加id值控件");
+			return _this;
 		}
 		//保存IDS的隐藏控件
 		var _ids_filed = _this.prevAll("input[data-ids-for='"+_sel_name+"']");
@@ -473,16 +481,16 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				}
 			},settings);
 			//自定义id、pid、name属性名称
-			if(!APP.isEmpty(_this.attr('tree-id'))){
-				treesel_settings.data.simpleData.idKey = _this.attr('tree-id');
-				_key_id = _this.attr('tree-id');
+			if(!APP.isEmpty(_this.attr('tree-key-id'))){
+				treesel_settings.data.simpleData.idKey = _this.attr('tree-key-id');
+				_key_id = _this.attr('tree-key-id');
 			}
-			if(!APP.isEmpty(_this.attr('tree-name'))){
-				treesel_settings.data.key.name = _this.attr('tree-name');
-				_key_name = _this.attr('tree-name');
+			if(!APP.isEmpty(_this.attr('tree-key-name'))){
+				treesel_settings.data.key.name = _this.attr('tree-key-name');
+				_key_name = _this.attr('tree-key-name');
 			}
-			if(!APP.isEmpty(_this.attr('tree-pid'))){
-				treesel_settings.data.simpleData.pIdKey = _this.attr('tree-pid');
+			if(!APP.isEmpty(_this.attr('tree-key-pid'))){
+				treesel_settings.data.simpleData.pIdKey = _this.attr('tree-key-pid');
 			}
 			
 			
@@ -533,6 +541,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			});
 			var _treeObj = treeSel.tree(treesel_settings); 
 			_this.treeObj = _treeObj;
+			alert(_id_filed.attr('value'));
 			if(_id_filed.attr('value')){
 				var _selectedNode = _treeObj.getNodeByParam(_key_id,_id_filed.attr('value'),null);
 				_treeObj.selectNode(_selectedNode);

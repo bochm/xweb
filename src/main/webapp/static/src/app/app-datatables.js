@@ -243,15 +243,20 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			_options.addRecord(dt,node,e);
 		}else if(typeof _options.saveRecord === 'function' && type == 'save'){
 			_options.saveRecord(dt,node,e);
-		}else if(!APP.isEmpty(_options.addModal) || !APP.isEmpty(_options.addEditModal)){
-			var _modal = _options.addModal || _options.addEditModal;
+		}else if(!APP.isEmpty(_options.addModal) || !APP.isEmpty(_options.addEditModal) || !APP.isEmpty(_options.editModal)){
+			var _modal =  _options.addEditModal || _options.addModal || _options.editModal;
 			if(_modal.url){
-				APP.showModal(_modal.url,_modal.id,_modal);
+				var _modal_url = _modal.url;
+				if(!APP.isEmpty(_options.addEditModal)){ //新增、修改共用modal区分act
+					if(_modal.url.indexOf("?") >0) _modal_url = _modal.url + '&act='+type;
+					else _modal_url = _modal.url + '?act='+type;
+				}
+				APP.showModal(_modal_url,_modal.id,_modal);
 			}else{
 				$(_modal).modal('show');
 			}
-		}else if(!APP.isEmpty(_options.addForm) || !APP.isEmpty(_options.addEditForm)){
-			var _form = _options.addForm || _options.addEditForm;
+		}else if(!APP.isEmpty(_options.addForm) || !APP.isEmpty(_options.addEditForm) || !APP.isEmpty(_options.editForm)){
+			var _form = _options.addEditForm || _options.addForm || _options.editForm;
 			require(['app/form'],function(FORM){
 				$(_form.el).initForm({
 					formAction : type,clearForm : true,type : 'post',validate : _form.validate
@@ -545,7 +550,12 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      * 增加一行数据
      */
 	DataTable.Api.register( 'addRow()', function (row) {
-		return this.row.add(row).draw();
+		var newRow = this.row.add(row).draw();
+		//treetable调用move方法保持树形结构
+		if(this.init().tableType == 'treetable'){
+			$(this.table().node()).treetable("move",newRow.node(), row.parentId);
+		}
+		return newRow;
 	} );
 	
 	/**

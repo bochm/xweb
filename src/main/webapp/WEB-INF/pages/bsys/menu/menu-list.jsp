@@ -6,7 +6,6 @@
 </div>
 <script type="text/javascript">
 require(['app/common','app/treetable'],function(APP,DT){
-	
 	var columns = [
 		{ "data": "id","visible" : false},
 		{ "data": "parentId","visible" : false},
@@ -35,8 +34,8 @@ require(['app/common','app/treetable'],function(APP,DT){
 		"tid":"id","tpid":"parentId",
 		"expandable": true,"expandBtn" : true,
 		"columns": columns,"columnDefs": columnDefs,
-		"buttons" : ['addRecord'],
-		"addModal" : {"url" : "${ctx}/pages/bsys/menu/menu-edit?act=add","id":"bsys-menu-edit"}
+		"buttons" : ['addRecord','saveRecord'],
+		"addEditModal" : {"url" : "${ctx}/pages/bsys/menu/menu-edit","id":"bsys-menu-edit"}
 	});
 })
 </script>

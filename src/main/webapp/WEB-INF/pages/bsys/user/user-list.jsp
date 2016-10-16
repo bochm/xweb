@@ -144,7 +144,7 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 			if(!$('#sys-user-password').hasClass('required'))$('#sys-user-password').addClass('required');
 			form_validate.rules.loginName.checkExists.data.oldloginname = '';
 			$('#bsys-user-edit-form').initForm({
-				url : '${ctx}/bsys/user/add.json',formAction : 'add',clearForm : true,type : 'post',validate : form_validate
+				url : '${ctx}/bsys/user/add.json',formAction : 'add',autoClear : true,clearForm : true,type : 'post',validate : form_validate
 			},function(data){
 				dt.addRow(data);
 			});
@@ -166,7 +166,7 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 		form_validate.rules.loginName.checkExists.data.oldloginname = cur_row.loginName;
 		$('#sys-user-password').removeClass('required');
 		$('#bsys-user-edit-form').initForm({
-			url : '${ctx}/bsys/user/save.json',formAction : 'save',formData : cur_row,
+			url : '${ctx}/bsys/user/save.json',formAction : 'save',formData : cur_row,autoClear : true,
 			type : 'post',validate : form_validate
 		},function(data){
 			userTable.updateSelectedRow(data);

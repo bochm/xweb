@@ -44,7 +44,8 @@
 						<label class="control-label col-md-2">上级菜单</label>
 						<div class="col-md-10">
 						<input type="hidden"  name="parentIds" data-ids-for="parentMenuName"/>
-						<input type="text" name="parentMenuName" form-role="treeSelect" tree-pid="parent_id"
+						<input type='hidden' name='parentId' data-id-for="parentMenuName"/>
+						<input type="text" name="parentMenuName" form-role="treeSelect" tree-key-pid="parent_id"
 						readonly="readonly"  class="form-control"  id="bsys_menu_forms_parentTree"
 						data-stmid="cn.bx.bsys.menu.mapper.MenuMapper.selectAllMenuTree"/>
 						</div>
@@ -87,41 +88,25 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 	$('.modal-footer .btn-primary').click(function(){
 		$('#bsys-menu-edit-form').submit();
 	});
-	
-/* 	var menuTable = $("#sys_menu").dataTable().api(); 
-	var _formInitOpt = {};
-	_formInitOpt.validate = {};
-	_formInitOpt.success = function(response, status){
-		var result = bx.getAjaxRet(response,{title:"菜单维护",msg:"保存成功"});
-		console.log(result);
-		if(result.OK){
-			if(act == 'add')
-				menuTable.row.add(result.data).draw();
-			else
-				menuTable.row(menuTable.rows('.selected')[0]).data(result.data);
-			$('#sys_menu_modal_edit').modal('hide');
-		}
-	 };
+	var table = DT.getTable('#table-bsys-menu-list');
+	var _formInitOpt = {
+			 formAction : act,validate : {},clearForm : true,
+			 fieldOpts : {
+				 "icon" : {"templateResult" : sys_menuedit_formatResult, "templateSelection":sys_menuedit_formatResult},
+				 "parentMenuName" : {"view" : {"selectedMulti": false}}
+			 }
+	};
 	 
-	 if(act == 'mod'){
-		 $('#sys_menu_modal_edit .modal-title').html('修改菜单');
-		 
-		 _formInitOpt.formData = menuTable.rows('.selected').data()[0];
-	 } */
-	 
-	 $('#bsys-menu-edit-form').initForm({
-		 formAction : act,clearForm : true,
-		 validate : {},
-		 fieldOpts : {
-			 "icon" : {"templateResult" : sys_menuedit_formatResult, "templateSelection":sys_menuedit_formatResult},
-			 "parentMenuName" : {"view" : {"selectedMulti": false}}
-		 }
-	 },function(ret){
+	if(act == 'save'){
+		console.log(table.selectedRows()[0]);
+		_formInitOpt.formData = table.selectedRows()[0];
+		_formInitOpt.clearForm = false;
+	}
+	$('#bsys-menu-edit-form').initForm(_formInitOpt,
+	function(ret){
 		 $.fn.zTree.getZTreeObj('bsys_menu_forms_parentTree').reAsyncChildNodes(null, "refresh");
-		 var table = DT.getTable('#table-bsys-menu-list');
-		 var newRow = table.addRow(ret).node();
-		 $("#table-bsys-menu-list").treetable("move",newRow, ret.parentId);
-	 });
+		 table.addRow(ret);
+	});
 	
 });
 </script>

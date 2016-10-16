@@ -35,7 +35,7 @@
 	</select>
 	<insert id="add">
 		insert into sys_menu(id,parent_id,parent_ids, name, target, icon, sort, type, permission, create_by, create_date, update_by, update_date, remarks, status)
-		values(#{id},#{parent.id},#{parentIds},#{name},#{target},#{icon},#{sort},#{type},#{permission},#{createBy},#{createDate},#{updateBy},#{updateDate},
+		values(#{id},#{parentId},#{parentIds},#{name},#{target},#{icon},#{sort},#{type},#{permission},#{createBy},#{createDate},#{updateBy},#{updateDate},
 		#{remarks},#{status})
 	</insert>
 	
