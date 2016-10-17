@@ -562,7 +562,13 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      * 修改已选择行数据
      */
 	DataTable.Api.register( 'updateSelectedRow()', function (row) {
-		return this.row(this.rows('.selected')[0]).data(row);
+		var updatedRow = this.row(this.rows('.selected')[0]).data(row).draw();
+		//treetable调用move方法保持树形结构
+		if(this.init().tableType == 'treetable'){
+			$(this.table().node()).treetable("move",newRow.node(), row.parentId);
+			$(this.table().node()).treetable("move",newRow.node(), row.parentId);
+		}
+		return updatedRow;
 	} );
 	/**
      * 删除已选择行数据

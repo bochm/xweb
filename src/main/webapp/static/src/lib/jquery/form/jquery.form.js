@@ -1129,7 +1129,7 @@ $.fieldValue = function(el, successful) {
     }
 
     if (successful && (!n || el.disabled || t == 'reset' || t == 'button' ||
-        (t == 'checkbox' || t == 'radio') && !el.checked ||
+        (t == 'checkbox' || t == 'radio') && !el.checked && !$(el).hasClass('bs-switch') || //增加bs-switch判断
         (t == 'submit' || t == 'image') && el.form && el.form.clk != el ||
         tag == 'select' && el.selectedIndex == -1)) {
             return null;

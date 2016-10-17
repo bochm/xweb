@@ -281,6 +281,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				APP.unblockUI(_in_modal ? '.modal-dialog' : 'body');
 				APP.notice('',"系统错误 错误代码:"+error.status+" 错误名称:"+error.statusText,'error',_in_modal);
 				if(typeof errorback === 'function')errorback(error);
+				else if(opts.onError) opts.onError(error);
 			},
 			success:function(response, status){
 				if(APP.debug)console.log(response);
@@ -288,9 +289,11 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				if(response.OK){
 					APP.notice('',response[APP.MSG],'success',_in_modal);
 					if(typeof callback === 'function')callback(response[APP.DATA]);
+					else if(opts.onSuccess) opts.onSuccess(response[APP.DATA]);
 				}else{
 					APP.notice('',response[APP.MSG],'warning',_in_modal);
 					if(typeof errorback === 'function')errorback(response,status);
+					else if(opts.onError) opts.onError(response,status);
 				}
 			}
 		},opts);
@@ -435,22 +438,30 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		
 		var _key_id = "id";
 		var _key_name = "name";
+		var _key_parent = "pId"
+		//自定义id、pid、name属性名称
+		if(!APP.isEmpty(_this.attr('tree-key-id')))_key_id = _this.attr('tree-key-id');
+		if(!APP.isEmpty(_this.attr('tree-key-name')))_key_name = _this.attr('tree-key-name');
+		if(!APP.isEmpty(_this.attr('tree-key-pid')))_key_parent = _this.attr('tree-key-pid');
 		if(settings && settings.data ){
 			if(settings.data.key && settings.data.key.name) _key_name = settings.data.key.name;
-			if(settings.data.simpleData && settings.data.simpleData.idKey) _key_id = settings.data.simpleData.idKey;
+			if(settings.data.simpleData){
+				if(settings.data.simpleData.idKey) _key_id = settings.data.simpleData.idKey;
+				if(settings.data.simpleData.pIdKey) _key_parent = settings.data.simpleData.pIdKey;
+			}
 		}
 		require(['app/tree'],function(){
 			var treesel_settings = $.extend(true,{
 				data : {
-					key : {name : 'name'},
+					key : {name : _key_name},
 					simpleData: {
 						enable: true,
-						idKey: "id",
-						pIdKey: "pId"
+						idKey: _key_id,
+						pIdKey: _key_parent
 					}
 				},
-				callback: {//点击时将数据传入显示控件
-					onClick: function(e, tree_id, treeNode){
+				callback: {
+					onClick: function(e, tree_id, treeNode){//点击时将数据传入显示控件
 						var zTree = $.fn.zTree.getZTreeObj(tree_id),
 						nodes = zTree.getSelectedNodes(),
 						_name = "",
@@ -477,21 +488,27 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 						_this.parent().siblings("span#"+_this.attr("id")+"-error").remove();
 						_this.parent().siblings("i.validate-icon").removeClass("fa-check fa-warning").removeAttr("data-original-title");
 						_id_filed.val(_id);
+						
+						if (settings.onClick) {
+				        	settings.onClick.toFunc().call(this, e, tree_id, treeNode);
+				        }
+					},
+					onAsyncSuccess : function(e, tree_id, treeNode, msg){//数据同步成功后显示默认值
+						if(treeNode === undefined){//根节点同步时显示默认值
+							var zTree = $.fn.zTree.getZTreeObj(tree_id);
+							if(_id_filed.attr('value')){
+								var _selectedNode = zTree.getNodeByParam(_key_id,_id_filed.attr('value'),null);
+								zTree.selectNode(_selectedNode);
+								if(_selectedNode) _this.attr('value',_selectedNode[_key_name]);
+							}
+						}
+						if (settings.onAsyncSuccess) {
+				        	settings.onAsyncSuccess.toFunc().call(this, e, tree_id, treeNode,msg);
+				        }
 					}
 				}
 			},settings);
-			//自定义id、pid、name属性名称
-			if(!APP.isEmpty(_this.attr('tree-key-id'))){
-				treesel_settings.data.simpleData.idKey = _this.attr('tree-key-id');
-				_key_id = _this.attr('tree-key-id');
-			}
-			if(!APP.isEmpty(_this.attr('tree-key-name'))){
-				treesel_settings.data.key.name = _this.attr('tree-key-name');
-				_key_name = _this.attr('tree-key-name');
-			}
-			if(!APP.isEmpty(_this.attr('tree-key-pid'))){
-				treesel_settings.data.simpleData.pIdKey = _this.attr('tree-key-pid');
-			}
+			
 			
 			
 			//为当前控件增加必要的显示控件和树形下拉菜单
@@ -541,12 +558,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			});
 			var _treeObj = treeSel.tree(treesel_settings); 
 			_this.treeObj = _treeObj;
-			alert(_id_filed.attr('value'));
-			if(_id_filed.attr('value')){
-				var _selectedNode = _treeObj.getNodeByParam(_key_id,_id_filed.attr('value'),null);
-				_treeObj.selectNode(_selectedNode);
-				if(_selectedNode) _this.attr('value',_selectedNode[_key_name]);
-			}
+			
 		});
 		return _this;
 	};

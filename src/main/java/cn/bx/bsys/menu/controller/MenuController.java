@@ -32,4 +32,11 @@ public class MenuController {
 		else
 			return DataMessage.error("菜单保存失败", menu);
 	}
+	@RequestMapping(value="save")
+	public @ResponseBody DataMessage saveMenu(Menu menu){
+		if(menuService.save(menu) == 1)
+			return DataMessage.success("菜单保存成功", menu);
+		else
+			return DataMessage.error("菜单保存失败", menu);
+	}
 }

@@ -94,6 +94,10 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 			 fieldOpts : {
 				 "icon" : {"templateResult" : sys_menuedit_formatResult, "templateSelection":sys_menuedit_formatResult},
 				 "parentMenuName" : {"view" : {"selectedMulti": false}}
+			 },
+			 onSuccess : function(ret){
+				 $.fn.zTree.getZTreeObj('bsys_menu_forms_parentTree').reAsyncChildNodes(null, "refresh");
+				 table.addRow(ret);
 			 }
 	};
 	 
@@ -101,12 +105,12 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 		console.log(table.selectedRows()[0]);
 		_formInitOpt.formData = table.selectedRows()[0];
 		_formInitOpt.clearForm = false;
+		_formInitOpt.onSuccess = function(ret){
+			 $.fn.zTree.getZTreeObj('bsys_menu_forms_parentTree').reAsyncChildNodes(null, "refresh");
+			 table.updateSelectedRow(ret);
+		 }
 	}
-	$('#bsys-menu-edit-form').initForm(_formInitOpt,
-	function(ret){
-		 $.fn.zTree.getZTreeObj('bsys_menu_forms_parentTree').reAsyncChildNodes(null, "refresh");
-		 table.addRow(ret);
-	});
+	$('#bsys-menu-edit-form').initForm(_formInitOpt);
 	
 });
 </script>

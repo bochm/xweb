@@ -18,6 +18,13 @@
     <sql id="menuJoins">
 		LEFT JOIN sys_menu p ON p.id = a.parent_id
     </sql>
+    <select id="get" resultType="cn.bx.bsys.menu.mapper.Menu">
+		SELECT
+			<include refid="menuColumns"/>
+		FROM sys_menu a
+		<include refid="menuJoins"/>
+		where a.id = #{id}
+	</select>
     <select id="list" resultType="cn.bx.bsys.menu.mapper.Menu">
 		SELECT
 			<include refid="menuColumns"/>
@@ -39,5 +46,10 @@
 		#{remarks},#{status})
 	</insert>
 	
-	
+	<update id="save">
+		update sys_menu set id = #{newId},parent_id = #{parentId},parent_ids = #{parentIds},
+		name = #{name}, target = #{target}, icon = #{icon}, sort = #{sort}, type = #{type}, 
+		permission = #{permission}, update_by = #{updateBy}, update_date = #{updateDate}, 
+		remarks = #{remarks}, status = #{status} where id = #{id}
+	</update>
 </mapper>
