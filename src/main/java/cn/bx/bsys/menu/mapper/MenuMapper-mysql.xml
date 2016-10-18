@@ -47,7 +47,7 @@
 	</insert>
 	
 	<update id="save">
-		update sys_menu set id = #{newId},parent_id = #{parentId},parent_ids = #{parentIds},
+		update sys_menu set parent_id = #{parentId},parent_ids = #{parentIds},
 		name = #{name}, target = #{target}, icon = #{icon}, sort = #{sort}, type = #{type}, 
 		permission = #{permission}, update_by = #{updateBy}, update_date = #{updateDate}, 
 		remarks = #{remarks}, status = #{status} where id = #{id}

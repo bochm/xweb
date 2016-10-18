@@ -102,7 +102,6 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 	};
 	 
 	if(act == 'save'){
-		console.log(table.selectedRows()[0]);
 		_formInitOpt.formData = table.selectedRows()[0];
 		_formInitOpt.clearForm = false;
 		_formInitOpt.onSuccess = function(ret){
