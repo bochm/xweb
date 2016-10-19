@@ -276,6 +276,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			},
 			type : 'post',
 			dataType : 'json',
+			includeHidden : true,
 			error:function(error){
 				if(APP.debug)console.log(error);
 				APP.unblockUI(_in_modal ? '.modal-dialog' : 'body');
@@ -433,16 +434,18 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			alert("请在treeSelect元素之前添加id值控件");
 			return _this;
 		}
-		//保存IDS的隐藏控件
-		var _ids_filed = _this.prevAll("input[data-ids-for='"+_sel_name+"']");
+		//保存treeSort的隐藏控件,用于树形排序(祖先节点sort-id)
+		var _tree_filed = _this.prevAll("input[data-tree-for='"+_sel_name+"']");
 		
 		var _key_id = "id";
 		var _key_name = "name";
-		var _key_parent = "pId"
+		var _key_parent = "pId";
+		var _key_sort = "sort";
 		//自定义id、pid、name属性名称
 		if(!APP.isEmpty(_this.attr('tree-key-id')))_key_id = _this.attr('tree-key-id');
 		if(!APP.isEmpty(_this.attr('tree-key-name')))_key_name = _this.attr('tree-key-name');
 		if(!APP.isEmpty(_this.attr('tree-key-pid')))_key_parent = _this.attr('tree-key-pid');
+		if(!APP.isEmpty(_this.attr('tree-key-sort')))_key_sort = _this.attr('tree-key-sort');
 		if(settings && settings.data ){
 			if(settings.data.key && settings.data.key.name) _key_name = settings.data.key.name;
 			if(settings.data.simpleData){
@@ -465,20 +468,20 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 						var zTree = $.fn.zTree.getZTreeObj(tree_id),
 						nodes = zTree.getSelectedNodes(),
 						_name = "",
-						 _id = "",
-						 _ids = "";
+						 _id = "";
 						nodes.sort(function compare(a,b){return a[_key_id]-b[_key_id];});
 						for (var i=0, l=nodes.length; i<l; i++) {
 							_name += nodes[i][_key_name] + ",";
 							_id += nodes[i][_key_id] + ",";
 						}
-						if(_ids_filed.length == 1 ){ //如果为单选且页面定义了ids隐藏域,则为parentIds赋值
-							var _parent_arr = treeNode.getPath();
-							for(var i=0;i<_parent_arr.length;i++){
-								_ids += _parent_arr[i][_key_id] + ",";
-							}
-							if (_ids.length > 0 ) _ids = _ids.substring(0, _ids.length-1);
-							_ids_filed.val(_ids);
+						if(_tree_filed.length == 1 ){ //如果为单选且页面定义了parentTree隐藏域,则为parentTree赋值
+							var _tree_sort = "";
+							if(!APP.isEmpty(treeNode[_key_sort])) _tree_sort = treeNode[_key_sort] + "-" + treeNode[_key_id];
+							else _tree_sort = "0-" + treeNode[_key_id];
+							
+							if(!APP.isEmpty(treeNode['parentTree'])) _tree_sort = treeNode['parentTree'] + "," + _tree_sort;
+							else if(!APP.isEmpty(treeNode['parent_tree'])) _tree_sort = treeNode['parent_tree'] + "," + _tree_sort;
+							_tree_filed.val(_tree_sort);
 						}
 						if (_name.length > 0 ) _name = _name.substring(0, _name.length-1);
 						if (_id.length > 0 ) _id = _id.substring(0, _id.length-1);

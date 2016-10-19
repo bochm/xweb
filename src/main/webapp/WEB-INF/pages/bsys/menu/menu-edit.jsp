@@ -43,7 +43,7 @@
 					<div class="form-group">
 						<label class="control-label col-md-2">上级菜单</label>
 						<div class="col-md-10">
-						<input type="hidden"  name="parentIds" data-ids-for="parentMenuName"/>
+						<input type="hidden"  name="parentTree" data-tree-for="parentMenuName"/>
 						<input type='hidden' name='parentId' data-id-for="parentMenuName"/>
 						<input type="text" name="parentMenuName" form-role="treeSelect" tree-key-pid="parent_id"
 						readonly="readonly"  class="form-control"  id="bsys_menu_forms_parentTree"

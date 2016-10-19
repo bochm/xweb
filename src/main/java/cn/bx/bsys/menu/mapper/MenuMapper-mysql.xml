@@ -4,7 +4,7 @@
     <sql id="menuColumns">
     	a.id,
 		a.parent_id "parent.id",
-		a.parent_ids,
+		a.parent_tree,
 		a.name,
 		a.target,
 		a.icon,
@@ -30,10 +30,10 @@
 			<include refid="menuColumns"/>
 		FROM sys_menu a
 		<include refid="menuJoins"/>
-		order by a.parent_ids
+		order by a.parent_tree
 	</select>
 	<select id="selectAllMenuTree" parameterType="map" resultType="map">
-		select id,name,parent_id,icon icons from sys_menu
+		select id,name,parent_id,icon icons,parent_tree,sort from sys_menu
 		<where>
 			<if test="parentMenu != null and parentMenu != ''">
 				parent_id = #{parentMenu}
@@ -41,13 +41,13 @@
 		</where>
 	</select>
 	<insert id="add">
-		insert into sys_menu(id,parent_id,parent_ids, name, target, icon, sort, type, permission, create_by, create_date, update_by, update_date, remarks, status)
-		values(#{id},#{parentId},#{parentIds},#{name},#{target},#{icon},#{sort},#{type},#{permission},#{createBy},#{createDate},#{updateBy},#{updateDate},
+		insert into sys_menu(id,parent_id,parent_tree, name, target, icon, sort, type, permission, create_by, create_date, update_by, update_date, remarks, status)
+		values(#{id},#{parentId},#{parentTree},#{name},#{target},#{icon},#{sort},#{type},#{permission},#{createBy},#{createDate},#{updateBy},#{updateDate},
 		#{remarks},#{status})
 	</insert>
 	
 	<update id="save">
-		update sys_menu set parent_id = #{parentId},parent_ids = #{parentIds},
+		update sys_menu set parent_id = #{parentId},parent_tree = #{parentTree},
 		name = #{name}, target = #{target}, icon = #{icon}, sort = #{sort}, type = #{type}, 
 		permission = #{permission}, update_by = #{updateBy}, update_date = #{updateDate}, 
 		remarks = #{remarks}, status = #{status} where id = #{id}
