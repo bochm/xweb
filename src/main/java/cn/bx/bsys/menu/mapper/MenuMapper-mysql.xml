@@ -52,4 +52,8 @@
 		permission = #{permission}, update_by = #{updateBy}, update_date = #{updateDate}, 
 		remarks = #{remarks}, status = #{status} where id = #{id}
 	</update>
+	<update id="updateChildren" parameterType="map">
+		update sys_menu set parent_tree = replace(parent_tree,#{old.treeSort},#{new.treeSort})
+		where locate(#{new.id}, parent_tree) > 0
+	</update>
 </mapper>

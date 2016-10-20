@@ -562,12 +562,31 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      * 修改已选择行数据
      */
 	DataTable.Api.register( 'updateSelectedRow()', function (row) {
-		var updatedRow = this.row(this.rows('.selected')[0]).data(row);
+		var updatedRow = this.row(this.rows('.selected')[0]).data(row).draw();
 		//treetable调用move方法保持树形结构
 		if(this.init().tableType == 'treetable'){
 			var node = $(this.table().node()).treetable("node",row.id);
 			node.treeCell.prepend(node.indenter);
 			node.render();
+			$(this.table().node()).treetable("move",row.id, row.parentId);
+			var count = this.rows().count();
+			for(var i = (this.row('.selected').index() + 1);i<count;i++){
+				var d = this.row(i).data();
+				console.log(d);
+				var p_idx = d.parentIds.indexOf(row.id);
+				if(p_idx > 0){
+					var parent_rep = d.parentIds.substring(0,p_idx);
+					d.parentIds = d.parentIds.replace(parent_rep,(row.parentIds+",'"));
+					var tree_idx = d.parentTree.indexOf(row.id);
+					parent_rep = d.parentTree.substring(0,tree_idx);
+					console.log(d.parentTree +'||'+parent_rep);
+					d.parentTree = d.parentTree.replace(parent_rep,row.treeSort);
+					d.treeSort = d.treeSort.replace(parent_rep,row.treeSort);
+					console.log(d);
+				}else{
+					break;
+				}
+			}
 		}
 		return updatedRow;
 	} );

@@ -454,6 +454,24 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			}
 		}
 		require(['app/tree'],function(){
+			
+			//为当前控件增加必要的显示控件和树形下拉菜单
+			var inputGroup = $("<div class='input-group'></div>");//为当前控件增加图标
+			var inputIconDiv = $("<div class='input-icon'>");
+			var inputIcon = $("<i class='fa fa-times fa-fw'></i>");
+			inputIconDiv.append(inputIcon);
+			var selBtn = $("<span class='input-group-btn' style='cursor: pointer;'><button class='btn btn-success' type='button'><i class='fa fa-list'></i></span>");//图标-点击显示下拉菜单
+			inputIconDiv.append(_this);
+			//_this.appendTo(inputIconDiv);//将当前控件放入input-group
+			inputGroup.append(inputIconDiv);
+			inputGroup.append(selBtn);//增加图标
+			
+			_parent.append(inputGroup);//将input-group放入当前控件原父节点
+			var menuContent = $("<div id='"+treeId+"_MenuContent' style='display:none;height: 150px;overflow-y: auto; background-color: #F5F5F5;'></div>");//下拉菜单显示层
+			var treeSel = $("<ul id='"+treeId+"' class='ztree' style='margin-top:0; width:100%;'></ul>");//ztree控件
+			menuContent.append(treeSel);//将树形放入下拉菜单显示层
+			_parent.append(menuContent);//将下拉菜单显示层放入当前节点原父节点
+			
 			var treesel_settings = $.extend(true,{
 				data : {
 					key : {name : _key_name},
@@ -491,7 +509,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 						_this.parent().siblings("span#"+_this.attr("id")+"-error").remove();
 						_this.parent().siblings("i.validate-icon").removeClass("fa-check fa-warning").removeAttr("data-original-title");
 						_id_filed.val(_id);
-						
+						inputIcon.css('color','red');
 						if (settings.onClick) {
 				        	settings.onClick.toFunc().call(this, e, tree_id, treeNode);
 				        }
@@ -502,7 +520,10 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 							if(_id_filed.attr('value')){
 								var _selectedNode = zTree.getNodeByParam(_key_id,_id_filed.attr('value'),null);
 								zTree.selectNode(_selectedNode);
-								if(_selectedNode) _this.attr('value',_selectedNode[_key_name]);
+								if(_selectedNode) {
+									_this.attr('value',_selectedNode[_key_name]);
+									inputIcon.css('color','red');
+								}
 							}
 						}
 						if (settings.onAsyncSuccess) {
@@ -511,20 +532,6 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 					}
 				}
 			},settings);
-			
-			
-			
-			//为当前控件增加必要的显示控件和树形下拉菜单
-			var inputGroup = $("<div class='input-group'></div>");//为当前控件增加图标
-			var selBtn = $("<span class='input-group-addon' style='cursor: pointer;'><i class='fa fa-list'></i></span>");//图标-点击显示下拉菜单
-			_this.appendTo(inputGroup);//将当前控件放入input-group
-			inputGroup.append(selBtn);//增加图标
-			_parent.append(inputGroup);//将input-group放入当前控件原父节点
-			var menuContent = $("<div id='"+treeId+"_MenuContent' style='display:none;height: 150px;overflow-y: auto; background-color: #F5F5F5;'></div>");//下拉菜单显示层
-			var treeSel = $("<ul id='"+treeId+"' class='ztree' style='margin-top:0; width:100%;'></ul>");//ztree控件
-			menuContent.append(treeSel);//将树形放入下拉菜单显示层
-			_parent.append(menuContent);//将下拉菜单显示层放入当前节点原父节点
-			
 			
 			/**
 			 * 树形下拉列表隐藏-for-treeSelect
@@ -558,6 +565,15 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			//回车显示
 			_this.keypress(function(e){
 				if(e.keyCode == 13) _treeSelect_showMenu();
+			});
+			//删除数据
+			inputIcon.click(function() {
+				_this.val('');
+				_id_filed.val('');
+				if(_tree_filed.length == 1 ){
+					_tree_filed.val('');
+				}
+				$(this).css('color','#ccc');
 			});
 			var _treeObj = treeSel.tree(treesel_settings); 
 			_this.treeObj = _treeObj;
