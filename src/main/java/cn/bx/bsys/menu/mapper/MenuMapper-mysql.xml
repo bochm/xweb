@@ -35,8 +35,11 @@
 	<select id="selectAllMenuTree" parameterType="map" resultType="map">
 		select id,name,parent_id,icon icons,parent_tree,sort from sys_menu
 		<where>
-			<if test="parentMenu != null and parentMenu != ''">
+			<if test="id != null and id != ''">
 				parent_id = #{parentMenu}
+			</if>
+			<if test="parentMenu != null and parentMenu != ''">
+				locate(#{parentMenu}, parent_tree) = 0 and id != #{parentMenu}
 			</if>
 		</where>
 	</select>

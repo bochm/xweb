@@ -225,10 +225,12 @@ define('app/common',['bootstrap','moment'],function() {
 	            }, 'slow');
 	        },
 	        disableBtn : function(btn){
+	        	if(btn.length == 0) return;
 	        	if(!btn.hasClass('disabled')) btn.addClass('disabled');
 	        	btn.attr('disabled','disabled');
 	        },
 	        enableBtn : function(btn){
+	        	if(btn.length == 0) return;
 	        	if(btn.hasClass('disabled')) btn.removeClass('disabled');
 	        	btn.removeAttr('disabled');
 	        },

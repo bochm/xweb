@@ -2,8 +2,8 @@
 <%@ include file="/WEB-INF/include/taglib.jsp" %>
 <div class="loading-page">
 <span id="table-bsys-user-list-toolbar">
-<button class="btn btn-sm btn-primary btn-saveRecord" id="bsys-user-list-edit-btn">修改用户</button>
-<button class="btn btn-sm btn-warning btn-deleteRecord" data-role="deleteRecord">删除用户</button>
+<a class="btn btn-sm btn-primary btn-saveRecord" id="bsys-user-list-edit-btn">修改用户</a>
+<a class="btn btn-sm btn-warning btn-deleteRecord" data-role="deleteRecord">删除用户</a>
 </span>
 <table id="table-bsys-user-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/bsys/user" 
 	data-paging="true" data-info="true" data-ordering="true">

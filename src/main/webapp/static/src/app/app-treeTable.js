@@ -144,7 +144,7 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 	          }
 	        });
 	      }
-
+	      if(this.children.length  === 0) this.indenter.html(""); //节点没有子节点时删除expander  mod by bcm
 	      this.indenter[0].style.paddingLeft = "" + (this.level() * settings.indent) + "px";
 
 	      return this;
@@ -307,7 +307,14 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 	      // 3: +node+ should not be inserted in a location in a branch if this would
 	      //    result in +node+ being an ancestor of itself.
 	      var nodeParent = node.parentNode();
-	      if (node !== destination && destination.id !== node.parentId && $.inArray(node, destination.ancestors()) === -1) {
+	      if(destination == undefined || destination == null || destination == ''){//将节点移动至根 mod by bcm
+	    	  if (nodeParent) {
+	    		  nodeParent.removeChild(node);
+	    		  node.parentId = null;
+	    		  node.row.data(node.settings.parentIdAttr, null);
+	    		  node.render();
+	  	      }
+	      }else if (node !== destination && destination.id !== node.parentId && $.inArray(node, destination.ancestors()) === -1) {
 	        node.setParent(destination);
 	        this._moveRows(node, destination);
 
@@ -320,6 +327,7 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 
 	      if(nodeParent){
 	        nodeParent.updateBranchLeafClass();
+	        if(nodeParent.children.length === 0) nodeParent.render(); //原节点如没有子节点则重新渲染
 	      }
 	      if(node.parentNode()){
 	        node.parentNode().updateBranchLeafClass();
@@ -534,31 +542,28 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 	    	  this.data("treetable").loadRows([nodeId]);
 	    	  var _nid = $(nodeId).data(this.data("treetable").settings.nodeIdAttr);
 	    	  node = this.data("treetable").tree[_nid];
-	    	  //父节点及祖先节点同时展开  add by bcm
-	    	  if (destination) {
-	    		  if (!destination.initialized) {
-	    			  destination._initialize();
-	    		  }
-	    		  var parentNd = destination.parentNode();
-			      while(parentNd != null){
-			    	  if (!parentNd.initialized) {
-			    		  parentNd._initialize();
-			    	  }
-			          parentNd.expand();
-			          parentNd = parentNd.parentNode();
-			      }
-			      if(destination.children.length >= 1) destination.collapse(); //父节点需要重新闭合渲染
-	    		  destination.expand();
-	  	      }else{
-	  	    	  return this;
-	  	      }
-		        
 	      }else{
 	    	  node = this.data("treetable").tree[nodeId];
 	      }
+	      //父节点及祖先节点同时展开  add by bcm
+    	  if (destination) {
+    		  if (!destination.initialized) {
+    			  destination._initialize();
+    		  }
+    		  var parentNd = destination.parentNode();
+		      while(parentNd != null){
+		    	  if (!parentNd.initialized) {
+		    		  parentNd._initialize();
+		    	  }
+		          parentNd.expand();
+		          parentNd = parentNd.parentNode();
+		      }
+		      if(destination.children.length >= 1) destination.collapse(); //父节点需要重新闭合渲染
+    		  destination.expand();
+  	      }
 	      this.data("treetable").move(node, destination);
 	      //新增节点时父节点如果没有子节点则需要渲染
-	      if(typeof nodeId === 'object' && destination.children.length === 1) destination.render();
+	      if(typeof nodeId === 'object' && destination && destination.children.length === 1) destination.render();
 	      return this;
 	    },
 
@@ -658,8 +663,10 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 				  //初始化按钮
 				  if(init_opts.expandBtn){
 					  $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar>.dt-buttons").prepend(
-						"<div class='btn-group'><a data-toggle='dropdown' class='btn btn-sm btn-primary dropdown-toggle'>展开<i class='icon-angle-down icon-on-right'></i></a>"+
-						"<ul class='dropdown-menu'>"+
+						"<div class='btn-group'>" +
+						"<button class='btn btn-sm btn-primary btn-expand-toggle' id='"+tableid+"_expand_toggle'><i class='fa fa-minus-square-o'></i> 展开</button>"+	
+						"<button type='button' class='btn btn-sm btn-primary dropdown-toggle' data-toggle='dropdown'><i class='fa fa-angle-down'></i></button>" + 
+						"<ul class='dropdown-menu' role='menu'>"+
 						"<li><a href='#' id='"+tableid+"_expand_all'><i class='fa fa-minus-square'></i>&nbsp; 全部展开</a></li>"+
 						"<li><a href='#' id='"+tableid+"_collapse_all'><i class='fa fa-plus-square'></i>&nbsp; 全部收起</a></li></ul></div>");
 						$('#'+tableid+'_expand_all').click(function(){
@@ -667,6 +674,9 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 						});
 						$('#'+tableid+'_collapse_all').click(function(){
 							methods.collapseAll.apply(_this);
+						});
+						$('#'+tableid+'_expand_toggle').click(function(){
+							methods.expandNode.call(_this, otable.selectedRows()[0].id);
 						});
 				  }
 			  });

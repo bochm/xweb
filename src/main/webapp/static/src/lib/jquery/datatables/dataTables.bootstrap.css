@@ -15,6 +15,9 @@
   padding-bottom: 0.15em;
   padding-left: 0.15em;
 }
+.dataTables_wrapper .dataTables_btn_toolbar .btn-group{
+  margin-right: 0.15em;
+}
 /*
 * bx add 增加表格尾部分页等功能区域统一设置样式
 */

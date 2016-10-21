@@ -104,6 +104,7 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 	if(act == 'save'){
 		_formInitOpt.formData = table.selectedRows()[0];
 		_formInitOpt.clearForm = false;
+		_formInitOpt.fieldOpts.parentMenuName.param = {"parentMenu" : _formInitOpt.formData.id};
 		_formInitOpt.onSuccess = function(ret){
 			 $.fn.zTree.getZTreeObj('bsys_menu_forms_parentTree').reAsyncChildNodes(null, "refresh");
 			 table.updateSelectedRow(ret);

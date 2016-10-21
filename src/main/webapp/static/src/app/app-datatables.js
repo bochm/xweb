@@ -380,7 +380,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 		return _getDataTable(_table,default_opt,function(otable){
 			//初始化表格工具栏 ，增加ID约束
 			
-			var toolbar = $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar");
+			var toolbar = $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar>div.dt-buttons");
 			var pageToolbar = $("#"+(default_opt.toolbar ? default_opt.toolbar : (tableid+"-toolbar")));
 			
 			pageToolbar.find('.btn[data-role]').each(function(){
@@ -414,10 +414,11 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 				
 				pageToolbar.prepend(_export_btn_group);
 			}*/
-			toolbar.append(pageToolbar);
+			pageToolbar.children().appendTo(toolbar);
 			//修改删除按钮禁用约束
 			var _save_btn = toolbar.find('.btn-saveRecord');
 			var _delete_btn = toolbar.find('.btn-deleteRecord');
+			
 			APP.disableBtn(_save_btn);
 			APP.disableBtn(_delete_btn);
 			otable.on( 'draw.dt', function () {
@@ -429,14 +430,18 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			otable.on( 'select', function ( e, dt, type, indexes ) {
 				if(type === 'row'){
 					APP.enableBtn(_delete_btn);
-					if(otable.selectedCount() == 1) APP.enableBtn(_save_btn);
-					else APP.disableBtn(_save_btn);
+					if(otable.selectedCount() == 1) {
+						APP.enableBtn(_save_btn);
+					}else{
+						APP.disableBtn(_save_btn);
+					}
 				}
 			});
 			otable.on( 'deselect', function ( e, dt, type, indexes ) {
 				if(type === 'row'){
-					if(otable.selectedCount() == 1) APP.enableBtn(_save_btn);
-					else if(otable.selectedCount() > 1) {
+					if(otable.selectedCount() == 1) {
+						APP.enableBtn(_save_btn);
+					}else if(otable.selectedCount() > 1) {
 						APP.disableBtn(_save_btn);
 						APP.enableBtn(_delete_btn);
 					}else{
@@ -568,21 +573,20 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			var node = $(this.table().node()).treetable("node",row.id);
 			node.treeCell.prepend(node.indenter);
 			node.render();
+			//先移动节点以渲染,后循环子节点更新节点数据
 			$(this.table().node()).treetable("move",row.id, row.parentId);
 			var count = this.rows().count();
 			for(var i = (this.row('.selected').index() + 1);i<count;i++){
 				var d = this.row(i).data();
-				console.log(d);
 				var p_idx = d.parentIds.indexOf(row.id);
 				if(p_idx > 0){
 					var parent_rep = d.parentIds.substring(0,p_idx);
 					d.parentIds = d.parentIds.replace(parent_rep,(row.parentIds+",'"));
 					var tree_idx = d.parentTree.indexOf(row.id);
 					parent_rep = d.parentTree.substring(0,tree_idx);
-					console.log(d.parentTree +'||'+parent_rep);
-					d.parentTree = d.parentTree.replace(parent_rep,row.treeSort);
-					d.treeSort = d.treeSort.replace(parent_rep,row.treeSort);
-					console.log(d);
+					var parent_tre = row.parentTree + "," + row.sort + "-";
+					d.parentTree = d.parentTree.replace(parent_rep,parent_tre);
+					d.treeSort = d.treeSort.replace(parent_rep,parent_tre);
 				}else{
 					break;
 				}
