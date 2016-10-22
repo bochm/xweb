@@ -89,6 +89,12 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 		$('#bsys-menu-edit-form').submit();
 	});
 	var table = DT.getTable('#table-bsys-menu-list');
+	var count = table.rows().count();
+	for(var i = 0;i<count;i++){
+		var d = table.row(i).data();
+		console.log(d);
+		
+	}
 	var _formInitOpt = {
 			 formAction : act,validate : {},clearForm : true,
 			 fieldOpts : {

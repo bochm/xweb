@@ -313,6 +313,7 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 	    		  node.parentId = null;
 	    		  node.row.data(node.settings.parentIdAttr, null);
 	    		  node.render();
+	    		  this._moveRows(node, null);
 	  	      }
 	      }else if (node !== destination && destination.id !== node.parentId && $.inArray(node, destination.ancestors()) === -1) {
 	        node.setParent(destination);
@@ -399,8 +400,7 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 
 	    Tree.prototype._moveRows = function(node, destination) {
 	      var children = node.children, i;
-
-	      node.row.insertAfter(destination.row);
+	      if(destination) node.row.insertAfter(destination.row);
 	      node.render();
 
 	      // Loop backwards through children to have them end up on UI in correct
@@ -664,8 +664,7 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 				  if(init_opts.expandBtn){
 					  $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar>.dt-buttons").prepend(
 						"<div class='btn-group'>" +
-						"<button class='btn btn-sm btn-primary btn-expand-toggle' id='"+tableid+"_expand_toggle'><i class='fa fa-minus-square-o'></i> 展开</button>"+	
-						"<button type='button' class='btn btn-sm btn-primary dropdown-toggle' data-toggle='dropdown'><i class='fa fa-angle-down'></i></button>" + 
+						"<button type='button' class='btn btn-sm btn-primary dropdown-toggle' data-toggle='dropdown'><i class='fa fa-minus-square-o'></i> 展开 <i class='fa fa-angle-down'></i></button>" + 
 						"<ul class='dropdown-menu' role='menu'>"+
 						"<li><a href='#' id='"+tableid+"_expand_all'><i class='fa fa-minus-square'></i>&nbsp; 全部展开</a></li>"+
 						"<li><a href='#' id='"+tableid+"_collapse_all'><i class='fa fa-plus-square'></i>&nbsp; 全部收起</a></li></ul></div>");
@@ -675,9 +674,7 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 						$('#'+tableid+'_collapse_all').click(function(){
 							methods.collapseAll.apply(_this);
 						});
-						$('#'+tableid+'_expand_toggle').click(function(){
-							methods.expandNode.call(_this, otable.selectedRows()[0].id);
-						});
+						
 				  }
 			  });
 	    	

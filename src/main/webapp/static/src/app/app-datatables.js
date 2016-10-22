@@ -459,6 +459,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			/*$(window).resize(function(){
 				otable.draw(false);
 			});*/
+			
 			if(callback && typeof callback == "function")callback(otable);
 		});
 	};
@@ -558,6 +559,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 		var newRow = this.row.add(row).draw();
 		//treetable调用move方法保持树形结构
 		if(this.init().tableType == 'treetable'){
+			this.search('').draw();
 			$(this.table().node()).treetable("move",newRow.node(), row.parentId);
 		}
 		return newRow;
@@ -570,27 +572,31 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 		var updatedRow = this.row(this.rows('.selected')[0]).data(row).draw();
 		//treetable调用move方法保持树形结构
 		if(this.init().tableType == 'treetable'){
-			var node = $(this.table().node()).treetable("node",row.id);
+			//this.search('').draw();
+			var $treeTable = $(this.table().node());
+			var node = $treeTable.treetable("node",row.id);
 			node.treeCell.prepend(node.indenter);
 			node.render();
-			//先移动节点以渲染,后循环子节点更新节点数据
+			//先移动节点以渲染,后循环子节点更新节点数据,效率待检测,如低效则刷新表格
 			$(this.table().node()).treetable("move",row.id, row.parentId);
-			var count = this.rows().count();
-			for(var i = (this.row('.selected').index() + 1);i<count;i++){
-				var d = this.row(i).data();
-				var p_idx = d.parentIds.indexOf(row.id);
-				if(p_idx > 0){
-					var parent_rep = d.parentIds.substring(0,p_idx);
-					d.parentIds = d.parentIds.replace(parent_rep,(row.parentIds+",'"));
-					var tree_idx = d.parentTree.indexOf(row.id);
-					parent_rep = d.parentTree.substring(0,tree_idx);
-					var parent_tre = row.parentTree + "," + row.sort + "-";
-					d.parentTree = d.parentTree.replace(parent_rep,parent_tre);
-					d.treeSort = d.treeSort.replace(parent_rep,parent_tre);
-				}else{
-					break;
-				}
-			}
+			this.rows( function ( idx, data, node ) {
+				return data.parentTree.indexOf(row.id) > 0 ? true : false;
+		    }).every( function ( rowIdx, tableLoop, rowLoop ) {
+		    	var d = this.data();
+		    	var p_idx = d.parentIds.indexOf(row.id);
+				var parent_rep = d.parentIds.substring(0,p_idx);
+				var parent_rep_t = (!APP.isEmpty(row.parentIds)) ? (row.parentIds + ",'") : "'";
+				d.parentIds = d.parentIds.replace(parent_rep,parent_rep_t);
+				var tree_idx = d.parentTree.indexOf(row.id);
+				parent_rep = d.parentTree.substring(0,tree_idx);
+				var parent_tre = (!APP.isEmpty(row.parentTree)) ? (row.parentTree + "," + row.sort + "-") : (row.sort + "-");
+				d.parentTree = d.parentTree.replace(parent_rep,parent_tre);
+				d.treeSort = d.treeSort.replace(parent_rep,parent_tre);
+				this.data(d).draw();
+				node = $treeTable.treetable("node",d.id);
+				node.treeCell.prepend(node.indenter);
+				node.render();
+		    });
 		}
 		return updatedRow;
 	} );
