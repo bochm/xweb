@@ -324,12 +324,13 @@ define('app/common',['bootstrap','moment'],function() {
 	        			_this.bootstrapSwitch({
 	        				'state' : _this.attr('checked') == 'checked',
 	        				'onSwitchChange' : function(event, state){
-	        					if(state) _this.val(_this.data('on-value') ? _this.data('on-value') : '1');
-	        					else _this.val(_this.data('off-value') ? _this.data('off-value') : '0');
+	        					
+	        					if(state) _this.val((_this.data('on-value') !== undefined) ? _this.data('on-value')+'' : '1');
+	        					else _this.val((_this.data('off-value') !== undefined) ? _this.data('off-value')+'' : '0');
 	        				 },
 	        				 'onInit' : function(event, state){
-	        					 if(state) _this.val(_this.data('on-value') ? _this.data('on-value') : '1');
-		        				 else _this.val(_this.data('off-value') ? _this.data('off-value') : '0');
+	        					 if(state) _this.val((_this.data('on-value') !== undefined) ? _this.data('on-value')+'' : '1');
+		        				 else _this.val((_this.data('off-value') !== undefined) ? _this.data('off-value')+'' : '0');
 	        				 }
 	        			});
 	        			

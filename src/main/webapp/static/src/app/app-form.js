@@ -233,7 +233,11 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				}
 				if(_fieldValue != undefined){
 					if(this.type == 'checkbox'){
-						formField.attr('checked',_fieldValue == (formField.data('on-value') ? formField.data('on-value') : '1'));
+						var _checked = (_fieldValue == ((formField.data('on-value') !== undefined) ? formField.data('on-value')+'' : '1'));
+						formField.attr('checked',_checked);
+/*						if(formField.hasClass('bs-switch')){
+							formField.bootstrapSwitch('state', _checked, false);
+						}*/
 					}else{
 						formField.val(_fieldValue);
 						formField.attr('value',_fieldValue);

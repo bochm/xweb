@@ -94,12 +94,12 @@
           html: this.options.labelText,
           "class": this.options.baseClass + "-label"
         });
-        this.$element.on("init.bootstrapSwitch", (function(_this) {
+        this.$element.on("switch:init", (function(_this) {
           return function() {
             return _this.options.onInit.apply(element, arguments);
           };
         })(this));
-        this.$element.on("switchChange.bootstrapSwitch", (function(_this) {
+        this.$element.on("switch:change", (function(_this) {
           return function(e) {
             if (false === _this.options.onSwitchChange.apply(element, arguments)) {
               if (_this.$element.is(":radio")) {
@@ -122,7 +122,7 @@
         this._labelHandlers();
         this._formHandler();
         this._externalLabelHandler();
-        this.$element.trigger("init.bootstrapSwitch", this.options.state);
+        this.$element.trigger("switch:init", this.options.state);
       }
 
       BootstrapSwitch.prototype._constructor = BootstrapSwitch;
@@ -536,7 +536,7 @@
                 if (_this.$element.is(":radio")) {
                   $("[name='" + (_this.$element.attr('name')) + "']").not(_this.$element).prop("checked", false).trigger("change.bootstrapSwitch", true);
                 }
-                return _this.$element.trigger("switchChange.bootstrapSwitch", [state]);
+                return _this.$element.trigger("switch:change", [state]);
               }
             };
           })(this),

@@ -66,6 +66,21 @@
 					</div>
 				</div>
 			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="control-label col-md-4">菜单类型</label>
+						<div class="col-md-8"><input type="checkbox" name="type" data-on-value="0" data-off-value="1" 
+						class="bs-switch form-control" data-on-text="<i class='fa fa-cog'></i> 模块" data-off-text="<i class='fa fa-pencil-square-o'></i> 功能" data-off-color="info"></div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="control-label col-md-4">权限标识</label>
+						<div class="col-md-8"><input type="text" name="permission" class="form-control"></div>
+					</div>
+				</div>
+			</div>
 	   	</div>	   	
 	   </form>
 	</div>
@@ -83,18 +98,11 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 		var icons = data.icons ? data.icons : data.id;
 		return $("<span align='left'><i class='"+icons+"'></i>&nbsp;"+data.text+"</span>");
 	}
-	
 	var act = '${param.act}';
 	$('.modal-footer .btn-primary').click(function(){
 		$('#bsys-menu-edit-form').submit();
 	});
 	var table = DT.getTable('#table-bsys-menu-list');
-	var count = table.rows().count();
-	for(var i = 0;i<count;i++){
-		var d = table.row(i).data();
-		console.log(d);
-		
-	}
 	var _formInitOpt = {
 			 formAction : act,validate : {},clearForm : true,
 			 fieldOpts : {
@@ -109,6 +117,7 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 	 
 	if(act == 'save'){
 		_formInitOpt.formData = table.selectedRows()[0];
+		console.log(_formInitOpt.formData);
 		_formInitOpt.clearForm = false;
 		_formInitOpt.fieldOpts.parentMenuName.param = {"parentMenu" : _formInitOpt.formData.id};
 		_formInitOpt.onSuccess = function(ret){
