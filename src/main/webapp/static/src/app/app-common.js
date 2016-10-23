@@ -322,9 +322,8 @@ define('app/common',['bootstrap','moment'],function() {
 	        		_queryContainer(ct).find('.bs-switch').each(function(){
 	        			var _this = $(this);
 	        			_this.bootstrapSwitch({
-	        				'state' : _this.attr('checked') == 'checked',
+	        				'state' : _this.is(":checked"),
 	        				'onSwitchChange' : function(event, state){
-	        					
 	        					if(state) _this.val((_this.data('on-value') !== undefined) ? _this.data('on-value')+'' : '1');
 	        					else _this.val((_this.data('off-value') !== undefined) ? _this.data('off-value')+'' : '0');
 	        				 },
