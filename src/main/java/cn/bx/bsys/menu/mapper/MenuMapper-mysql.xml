@@ -59,4 +59,12 @@
 		update sys_menu set parent_tree = replace(parent_tree,#{old.treeSort},#{new.treeSort})
 		where locate(#{new.id}, parent_tree) > 0
 	</update>
+	
+	<delete id="removeList">
+		delete from  sys_menu where id in
+		<foreach collection="array" item="id" open="(" close=")" separator=",">#{id}</foreach>
+	</delete>
+	<delete id="removeChildren">
+		delete from  sys_menu where locate(#{id}, parent_tree) > 0
+	</delete>
 </mapper>

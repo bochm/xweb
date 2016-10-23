@@ -347,6 +347,7 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 	      // Remove node from parent children list
 	      if (node.parentId != null) {
 	        node.parentNode().removeChild(node);
+	        if(node.parentNode().children.length  === 0) node.parentNode().indenter.html("");//父节点没有子节点
 	      }
 
 	      // Clean up Tree object (so Node objects are GC-ed)

@@ -39,4 +39,11 @@ public class MenuController {
 		else
 			return DataMessage.error("菜单保存失败", menu);
 	}
+	@RequestMapping(value="delete")
+	public @ResponseBody DataMessage deleteMenu(@RequestBody String[] ids){
+		if(menuService.removeListWithChildren(ids) > 0)
+			return DataMessage.success("菜单删除成功", ids);
+		else
+			return DataMessage.error("菜单保存失败", ids);
+	}
 }

@@ -34,8 +34,20 @@ require(['app/common','app/treetable'],function(APP,DT){
 		"tid":"id","tpid":"parentId",
 		"expandable": true,"expandBtn" : true,
 		"columns": columns,"columnDefs": columnDefs,
-		"buttons" : ['addRecord','saveRecord'],
-		"addEditModal" : {"url" : "${ctx}/pages/bsys/menu/menu-edit","id":"bsys-menu-edit"}
+		"buttons" : ['addRecord','saveRecord','deleteRecord'],
+		"addEditModal" : {"url" : "${ctx}/pages/bsys/menu/menu-edit","id":"bsys-menu-edit"},
+		"deleteRecord" : function(dt,node,e){
+			APP.confirm('','是否删除选择的菜单及包含的所有子菜单?',function(){
+				APP.postJson("${ctx}/bsys/menu/delete",dt.selectedColumn("id"),null,function(ret,status){
+					if(ret.OK){
+						dt.deleteSelectedRow();
+						APP.success(ret[APP.MSG]);
+					}else{
+						APP.error(ret[APP.MSG]);
+					}
+				});
+			})
+		}
 	});
 })
 </script>

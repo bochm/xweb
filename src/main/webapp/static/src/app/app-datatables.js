@@ -284,9 +284,13 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 		}else if(!APP.isEmpty(_options.deleteRecord) && !APP.isEmpty(_options.deleteRecord.url)){
 			APP.confirm('','是否删除选择的记录?',function(){
 				var _id_column = _options.deleteRecord.id ? _options.deleteRecord.id : 'id';
-				APP.postJson(_options.deleteRecord.url,dt.selectedColumn(_id_column),null,function(){
-					dt.deleteSelectedRow();
-					APP.success('删除成功');
+				APP.postJson(_options.deleteRecord.url,dt.selectedColumn(_id_column),null,function(ret,status){
+					if(ret.OK){
+						dt.deleteSelectedRow();
+						APP.success(ret[APP.MSG]);
+					}else{
+						APP.success(ret[APP.MSG]);
+					}
 				});
 			})
 		}else{
@@ -307,7 +311,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      * 自定义按钮--修改
      */
 	$.fn.dataTable.ext.buttons.saveRecord = {
-		text: "<i class='fa fa-copy'></i> 修改",
+		text: "<i class='fa fa-edit'></i> 修改",
 		className: 'btn btn-sm btn-primary btn-saveRecord',
 		action: function ( e, dt, node, config ) {
 			if(dt.selectedCount() != 1){
@@ -321,7 +325,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      * 自定义按钮--删除
      */
 	$.fn.dataTable.ext.buttons.deleteRecord = {
-		text: "<i class='fa fa-copy'></i> 删除",
+		text: "<i class='fa fa-trash-o'></i> 删除",
 		className: 'btn btn-sm btn-warning btn-deleteRecord',
 		action: function ( e, dt, node, config ) {
 			_deleteRecord(dt,node,e);
@@ -569,7 +573,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      * 修改已选择行数据
      */
 	DataTable.Api.register( 'updateSelectedRow()', function (row) {
-		var updatedRow = this.row(this.rows('.selected')[0]).data(row).draw();
+		var updatedRow = this.row(this.rows('.selected')[0]).data(row);
 		//treetable调用move方法保持树形结构
 		if(this.init().tableType == 'treetable'){
 			//this.search('').draw();
@@ -592,19 +596,33 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 				var parent_tre = (!APP.isEmpty(row.parentTree)) ? (row.parentTree + "," + row.sort + "-") : (row.sort + "-");
 				d.parentTree = d.parentTree.replace(parent_rep,parent_tre);
 				d.treeSort = d.treeSort.replace(parent_rep,parent_tre);
-				this.data(d).draw();
+				this.data(d);
 				node = $treeTable.treetable("node",d.id);
 				node.treeCell.prepend(node.indenter);
 				node.render();
 		    });
 		}
-		return updatedRow;
+		return updatedRow.draw();
 	} );
 	/**
      * 删除已选择行数据
      */
 	DataTable.Api.register( 'deleteSelectedRow()', function () {
-		return this.rows('.selected').remove().draw();
+		var dt = this;
+		var tableNode = dt.table().node();
+		if(dt.init().tableType == 'treetable'){
+			dt.rows('.selected').every(function ( rowIdx, tableLoop, rowLoop ) {
+				if(this.data() && this.data().id){
+					var selectedId = this.data().id;
+					$(tableNode).treetable("removeNode",selectedId);
+					dt.rows( function ( idx, data, node ) {
+						return data.parentTree.indexOf(selectedId) > 0 ? true : false;
+				    }).remove();
+				}
+		    });
+		}
+		dt.rows('.selected').remove().draw();
+		
 	} );
 	
 	/**
