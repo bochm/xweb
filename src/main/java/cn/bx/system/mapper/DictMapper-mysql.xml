@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.bx.system.mapper.DictMapper"> 
+    <sql id="dictColumns">
+    	a.id,
+    	a.value,
+    	a.name,
+    	a.type,
+    	a.type_desc,
+    	a.sort,
+		a.remarks
+    </sql>
+    <!-- 根据类型查询字典数据 -->
+	<select id="findDictByType" resultType="cn.bx.system.entity.Dict">
+		select
+		<include refid="dictColumns"/>
+		from sys_dict a
+		WHERE a.type = #{type}
+	</select>
+	<select id="list" resultType="cn.bx.system.entity.Dict">
+		select
+		<include refid="userColumns"/>
+		from sys_dict a
+	</select>
+	<insert id="add">
+		insert into sys_dict(id, value, name, type, type_desc, sort, create_by, create_date, update_by, 
+		update_date, remarks) 
+		VALUES (#{id}, #{value},#{name},#{type},#{typeDesc},#{sort}, #{create_by}, #{create_date},#{update_by},
+		#{update_date}, #{remarks})
+	</insert>
+	<update id="save">
+		update sys_dict set value = #{value}, name=#{name},type=#{type},type_desc=#{typeDesc},
+		sort=#{sort},update_by=#{update_by},update_date=#{update_date},remarks = #{remarks}
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from  sys_dict where id in
+		<foreach collection="array" item="id" open="(" close=")" separator=",">#{id}</foreach>
+	</delete>
+</mapper>

@@ -257,10 +257,20 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			}
 		}else if(!APP.isEmpty(_options.addForm) || !APP.isEmpty(_options.addEditForm) || !APP.isEmpty(_options.editForm)){
 			var _form = _options.addEditForm || _options.addForm || _options.editForm;
+			var _form_validate = {};
+			if(_form.addValidate){
+				if(typeof _form.addValidate === 'object') _form_validate = _form.addValidate;
+				else if(typeof _form.addValidate === 'function') _form_validate = _form.addValidate.call(this,dt);
+			}else if(_form.editValidate){
+				if(typeof _form.editValidate === 'object') _form_validate = _form.editValidate;
+				else if(typeof _form.editValidate === 'function') _form_validate = _form.editValidate.call(this,dt);
+			}else if(_form.validate){
+				_form_validate = _form.validate;
+			}
+			var form_opts = {formAction : type,clearForm : true,autoClear : true,type : 'post',validate : _form_validate};
+			if(type == 'save') form_opts.formData = dt.selectedRows()[0];
 			require(['app/form'],function(FORM){
-				$(_form.el).initForm({
-					formAction : type,clearForm : true,type : 'post',validate : _form.validate
-				},function(data){
+				$(_form.el).initForm(form_opts,function(data){
 					if(type == 'add') dt.addRow(data);
 					else dt.updateSelectedRow(data);
 				});
