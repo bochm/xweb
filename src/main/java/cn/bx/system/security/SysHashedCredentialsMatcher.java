@@ -1,4 +1,4 @@
-package cn.bx.bsys.security;
+package cn.bx.system.security;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -9,8 +9,8 @@ import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 
-import cn.bx.bframe.system.entity.LoginUser;
-import cn.bx.bframe.system.utils.UserUtils;
+import cn.bx.system.entity.LoginUser;
+import cn.bx.system.utils.UserUtils;
 /**
  * <p>Author: bcm
  * <p>Date: 15-8-16

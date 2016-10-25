@@ -1,4 +1,4 @@
-package cn.bx.bsys.menu.controller;
+package cn.bx.system.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.bx.bframe.entity.DataMessage;
-import cn.bx.bsys.menu.mapper.Menu;
-import cn.bx.bsys.menu.service.MenuService;
+import cn.bx.system.entity.Menu;
+import cn.bx.system.service.MenuService;
 
 @Controller
 @RequestMapping("bsys/menu")

@@ -1,4 +1,4 @@
-package cn.bx.bsys.security;
+package cn.bx.system.security;
 /**
  * 用户和密码（手机登录和验证码）令牌类
  * @author bcm

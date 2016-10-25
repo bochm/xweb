@@ -235,10 +235,10 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 					if(this.type == 'checkbox'){
 						var _checked = (_fieldValue == ((formField.data('on-value') !== undefined) ? formField.data('on-value')+'' : '1'));
 						formField.attr('checked',_checked);
-/*						if(formField.hasClass('bs-switch')){
+						if(formField.hasClass('bs-switch')){
 							formField.bootstrapSwitch('state', _checked);
-							console.log(formField.val());
-						}*/
+							formField.trigger("switch:change", [_checked]);//强制触发change方法赋值
+						}
 					}else{
 						formField.val(_fieldValue);
 						formField.attr('value',_fieldValue);

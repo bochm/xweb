@@ -9,14 +9,14 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 	
 	<!-- 凭证输入次数匹配器 -->
-    <bean id="credentialsMatcher" class="cn.bx.bsys.security.SysHashedCredentialsMatcher">
+    <bean id="credentialsMatcher" class="cn.bx.system.security.SysHashedCredentialsMatcher">
         <constructor-arg ref="shiroCacheManager"/>
         <property name="hashAlgorithmName" value="SHA-1"/>
         <property name="hashIterations" value="1024"/>
         <property name="storedCredentialsHexEncoded" value="true"/>
     </bean>
 	<!-- 基于Form表单的身份验证过滤器 -->
-    <bean id="formAuthenticationFilter" class="cn.bx.bsys.security.SysFormAuthenticationFilter">
+    <bean id="formAuthenticationFilter" class="cn.bx.system.security.SysFormAuthenticationFilter">
         <property name="usernameParam" value="username"/>
         <property name="passwordParam" value="password"/>
         <property name="rememberMeParam" value="rememberMe"/>
@@ -63,7 +63,7 @@
 	</bean>
 	
 	<!-- Realm实现 -->
-    <bean id="sysAuthorizingRealm" class="cn.bx.bsys.security.SysAuthorizingRealm">
+    <bean id="sysAuthorizingRealm" class="cn.bx.system.security.SysAuthorizingRealm">
         <property name="credentialsMatcher" ref="credentialsMatcher"/>
         <property name="cachingEnabled" value="false"/>
         <!--<property name="authenticationCachingEnabled" value="true"/>-->

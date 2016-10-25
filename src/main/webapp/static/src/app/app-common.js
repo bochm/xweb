@@ -321,6 +321,7 @@ define('app/common',['bootstrap','moment'],function() {
 	        	require(['switch'],function(){
 	        		_queryContainer(ct).find('.bs-switch').each(function(){
 	        			var _this = $(this);
+	        			_this.bootstrapSwitch('destroy');
 	        			_this.bootstrapSwitch({
 	        				'state' : _this.is(":checked"),
 	        				'onSwitchChange' : function(event, state){

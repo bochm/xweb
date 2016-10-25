@@ -1,4 +1,4 @@
-package cn.bx.bsys.security;
+package cn.bx.system.security;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,9 +19,9 @@ import org.apache.shiro.util.ByteSource;
 
 import cn.bx.bframe.common.config.AppConstants;
 import cn.bx.bframe.common.security.PasswordUtil;
-import cn.bx.bframe.system.entity.LoginUser;
-import cn.bx.bframe.system.entity.User;
-import cn.bx.bsys.system.service.SystemService;
+import cn.bx.system.entity.LoginUser;
+import cn.bx.system.entity.User;
+import cn.bx.system.service.SystemService;
 
 public class SysAuthorizingRealm extends AuthorizingRealm {
 

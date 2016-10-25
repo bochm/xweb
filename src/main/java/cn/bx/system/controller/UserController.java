@@ -1,4 +1,4 @@
-package cn.bx.bsys.user.controller;
+package cn.bx.system.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.bx.bframe.common.security.PasswordUtil;
 import cn.bx.bframe.entity.DataMessage;
-import cn.bx.bframe.system.entity.User;
-import cn.bx.bsys.user.service.UserService;
+import cn.bx.system.entity.User;
+import cn.bx.system.service.UserService;
 
 @Controller
 @RequestMapping("bsys/user")

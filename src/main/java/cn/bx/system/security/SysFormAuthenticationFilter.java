@@ -1,4 +1,4 @@
-package cn.bx.bsys.security;
+package cn.bx.system.security;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;

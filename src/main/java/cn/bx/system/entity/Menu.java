@@ -1,4 +1,4 @@
-package cn.bx.bsys.menu.mapper;
+package cn.bx.system.entity;
 
 
 import cn.bx.bframe.entity.TreeBean;

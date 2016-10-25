@@ -1,4 +1,4 @@
-package cn.bx.bsys.user.service;
+package cn.bx.system.service;
 
 import java.util.Set;
 
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.bx.bframe.service.SimpleService;
-import cn.bx.bframe.system.entity.User;
+import cn.bx.system.entity.User;
 
 @Service("UserService")
 @Transactional(rollbackFor=Exception.class)

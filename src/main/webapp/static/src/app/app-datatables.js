@@ -344,11 +344,13 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
     **/
 	$.fn.initTable = function (opts,callback) {
 		var _table = $(this);
+		
 		var tableid = _table.attr('id');
 		if(APP.isEmpty(tableid)){
 			alert("请指定table id");
 			return;
 		}
+		DataTable.getTable("#"+tableid).destroy();
 		var default_opt = $.extend(true,{
 			"processing" : true,
 			"serverSide" : false,

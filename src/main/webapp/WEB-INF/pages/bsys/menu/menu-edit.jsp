@@ -47,7 +47,7 @@
 						<input type='hidden' name='parentId' data-id-for="parentMenuName"/>
 						<input type="text" name="parentMenuName" form-role="treeSelect" tree-key-pid="parent_id"
 						readonly="readonly"  class="form-control"  id="bsys_menu_forms_parentTree"
-						data-stmid="cn.bx.bsys.menu.mapper.MenuMapper.selectAllMenuTree"/>
+						data-stmid="cn.bx.system.mapper.MenuMapper.selectAllMenuTree"/>
 						</div>
 					</div>
 				</div>
@@ -70,7 +70,7 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						<label class="control-label col-md-4">菜单类型</label>
-						<div class="col-md-8"><input type="checkbox" name="type" data-on-value="0" data-off-value="1" 
+						<div class="col-md-8"><input type="checkbox" name="type" data-on-value="0" data-off-value="1" checked 
 						class="bs-switch form-control" data-on-text="<i class='fa fa-cog'></i> 模块" data-off-text="<i class='fa fa-pencil-square-o'></i> 功能" data-off-color="info"></div>
 					</div>
 				</div>
@@ -98,6 +98,10 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 		var icons = data.icons ? data.icons : data.id;
 		return $("<span align='left'><i class='"+icons+"'></i>&nbsp;"+data.text+"</span>");
 	}
+	$("input[name='type']").on("switch:change",function(e,state){
+		if(state) $("input[name='permission']").removeClass('required');
+		else $("input[name='permission']").addClass('required');
+	})
 	var act = '${param.act}';
 	$('.modal-footer .btn-primary').click(function(){
 		$('#bsys-menu-edit-form').submit();
@@ -117,7 +121,6 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 	 
 	if(act == 'save'){
 		_formInitOpt.formData = table.selectedRows()[0];
-		console.log(_formInitOpt.formData);
 		_formInitOpt.clearForm = false;
 		_formInitOpt.fieldOpts.parentMenuName.param = {"parentMenu" : _formInitOpt.formData.id};
 		_formInitOpt.onSuccess = function(ret){
