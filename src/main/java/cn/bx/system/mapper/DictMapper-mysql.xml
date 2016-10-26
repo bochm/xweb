@@ -12,6 +12,11 @@
 		a.remarks
     </sql>
     <!-- 根据类型查询字典数据 -->
+	<select id="queryDictTypes" resultType="hashmap">
+		select type as id,type_desc as text
+		from sys_dict
+	</select>
+    <!-- 根据类型查询字典数据 -->
 	<select id="findDictByType" resultType="cn.bx.system.entity.Dict">
 		select
 		<include refid="dictColumns"/>
@@ -20,7 +25,7 @@
 	</select>
 	<select id="list" resultType="cn.bx.system.entity.Dict">
 		select
-		<include refid="userColumns"/>
+		<include refid="dictColumns"/>
 		from sys_dict a
 	</select>
 	<insert id="add">

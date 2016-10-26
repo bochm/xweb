@@ -121,6 +121,7 @@
 					<ul class="sub-menu">
 						<li><a href="pages/bsys/user/user-list" class="act-menu"><i class="iconfont icon-users"></i> 用户管理</a></li>
 						<li><a href="pages/bsys/menu/menu-list" class="act-menu"><i class="iconfont icon-heart"></i> 菜单管理</a></li>
+						<li><a href="pages/bsys/dict/dict-list" class="act-menu"><i class="iconfont icon-book"></i> 字典数据</a></li>
 					</ul>
 				</li>
 			</ul>

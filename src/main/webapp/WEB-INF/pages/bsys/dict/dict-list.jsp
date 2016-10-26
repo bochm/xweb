@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/include/taglib.jsp" %>
 <div class="loading-page">
 <span id="table-bsys-dict-list-toolbar"></span>
-<table id="table-bsys-user-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/bsys/dict" 
+<table id="table-bsys-user-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/system/dict" 
 	data-paging="true" data-info="true" data-ordering="true">
 		<thead><tr>
 			<th data-visible='false' data-column="id">id</th>
@@ -25,7 +25,7 @@
             <h4 class="modal-title">字典维护</h4>
          </div>
          <div class="modal-body">
-            <form class="form-horizontal" action="${ctx}/bsys/dict/add.json" role="form" id="bsys-dict-edit-form" >
+            <form class="form-horizontal" action="${ctx}/bsys/system/add.json" role="form" id="bsys-dict-edit-form" >
             	<input type="hidden" name="id">
             	<div class="form-body">
             		<div class="row">
@@ -52,7 +52,10 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label col-md-4">类型</label>
-								<div class="col-md-8"><input type="password" name="password" maxlength="50" minlength="3" id="sys-user-password" class="form-control required"></div>
+								<div class="col-md-8">
+								<select name="type" form-role='select' data-stmid='cn.bx.system.mapper.DictMapper.queryDictTypes' 
+								class="form-control required selectOpt" multiple="multiple" />
+								</div>
 							</div>
 						</div>
 						<div class="col-md-6">
@@ -83,28 +86,16 @@
 </div>
 <script type="text/javascript">
 require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
-	var form_validate = {
-			rules : {
-				loginName : {
-					'checkExists' : {
-						url:'${ctx}/bsys/user/checkLoginName',data:{}
-					}
-				}
-			}
-		};
+
 	$('.modal-footer .btn-primary').on('click',function(){
 		$('#bsys-dict-edit-form').submit();
 	});
 	$('table.datatable').initTable({
 		"scrollY": "400px",
 		"buttons":["addRecord","saveRecord","deleteRecord"],
-		"deleteRecord" : {"url" : '${ctx}/bsys/dict/delete',"id" : 'id'},
-		"addEditForm" : {"el" : "#bsys-dict-edit-form","addValidate" : function(dt){
-			form_validate.rules.loginName.checkExists.data.oldloginname = '';
-			return form_validate;
-		},"editValidate" : function(dt){
-			form_validate.rules.loginName.checkExists.data.oldloginname = dt.selectedRows()[0].loginName;
-			return form_validate;
+		"deleteRecord" : {"url" : '${ctx}/system/dict/delete',"id" : 'id'},
+		"addEditForm" : {"el" : "#bsys-dict-edit-form","fieldOpts":{
+			"type" : {tags: true,maximumSelectionLength: 1}
 		}}
 	});
 })

@@ -267,7 +267,8 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			}else if(_form.validate){
 				_form_validate = _form.validate;
 			}
-			var form_opts = {formAction : type,clearForm : true,autoClear : true,type : 'post',validate : _form_validate};
+			var _field_opts = _form.fieldOpts || {};
+			var form_opts = {formAction : type,clearForm : true,autoClear : true,type : 'post',validate : _form_validate,fieldOpts:_field_opts};
 			if(type == 'save') form_opts.formData = dt.selectedRows()[0];
 			require(['app/form'],function(FORM){
 				$(_form.el).initForm(form_opts,function(data){
@@ -275,7 +276,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 					else dt.updateSelectedRow(data);
 				});
 			});
-			$(_form).closest('.modal.fade').modal('show');
+			$(_form.el).closest('.modal.fade').modal('show');
 		}else{
 			alert("请初始化表格参数中的addForm|addEditForm|addModal|addEditModal|addRecord|saveRecord选项");
 		}
