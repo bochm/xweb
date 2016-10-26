@@ -16,7 +16,7 @@
 		</tbody>
 </table>	
 
-<!-- 新增修改 -->
+<!-- 新增修改 http://www.cnblogs.com/wuhuacong/p/4784957.html-->
 <div class="modal fade" id="bsys-dict-list-edit" tabindex="-1" role="dialog" data-backdrop="static">
 <div class="modal-dialog">
       <div class="modal-content">
