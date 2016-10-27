@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/include/taglib.jsp" %>
 <div class="loading-page">
 <span id="table-bsys-dict-list-toolbar"></span>
-<table id="table-bsys-user-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/system/dict" 
+<table id="table-bsys-dict-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/system/dict" 
 	data-paging="true" data-info="true" data-ordering="true">
 		<thead><tr>
 			<th data-visible='false' data-column="id">id</th>
@@ -25,14 +25,14 @@
             <h4 class="modal-title">字典维护</h4>
          </div>
          <div class="modal-body">
-            <form class="form-horizontal" action="${ctx}/bsys/system/add.json" role="form" id="bsys-dict-edit-form" >
+            <form class="form-horizontal" action="${ctx}/system/dict/add.json" role="form" id="bsys-dict-edit-form" >
             	<input type="hidden" name="id">
             	<div class="form-body">
             		<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label class="control-label col-md-4">名称</label>
-								<div class="col-md-8">
+								<label class="control-label col-md-3">名称</label>
+								<div class="col-md-9">
 								<div class="input-icon right"> <i class="fa validate-icon"></i><input type="text" name="name" 
 								class="form-control required"></div>
 								</div>
@@ -42,8 +42,11 @@
 							<div class="form-group">
 								<label class="control-label col-md-3">字典值</label>
 								<div class="col-md-9">
+								<div class="input-group">
 								<div class="input-icon right"> <i class="fa validate-icon"></i><input type="text" name="value" 
 								class="form-control required"></div>
+								<span class="input-group-btn"><a class="btn blue">新增</a></span>
+								</div>
 								</div>
 							</div>
 						</div>
@@ -51,25 +54,28 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label class="control-label col-md-4">类型</label>
-								<div class="col-md-8">
+								<label class="control-label col-md-3">类型</label>
+								<div class="col-md-9">
+								<div class="input-group">
 								<select name="type" form-role='select' data-stmid='cn.bx.system.mapper.DictMapper.queryDictTypes' 
-								class="form-control required selectOpt" multiple="multiple" />
+								class="form-control required selectOpt"/>
+								<span class="input-group-btn"><a class="btn blue" id="system-dict-type-new">新增</a></span>
+								</div>
 								</div>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label class="control-label col-md-4">排序</label>
-								<div class="col-md-8"><input type="text" name="sort" class="form-control digits"></div>
+								<label class="control-label col-md-3">排序</label>
+								<div class="col-md-9"><input type="text" name="sort" class="form-control input-xsmall digits"></div>
 							</div>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-12">
+						<div class="col-md-9">
 							<div class="form-group">
 								<label class="control-label col-md-2">备注</label>
-								<div class="col-md-10"><input type="text" name="remarks" class="form-control"></div>
+								<div class="col-md-10"><input type="text" name="remarks" class="form-control input-xlarge"></div>
 							</div>
 						</div>
 					</div>
@@ -88,15 +94,17 @@
 require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 
 	$('.modal-footer .btn-primary').on('click',function(){
+		alert($("[name='type']").val());
 		$('#bsys-dict-edit-form').submit();
+	});
+	$('#system-dict-type-new').click(function(){
+		APP.popover($(this),"asdasd");
 	});
 	$('table.datatable').initTable({
 		"scrollY": "400px",
 		"buttons":["addRecord","saveRecord","deleteRecord"],
 		"deleteRecord" : {"url" : '${ctx}/system/dict/delete',"id" : 'id'},
-		"addEditForm" : {"el" : "#bsys-dict-edit-form","fieldOpts":{
-			"type" : {tags: true,maximumSelectionLength: 1}
-		}}
+		"addEditForm" : {"el" : "#bsys-dict-edit-form"}
 	});
 })
 </script>

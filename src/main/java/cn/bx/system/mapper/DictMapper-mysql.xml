@@ -31,8 +31,8 @@
 	<insert id="add">
 		insert into sys_dict(id, value, name, type, type_desc, sort, create_by, create_date, update_by, 
 		update_date, remarks) 
-		VALUES (#{id}, #{value},#{name},#{type},#{typeDesc},#{sort}, #{create_by}, #{create_date},#{update_by},
-		#{update_date}, #{remarks})
+		VALUES (#{id}, #{value},#{name},#{type},#{typeDesc},#{sort}, #{createBy}, #{createDate},#{updateBy},
+		#{updateDate}, #{remarks})
 	</insert>
 	<update id="save">
 		update sys_dict set value = #{value}, name=#{name},type=#{type},type_desc=#{typeDesc},
