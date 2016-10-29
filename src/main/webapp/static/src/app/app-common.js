@@ -91,7 +91,7 @@ define('app/common',['bootstrap','moment'],function() {
 	            return 'webapp_' + Math.floor(Math.random() * (new Date()).getTime());
 	        },
 	        isEmpty : function(v){
-	        	return v === undefined || v === null || v ==='';
+	        	return v === undefined || v === null || $.trim(v) === '';
 	        },
 	        jsPath:_app_js_base_url,
 	        
@@ -738,14 +738,19 @@ define('app/common',['bootstrap','moment'],function() {
 	 * @param  {String} icon  title图标
 	 * @param  {String} title  title内容
 	 * @param  {String} placement  显示的位置 top|bottom|left|right|auto  默认left
+	 * @param  {int} width  宽度
 	 */
-	APP.popover = function(pobj,content,type,icon,title,placement){
+	APP.popover = function(pobj,content,type,icon,title,placement,width){
 		require(['bootstrap'],function(){
-			var _type = ((type && type != undefined) ? type : 'info');
-			var _icon = ((icon && icon != undefined) ? icon : 'fa-info-circle');
-			var _title = ((title && title != undefined) ? title : '提示消息');
-			var _placement = ((placement && placement != undefined) ? placement : 'auto left');
-			pobj.addClass('tooltip-'+_type);
+			if(APP.isEmpty(pobj.attr('id'))) {
+				alert("popover显示对象需要有id属性");
+				return;
+			}
+			var _type = APP.isEmpty(type) ? 'info' : type;
+			var _icon = APP.isEmpty(icon) ? 'fa-info-circle' : icon;
+			var _title = APP.isEmpty(title) ? '提示消息' : title; 
+			var _placement = APP.isEmpty(placement) ? 'auto left' : placement;
+			
 			pobj.popover({
 				html: true,
 				trigger: 'manual',
@@ -762,6 +767,10 @@ define('app/common',['bootstrap','moment'],function() {
 		        }, 100);
 		    });
 			pobj.popover("show");
+			pobj.siblings('.popover').removeClass("error warning info success").addClass(type);
+			if(!APP.isEmpty(width)){
+				pobj.siblings(".popover").css({"max-width":"600px","width":width+"px"});
+			}
 			pobj.siblings(".popover").on("mouseleave", function () {
 				pobj.popover('hide');
 	        });

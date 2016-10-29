@@ -2770,33 +2770,19 @@ Customized Bootstrap Popover
   margin: 0 !important;
 }
 
-.popover.name .popover-title,
-name .popover .popover-content,
-.popover.name .popover-content {
+.popover.info .popover-title {
   color: #89C4F4;
 }
 
-.popover.name .popover-title,
-name .popover .popover-content,
-.popover.name .popover-content {
+.popover.success .popover-title{
   color: #428bca;
 }
 
-.popover.name .popover-title,
-name .popover .popover-content,
-.popover.name .popover-content {
-  color: #45B6AF;
-}
-
-.popover.name .popover-title,
-name .popover .popover-content,
-.popover.name .popover-content {
+.popover.warning .popover-title {
   color: #dfba49;
 }
 
-.popover.name .popover-title,
-name .popover .popover-content,
-.popover.name .popover-content {
+.popover.error .popover-title {
   color: #F3565D;
 }
 

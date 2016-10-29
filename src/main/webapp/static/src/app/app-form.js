@@ -405,6 +405,46 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			}
 		}
 		require(['jquery/select2'],function(){
+			select2_default_opts.data = null;
+			select2_default_opts.ajax = null;
+			//允许增加选项
+			if(opts.allowAdd || _select.data("allow-add")){
+				if(_select.parent('.input-group').length > 0){
+					_select.nextAll(".input-group-btn").remove();
+					_select.unwrap();
+				}
+				var _add_btn_id = "select-add-btn-"+new Date().getTime();
+				var _add_btn = $("<span class='input-group-btn' id='"+_add_btn_id+"'><a class='btn blue'><i class='fa fa-plus'></i></a></span>");
+				_select.wrap("<div class='input-group'></div>");
+				_add_btn.insertAfter(_select);
+				_add_btn.click(function(){
+					var _this = $(this);
+					var _adddiv = $("<div>");
+					var _addform = $("<div class='row'><div class='col-md-12'><div class='form-group'><label class='control-label col-md-3'>代码</label><div class='col-md-9'><input type='text' name='_select_type_code' class='form-control input-small'></div></div></div></div>"+
+							"<div class='row'><div class='col-md-12'><div class='form-group'><label class='control-label col-md-3'>名称</label><div class='col-md-9'><input type='text' name='_select_type_name' class='form-control input-small'></div></div></div></div>"+
+					        "<a class='btn blue btn-block'> <i class='fa fa-plus'></i> 增加 </a>");
+					_adddiv.append(_addform);
+					_adddiv.children(".btn").click(function(){
+						var _code = _adddiv.find("input[name='_select_type_code']").val();
+						var _name = _adddiv.find("input[name='_select_type_name']").val();
+						if($.trim(_code) == "" || $.trim(_name) == ""){
+							_adddiv.closest(".popover").removeClass("info").addClass("error");
+							_adddiv.closest(".popover-content").prev().html("<i class='fa fa-plus'/> 代码或名称不能为空");
+							return;
+						}
+						if(_select.children("option[value='"+_code+"']").length > 0){
+							_adddiv.closest(".popover").removeClass("info").addClass("error");
+							_adddiv.closest(".popover-content").prev().html("<i class='fa fa-plus'/> 代码已存在")
+							return;
+						}
+						_adddiv.closest(".popover").removeClass("error");
+						_select.append("<option value='"+_code+"'>"+_name+"</option>");
+						_select.val(_code).trigger("change");
+						_this.popover('destroy');
+					})
+					APP.popover(_this,_adddiv.get(),"info","fa-plus","增加选择","auto right",235);
+				});
+			}
 			var default_opt = $.extend(true,select2_default_opts,opts);
 			_select.select2(default_opt);
 			if(_select.attr("value"))_select.val(_select.attr("value")).trigger("change");
@@ -415,6 +455,8 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 					_select.siblings("i.validate-icon").removeClass("fa-check fa-warning").removeAttr("data-original-title");
 				}
 			});
+			
+			
 		});
 		
 		return _select;

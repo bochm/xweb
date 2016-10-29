@@ -42,11 +42,8 @@
 							<div class="form-group">
 								<label class="control-label col-md-3">字典值</label>
 								<div class="col-md-9">
-								<div class="input-group">
 								<div class="input-icon right"> <i class="fa validate-icon"></i><input type="text" name="value" 
 								class="form-control required"></div>
-								<span class="input-group-btn"><a class="btn blue">新增</a></span>
-								</div>
 								</div>
 							</div>
 						</div>
@@ -56,11 +53,8 @@
 							<div class="form-group">
 								<label class="control-label col-md-3">类型</label>
 								<div class="col-md-9">
-								<div class="input-group">
 								<select name="type" form-role='select' data-stmid='cn.bx.system.mapper.DictMapper.queryDictTypes' 
-								class="form-control required selectOpt"/>
-								<span class="input-group-btn"><a class="btn blue" id="system-dict-type-new">新增</a></span>
-								</div>
+								class="form-control required selectOpt" data-allow-add="true"/>
 								</div>
 							</div>
 						</div>
@@ -97,9 +91,7 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 		alert($("[name='type']").val());
 		$('#bsys-dict-edit-form').submit();
 	});
-	$('#system-dict-type-new').click(function(){
-		APP.popover($(this),"asdasd");
-	});
+	
 	$('table.datatable').initTable({
 		"scrollY": "400px",
 		"buttons":["addRecord","saveRecord","deleteRecord"],
