@@ -34,7 +34,7 @@
 								<label class="control-label col-md-3">名称</label>
 								<div class="col-md-9">
 								<div class="input-icon right"> <i class="fa validate-icon"></i><input type="text" name="name" 
-								class="form-control required"></div>
+								class="form-control required checkExists"></div>
 								</div>
 							</div>
 						</div>
@@ -55,13 +55,14 @@
 								<div class="col-md-9">
 								<select name="type" form-role='select' data-stmid='cn.bx.system.mapper.DictMapper.queryDictTypes' 
 								class="form-control required selectOpt" data-allow-add="true"/>
+								<input type="hidden" name="typeDesc">
 								</div>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label col-md-3">排序</label>
-								<div class="col-md-9"><input type="text" name="sort" class="form-control input-xsmall digits"></div>
+								<div class="col-md-9"><input type="text" name="sort" data-init="10" class="form-control input-xsmall digits"></div>
 							</div>
 						</div>
 					</div>
@@ -85,10 +86,8 @@
 </div>
 </div>
 <script type="text/javascript">
-require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
-
+require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){	
 	$('.modal-footer .btn-primary').on('click',function(){
-		alert($("[name='type']").val());
 		$('#bsys-dict-edit-form').submit();
 	});
 	
@@ -96,7 +95,17 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 		"scrollY": "400px",
 		"buttons":["addRecord","saveRecord","deleteRecord"],
 		"deleteRecord" : {"url" : '${ctx}/system/dict/delete',"id" : 'id'},
-		"addEditForm" : {"el" : "#bsys-dict-edit-form"}
+		"addEditForm" : {
+			"el" : "#bsys-dict-edit-form","saveUrl" : "${ctx}/system/dict/save.json",
+			"rules":{
+				"name":{"checkExists":{stmid:'cn.bx.system.mapper.DictMapper.checkTypes',joinField:["type"]},"messages":{"checkExists" : "已存在该名称"}}
+			}
+		}
+	},function(dt){
+		$("#bsys-dict-edit-form [name='type']").on('change',function(){
+			$("#bsys-dict-edit-form [name='typeDesc']").val($("#bsys-dict-edit-form [name='type'] :selected").text());
+		})
+		
 	});
 })
 </script>

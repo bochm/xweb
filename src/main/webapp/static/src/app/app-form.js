@@ -190,14 +190,27 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			return false;
 		}
 		var paramData;
+		
 		if(!APP.isEmpty(p.url)) {
-			paramData = p.data;
-			paramData.value = value;
+			paramData = p.data || {};
+			paramData.current_value = value;
+			if(p.original) paramData.original_value = p.original;
+			if(p.joinField){
+				for(var i=0;i<p.joinField.length;i++){
+					paramData[p.joinField[i]] = $(element).closest("form").find("[name='"+p.joinField[i]+"']").val();
+				}
+			}
 			return APP.postJson(p.url,paramData,false);
 		}else {
-			paramData = {param : p.data};
-			paramData.stmID = p.stmID;
-			paramData.param.value = value;
+			paramData = {param : (p.data || {})};
+			paramData.stmID = p.stmID || p.stmid || p.stmId;
+			paramData.param.current_value = value;
+			if(p.original) paramData.param.original_value = p.original;
+			if(p.joinField){
+				for(var i=0;i<p.joinField.length;i++){
+					paramData.param[p.joinField[i]] = $(element).closest("form").find("[name='"+p.joinField[i]+"']").val();
+				}
+			}
 			return APP.isEmpty(APP.postJson(APP.ctx+'/app/common/selectMapByStmID',paramData,false));
 		}
 		
@@ -215,13 +228,24 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		if(APP.isEmpty(opts)) opts = {};
 		if(APP.isEmpty(opts.fieldOpts)) opts.fieldOpts = {};//fieldOpts表单元素的初始化参数
 		var validate_settings = $.extend(true,validate_default_settings,opts.validate);
-		_this.validate(validate_settings);
+		var _validate = _this.validate(validate_settings);
+		_validate.resetForm();
+		
 		var isInitValue = !APP.isEmpty(opts.formData);
 		var formField;
 		_this.find(opts.fieldSelector ? opts.fieldSelector : '*[name]').each(function(){
 			formField = $(this);
 			var _fieldName = formField.attr('name');
 			var _fieldRole = formField.attr('form-role');
+			if(formField.data("init")) formField.val(formField.data("init"));
+			
+			if(opts.rules && opts.rules[_fieldName]){
+				formField.rules( "remove");
+				if(opts.rules[_fieldName].checkExists) opts.rules[_fieldName].checkExists.original = formField.val();
+				formField.rules( "add", opts.rules[_fieldName]);
+				alert("asd");
+			}
+			
 			if(isInitValue){
 				var _fieldValue = opts.formData[_fieldName];
 				if(_fieldName.indexOf(".") > 0){
@@ -243,6 +267,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 						formField.val(_fieldValue);
 						formField.attr('value',_fieldValue);
 					}
+					
 				}
 			}
 			if(_fieldRole == 'select'){
@@ -264,6 +289,9 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				formField.treeSelect(_treeSelectOpt);
 			}
 		});
+		
+		
+		
 		var _in_modal = (_this.parents('.modal-dialog').size() > 0) ? '.modal-dialog' : '';
 		//提交是初始化bean的提交类型  add save delete  对应BaseBean 的form_action属性
 		if(opts.formAction){
@@ -294,6 +322,16 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				APP.unblockUI(_in_modal ? '.modal-dialog' : 'body');
 				if(response.OK){
 					APP.notice('',response[APP.MSG],'success',_in_modal);
+					//动态更新规格，否则会造成重复提交验证不通过
+					_this.find('.checkExists').each(function(){
+						var _c_form_field = $(this);
+						var _c_field_name = formField.attr('name');
+						if(opts.rules && opts.rules[_c_field_name] && opts.rules[_c_field_name].checkExists){
+							_c_form_field.rules( "remove","checkExists");
+							opts.rules[_c_field_name].checkExists.original = _c_form_field.val();
+							_c_form_field.rules( "add", opts.rules[_c_field_name]);
+						}
+					});
 					if(typeof callback === 'function')callback(response[APP.DATA]);
 					else if(opts.onSuccess) opts.onSuccess(response[APP.DATA]);
 				}else{
@@ -361,7 +399,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		language: select2_language,
 		placeholder: {id:"-1",text:"请选择..."},
 		maximumSelectionLength: 50, //多选最多选择个数
-		allowClear:false,//自动显示清除按钮
+		allowClear:true,//自动显示清除按钮
 		width:"100%" 
 	};
 	
@@ -447,7 +485,8 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			}
 			var default_opt = $.extend(true,select2_default_opts,opts);
 			_select.select2(default_opt);
-			if(_select.attr("value"))_select.val(_select.attr("value")).trigger("change");
+			if(_select.attr("value")) _select.val(_select.attr("value")).trigger("change");
+			else _select.val(_select.val()).trigger("change");
 			_select.on("select2:select", function (e) { 
 				if(_select.val() != '-1' && _select.val() != ''){
 					_select.closest('.form-group').removeClass('has-error');

@@ -258,18 +258,23 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 		}else if(!APP.isEmpty(_options.addForm) || !APP.isEmpty(_options.addEditForm) || !APP.isEmpty(_options.editForm)){
 			var _form = _options.addEditForm || _options.addForm || _options.editForm;
 			var _form_validate = {};
-			if(_form.addValidate){
+			if(_form.addValidate && type == 'add'){
 				if(typeof _form.addValidate === 'object') _form_validate = _form.addValidate;
 				else if(typeof _form.addValidate === 'function') _form_validate = _form.addValidate.call(this,dt);
-			}else if(_form.editValidate){
+			}else if(_form.editValidate && type == 'save'){
 				if(typeof _form.editValidate === 'object') _form_validate = _form.editValidate;
 				else if(typeof _form.editValidate === 'function') _form_validate = _form.editValidate.call(this,dt);
 			}else if(_form.validate){
 				_form_validate = _form.validate;
 			}
 			var _field_opts = _form.fieldOpts || {};
-			var form_opts = {formAction : type,clearForm : true,autoClear : true,type : 'post',validate : _form_validate,fieldOpts:_field_opts};
-			if(type == 'save') form_opts.formData = dt.selectedRows()[0];
+			var form_opts = {formAction : type,clearForm : true,autoClear : true,type : 'post',validate : _form_validate,fieldOpts:_field_opts,
+					rules : _form.rules};
+			if(type == 'save') {
+				form_opts.formData = dt.selectedRows()[0];
+				$(_form.el).attr("action",_form.saveUrl);
+				form_opts.clearForm = false;
+			}
 			require(['app/form'],function(FORM){
 				$(_form.el).initForm(form_opts,function(data){
 					if(type == 'add') dt.addRow(data);

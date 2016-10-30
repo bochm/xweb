@@ -13,7 +13,7 @@
     </sql>
     <!-- 根据类型查询字典数据 -->
 	<select id="queryDictTypes" resultType="hashmap">
-		select type as id,type_desc as text
+		select distinct type as id,type_desc as text
 		from sys_dict
 	</select>
     <!-- 根据类型查询字典数据 -->
@@ -36,7 +36,7 @@
 	</insert>
 	<update id="save">
 		update sys_dict set value = #{value}, name=#{name},type=#{type},type_desc=#{typeDesc},
-		sort=#{sort},update_by=#{update_by},update_date=#{update_date},remarks = #{remarks}
+		sort=#{sort},update_by=#{updateBy},update_date=#{updateDate},remarks = #{remarks}
 		where id = #{id}
 	</update>
 	
