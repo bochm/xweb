@@ -11,10 +11,25 @@
     	a.sort,
 		a.remarks
     </sql>
-    <!-- 根据类型查询字典数据 -->
 	<select id="queryDictTypes" resultType="hashmap">
 		select distinct type as id,type_desc as text
 		from sys_dict
+	</select>
+	<select id="checkTypes" resultType="hashmap">
+		select 1 from sys_dict where type = #{type} 
+		<if test="value != null and value != ''">
+		and value = #{value}
+		</if>
+		<if test="name != null and name != ''">
+		and name = #{name}
+		</if>
+		<if test="o_value != null and o_value != ''">
+		and value != #{o_value}
+		</if>
+		<if test="o_name != null and o_name != ''">
+		and name != #{o_name}
+		</if>
+		 limit 1
 	</select>
     <!-- 根据类型查询字典数据 -->
 	<select id="findDictByType" resultType="cn.bx.system.entity.Dict">

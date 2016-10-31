@@ -185,7 +185,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			alert('请设置字段校验参数');
 			return false;
 		}
-		if(APP.isEmpty(p.url) && APP.isEmpty(p.stmID)){
+		if(APP.isEmpty(p.url) && APP.isEmpty(p.stmID || p.stmid || p.stmId)){
 			alert('请设置字段校验参数中的url或者stmID');
 			return false;
 		}
@@ -193,8 +193,8 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		
 		if(!APP.isEmpty(p.url)) {
 			paramData = p.data || {};
-			paramData.current_value = value;
-			if(p.original) paramData.original_value = p.original;
+			paramData[element.name] = value;
+			if(p.original) paramData["o_"+element.name] = p.original;
 			if(p.joinField){
 				for(var i=0;i<p.joinField.length;i++){
 					paramData[p.joinField[i]] = $(element).closest("form").find("[name='"+p.joinField[i]+"']").val();
@@ -204,13 +204,18 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		}else {
 			paramData = {param : (p.data || {})};
 			paramData.stmID = p.stmID || p.stmid || p.stmId;
-			paramData.param.current_value = value;
-			if(p.original) paramData.param.original_value = p.original;
+			paramData.param[element.name] = value;
+			
+			if(p.original) {
+				paramData.param["o_"+element.name] = p.original;
+				alert(p.original);
+			}
 			if(p.joinField){
 				for(var i=0;i<p.joinField.length;i++){
 					paramData.param[p.joinField[i]] = $(element).closest("form").find("[name='"+p.joinField[i]+"']").val();
 				}
 			}
+			console.log(paramData);
 			return APP.isEmpty(APP.postJson(APP.ctx+'/app/common/selectMapByStmID',paramData,false));
 		}
 		
@@ -224,12 +229,15 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 	 */
 	$.fn.initForm = function (opts,callback,errorback) {
 		var _this = $(this);
-		if(opts.autoClear)_this.clearForm(true); //静态modal中的form 先清空再初始化
+		if(opts.autoClear){
+			_this.clearForm(true); //静态modal中的form 先清空再初始化
+			alert("asd");
+		}
 		if(APP.isEmpty(opts)) opts = {};
 		if(APP.isEmpty(opts.fieldOpts)) opts.fieldOpts = {};//fieldOpts表单元素的初始化参数
 		var validate_settings = $.extend(true,validate_default_settings,opts.validate);
 		var _validate = _this.validate(validate_settings);
-		_validate.resetForm();
+		//_validate.resetForm();
 		
 		var isInitValue = !APP.isEmpty(opts.formData);
 		var formField;
@@ -242,8 +250,8 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			if(opts.rules && opts.rules[_fieldName]){
 				formField.rules( "remove");
 				if(opts.rules[_fieldName].checkExists) opts.rules[_fieldName].checkExists.original = formField.val();
+				console.log(opts.rules[_fieldName]);
 				formField.rules( "add", opts.rules[_fieldName]);
-				alert("asd");
 			}
 			
 			if(isInitValue){

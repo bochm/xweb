@@ -269,11 +269,12 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 			}
 			var _field_opts = _form.fieldOpts || {};
 			var form_opts = {formAction : type,clearForm : true,autoClear : true,type : 'post',validate : _form_validate,fieldOpts:_field_opts,
-					rules : _form.rules};
+					rules : _form.rules,formData : null};
 			if(type == 'save') {
 				form_opts.formData = dt.selectedRows()[0];
 				$(_form.el).attr("action",_form.saveUrl);
 				form_opts.clearForm = false;
+				form_opts.autoClear = false;
 			}
 			require(['app/form'],function(FORM){
 				$(_form.el).initForm(form_opts,function(data){
