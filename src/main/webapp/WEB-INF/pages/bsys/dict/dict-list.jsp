@@ -25,7 +25,7 @@
             <h4 class="modal-title">字典维护</h4>
          </div>
          <div class="modal-body">
-            <form class="form-horizontal" action="${ctx}/system/dict/add.json" role="form" id="bsys-dict-edit-form" >
+            <form class="form-horizontal" action="${ctx}/system/dict" role="form" id="bsys-dict-edit-form" >
             	<input type="hidden" name="id">
             	<div class="form-body">
             		<div class="row">
@@ -96,7 +96,7 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 		"buttons":["addRecord","saveRecord","deleteRecord"],
 		"deleteRecord" : {"url" : '${ctx}/system/dict/delete',"id" : 'id'},
 		"addEditForm" : {
-			"el" : "#bsys-dict-edit-form","saveUrl" : "${ctx}/system/dict/save.json",
+			"el" : "#bsys-dict-edit-form",
 			"rules":{
 				"name":{"checkExists":{stmid:'cn.bx.system.mapper.DictMapper.checkTypes',joinField:["type"]},"messages":{"checkExists" : "已存在该名称"}}
 			}

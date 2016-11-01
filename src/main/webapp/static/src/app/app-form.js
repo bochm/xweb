@@ -190,7 +190,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			return false;
 		}
 		var paramData;
-		
+		console.log(p);
 		if(!APP.isEmpty(p.url)) {
 			paramData = p.data || {};
 			paramData[element.name] = value;
@@ -208,12 +208,16 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			
 			if(p.original) {
 				paramData.param["o_"+element.name] = p.original;
-				alert(p.original);
 			}
 			if(p.joinField){
-				for(var i=0;i<p.joinField.length;i++){
-					paramData.param[p.joinField[i]] = $(element).closest("form").find("[name='"+p.joinField[i]+"']").val();
+				if($.isArray(p.joinField)){
+					for(var i=0;i<p.joinField.length;i++){
+						paramData.param[p.joinField[i]] = $(element).closest("form").find("[name='"+p.joinField[i]+"']").val();
+					}
+				}else{
+					paramData.param[p.joinField] = $(element).closest("form").find("[name='"+p.joinField+"']").val();
 				}
+				
 			}
 			console.log(paramData);
 			return APP.isEmpty(APP.postJson(APP.ctx+'/app/common/selectMapByStmID',paramData,false));
@@ -229,10 +233,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 	 */
 	$.fn.initForm = function (opts,callback,errorback) {
 		var _this = $(this);
-		if(opts.autoClear){
-			_this.clearForm(true); //静态modal中的form 先清空再初始化
-			alert("asd");
-		}
+		if(opts.autoClear)_this.clearForm(true); //静态modal中的form 先清空再初始化
 		if(APP.isEmpty(opts)) opts = {};
 		if(APP.isEmpty(opts.fieldOpts)) opts.fieldOpts = {};//fieldOpts表单元素的初始化参数
 		var validate_settings = $.extend(true,validate_default_settings,opts.validate);
@@ -247,12 +248,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			var _fieldRole = formField.attr('form-role');
 			if(formField.data("init")) formField.val(formField.data("init"));
 			
-			if(opts.rules && opts.rules[_fieldName]){
-				formField.rules( "remove");
-				if(opts.rules[_fieldName].checkExists) opts.rules[_fieldName].checkExists.original = formField.val();
-				console.log(opts.rules[_fieldName]);
-				formField.rules( "add", opts.rules[_fieldName]);
-			}
+			
 			
 			if(isInitValue){
 				var _fieldValue = opts.formData[_fieldName];
@@ -296,6 +292,25 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				}
 				formField.treeSelect(_treeSelectOpt);
 			}
+			
+			if(opts.rules && opts.rules[_fieldName]){
+				formField.rules( "remove");
+				if(opts.rules[_fieldName].checkExists){
+					var _checkExists = opts.rules[_fieldName].checkExists;
+					_checkExists.original = formField.val();
+					if(_checkExists.joinField){
+						if($.isArray(_checkExists.joinField)){
+							_checkExists.joinFieldData = new Array();
+							for(var i=0;i<_checkExists.joinField.length;i++){
+								_checkExists.joinFieldData.push(_this.find("[name='"+_checkExists.joinField[i]+"']").val());
+							}
+						}else{
+							_checkExists.joinFieldData = _this.find("[name='"+_checkExists.joinField+"']").val();
+						}
+					}
+				}
+				formField.rules( "add", opts.rules[_fieldName]);
+			}
 		});
 		
 		
@@ -313,6 +328,8 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			ajax:true,
 			beforeSubmit : function(formData, jqForm, options){
 				APP.blockUI({target:_in_modal ? '.modal-dialog' : 'body',message:'提交中',gif : 'form-submit'});
+				console.log(formData);
+				alert(options);
 				return true;
 			},
 			type : 'post',
