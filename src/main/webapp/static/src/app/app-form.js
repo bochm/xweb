@@ -189,37 +189,30 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			alert('请设置字段校验参数中的url或者stmID');
 			return false;
 		}
-		var paramData;
-		console.log(p);
-		if(!APP.isEmpty(p.url)) {
-			paramData = p.data || {};
-			paramData[element.name] = value;
-			if(p.original) paramData["o_"+element.name] = p.original;
-			if(p.joinField){
+		var paramData = {param : (p.data || {})};
+		paramData.param[element.name] = value;
+		if(p.original) paramData.param["o_"+element.name] = p.original;//修改form中的初始值
+		if(p.joinField){//参与验证字段值
+			if($.isArray(p.joinField)){
 				for(var i=0;i<p.joinField.length;i++){
-					paramData[p.joinField[i]] = $(element).closest("form").find("[name='"+p.joinField[i]+"']").val();
-				}
-			}
-			return APP.postJson(p.url,paramData,false);
-		}else {
-			paramData = {param : (p.data || {})};
-			paramData.stmID = p.stmID || p.stmid || p.stmId;
-			paramData.param[element.name] = value;
-			
-			if(p.original) {
-				paramData.param["o_"+element.name] = p.original;
-			}
-			if(p.joinField){
-				if($.isArray(p.joinField)){
-					for(var i=0;i<p.joinField.length;i++){
-						paramData.param[p.joinField[i]] = $(element).closest("form").find("[name='"+p.joinField[i]+"']").val();
+					var joinField = $(element).closest("form").find("[name='"+p.joinField[i]+"']");
+					paramData.param[p.joinField[i]] = joinField.val();
+					if(joinField.data("original") && joinField.data("original") != joinField.val()) {//当参与验证字段值发生变化的时候，则取消当前字段的初始值验证
+						paramData.param["o_"+element.name] = "";
 					}
-				}else{
-					paramData.param[p.joinField] = $(element).closest("form").find("[name='"+p.joinField+"']").val();
 				}
-				
+			}else{
+				var joinField = $(element).closest("form").find("[name='"+p.joinField+"']");
+				paramData.param[p.joinField] = joinField.val();
+				if(joinField.data("original") && joinField.data("original") != joinField.val()) {//当参与验证字段值发生变化的时候，则取消当前字段的初始值验证
+					paramData.param["o_"+element.name] = "";
+				}
 			}
-			console.log(paramData);
+		}
+		if(!APP.isEmpty(p.url)){
+			return APP.postJson(p.url,paramData,false);
+		}else{
+			paramData.stmID = p.stmID || p.stmid || p.stmId;
 			return APP.isEmpty(APP.postJson(APP.ctx+'/app/common/selectMapByStmID',paramData,false));
 		}
 		
@@ -247,9 +240,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			var _fieldName = formField.attr('name');
 			var _fieldRole = formField.attr('form-role');
 			if(formField.data("init")) formField.val(formField.data("init"));
-			
-			
-			
+
 			if(isInitValue){
 				var _fieldValue = opts.formData[_fieldName];
 				if(_fieldName.indexOf(".") > 0){
@@ -269,11 +260,22 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 						}
 					}else{
 						formField.val(_fieldValue);
-						formField.attr('value',_fieldValue);
 					}
-					
+					formField.data("original",_fieldValue);//记录该字段的初始值,验证唯一性使用
 				}
+			}else{
+				formField.removeData("original");
 			}
+			
+			//初始化js定义的验证规则,如有checkExists规则需要将original初始值作为入参
+			if(opts.rules && opts.rules[_fieldName]){
+				formField.rules( "remove");
+				if(opts.rules[_fieldName].checkExists){
+					opts.rules[_fieldName].checkExists.original = formField.val();
+				}
+				formField.rules( "add", opts.rules[_fieldName]);
+			}
+			
 			if(_fieldRole == 'select'){
 				var _selectOpt = opts.fieldOpts[_fieldName] || {};
 				try{
@@ -293,24 +295,6 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				formField.treeSelect(_treeSelectOpt);
 			}
 			
-			if(opts.rules && opts.rules[_fieldName]){
-				formField.rules( "remove");
-				if(opts.rules[_fieldName].checkExists){
-					var _checkExists = opts.rules[_fieldName].checkExists;
-					_checkExists.original = formField.val();
-					if(_checkExists.joinField){
-						if($.isArray(_checkExists.joinField)){
-							_checkExists.joinFieldData = new Array();
-							for(var i=0;i<_checkExists.joinField.length;i++){
-								_checkExists.joinFieldData.push(_this.find("[name='"+_checkExists.joinField[i]+"']").val());
-							}
-						}else{
-							_checkExists.joinFieldData = _this.find("[name='"+_checkExists.joinField+"']").val();
-						}
-					}
-				}
-				formField.rules( "add", opts.rules[_fieldName]);
-			}
 		});
 		
 		
@@ -328,8 +312,6 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			ajax:true,
 			beforeSubmit : function(formData, jqForm, options){
 				APP.blockUI({target:_in_modal ? '.modal-dialog' : 'body',message:'提交中',gif : 'form-submit'});
-				console.log(formData);
-				alert(options);
 				return true;
 			},
 			type : 'post',
@@ -510,7 +492,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			}
 			var default_opt = $.extend(true,select2_default_opts,opts);
 			_select.select2(default_opt);
-			if(_select.attr("value")) _select.val(_select.attr("value")).trigger("change");
+			if(_select.data("original") || _select.data("init")) _select.val((_select.data("original") || _select.data("init"))).trigger("change");
 			else _select.val(_select.val()).trigger("change");
 			_select.on("select2:select", function (e) { 
 				if(_select.val() != '-1' && _select.val() != ''){

@@ -1185,8 +1185,9 @@ $.fn.clearFields = $.fn.clearInputs = function(includeHidden) {
         $(this).siblings("i.validate-icon").removeClass('fa-check fa-warning').removeAttr("data-original-title");//删除检测图标 mod bcm
         $(this).closest('.form-group').removeClass('has-error has-success');
         $(this).siblings('span.help-block-error').remove();
+        var _default_val = ($(this).data("init") ?  $(this).data("init") : ''); //如果有data-init初始值则为初始值
         if (re.test(t) || tag == 'textarea') {
-            this.value = '';
+            this.value = _default_val; 
         }
         else if (t == 'checkbox' || t == 'radio') {
         	if(_field.hasClass('bs-switch')){ //bs switch暂时不处理 mod bcm
@@ -1198,7 +1199,7 @@ $.fn.clearFields = $.fn.clearInputs = function(includeHidden) {
         else if (tag == 'select') {
             this.selectedIndex = -1;
             if(_field.attr('form-role') == 'select'){ //select2处理  mod bcm
-            	_field.val('').trigger("change");
+            	_field.val(($(this).data("init") ?  $(this).data("init") : '-1')).trigger("change");
             }
         }
         else if (t == "file") {
@@ -1215,7 +1216,7 @@ $.fn.clearFields = $.fn.clearInputs = function(includeHidden) {
             // the above would clean hidden inputs that have the class of 'special'
             if ( (includeHidden === true && /hidden/.test(t)) ||
                  (typeof includeHidden == 'string' && $(this).is(includeHidden)) ) {
-            	if(this.name != 'form_action') this.value = ''; //form_action为系统隐藏字段
+            	if(this.name != 'form_action') this.value = _default_val; //form_action为系统隐藏字段
             }
         }
     });
