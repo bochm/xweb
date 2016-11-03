@@ -98,7 +98,8 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 		"addEditForm" : {
 			"el" : "#bsys-dict-edit-form",
 			"rules":{
-				"name":{"checkExists":{stmid:'cn.bx.system.mapper.DictMapper.checkTypes',joinField:["type"]},"messages":{"checkExists" : "已存在该名称"}}
+				"name":{"checkExists":{stmid:'cn.bx.system.mapper.DictMapper.checkTypes',joinField:["type"]},"messages":{"checkExists" : "已存在该名称"}},
+				"value":{"checkExists":{stmid:'cn.bx.system.mapper.DictMapper.checkTypes',joinField:["type"]},"messages":{"checkExists" : "已存在该值"}}
 			}
 		}
 	},function(dt){

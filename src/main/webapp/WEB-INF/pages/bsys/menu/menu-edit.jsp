@@ -61,7 +61,7 @@
 				</div>
 				<div class="col-md-6">
 					<div class="form-group">
-						<label class="control-label col-md-4">是否启用</label>
+						<label class="control-label col-md-4">状态</label>
 						<div class="col-md-8"><input type="checkbox" name="status" data-on-value="1" checked class="bs-switch form-control" data-off-text="不是"></div>
 					</div>
 				</div>
