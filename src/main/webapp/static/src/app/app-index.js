@@ -210,8 +210,7 @@ define(['app/common'],function(APP) {
                 	_page_tool_bar.append(_page_debug_tool);
                 }
                 _page_bar.append(_page_tool_bar);
-                $(pageContent).prepend(_page_bar);
-                APP.initComponents(pageContent); 
+                $(pageContent).prepend(_page_bar); 
         	});
         }
     }

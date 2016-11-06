@@ -255,6 +255,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 						var _checked = (_fieldValue == ((formField.data('on-value') !== undefined) ? formField.data('on-value')+'' : '1'));
 						formField.attr('checked',_checked);
 						if(formField.hasClass('bs-switch')){
+							console.log(_fieldName+","+_fieldValue+","+formField.data('on-value')+","+_checked);
 							formField.bootstrapSwitch('state', _checked);
 							formField.trigger("switch:change", [_checked]);//强制触发change方法赋值
 						}

@@ -32,6 +32,11 @@ define('app/common',['bootstrap','moment'],function() {
 	device.windowsTablet = function () {return device.windows() && (_findDevice('touch') && !device.windowsPhone());};
 
     //部分常量(DATA、MSG等)必须和AppConstants类中定义的一致(取消调用/app/common/constrants获取常量的方式)
+	var _dict_srv_url = "system/dict/query/";//服务端字典数据获取URL
+	
+	function _sleep(numberMillis) { 
+		
+	}
 
 	if(! ('APP' in window) ){
 		window['APP'] = {
@@ -157,10 +162,13 @@ define('app/common',['bootstrap','moment'],function() {
 			},
 			getJsonData : function(url,data){
 				var _data;
-				this.getJson(url,data,false,function(ret){
+				this.getJson(url,data || {},false,function(ret){
 					_data = ret;
 				});
 				return _data;
+			},
+			getDictByType : function(type){
+				return this.getJsonData(this.ctx+_dict_srv_url+type);
 			},
 			loadPage : function(target,url,data,callback,errorback){
 				if(url){
@@ -172,12 +180,12 @@ define('app/common',['bootstrap','moment'],function() {
 			            data: data,
 			            dataType: "html",
 			            success: function(res) {
+			            	var _html = $(res);
+		            		APP.initComponents(_html.first().get());
 			            	APP.unblockUI(target);
-			            	$(target).html(res);
+			            	$(target).html(_html);
 			            	if(typeof callback === 'function'){
 			            		callback(res);
-			            	}else{
-			            		APP.initComponents(target);
 			            	}
 			            	$('.loading-page').slideDown('slow');
 			            },
@@ -235,8 +243,10 @@ define('app/common',['bootstrap','moment'],function() {
 	        	btn.removeAttr('disabled');
 	        },
 	        initScroll: function(el,ct) {
+	        	var _scrollbar = _queryContainer(ct).find(el);
+	        	if(_scrollbar.length == 0) return;
 	        	require(['jquery/scrollbar'],function(){
-	        		_queryContainer(ct).find(el).each(function() {
+	        		_scrollbar.each(function() {
 		                if ($(this).attr("data-scrolled")) return;
 		                $(this).slimScroll({
 		                    allowPageScroll: true,
@@ -257,8 +267,10 @@ define('app/common',['bootstrap','moment'],function() {
 	        },
 
 	        destroyScroll: function(el) {
+	        	var _scrollbar = $(el);
+	        	if(_scrollbar.length == 0) return;
 	        	require(['jquery/scrollbar'],function(){
-	        		$(el).each(function() {
+	        		_scrollbar.each(function() {
 		                if ($(this).attr("data-scrolled") === "1") {
 		                    $(this).removeAttr("data-scrolled");
 		                    $(this).removeAttr("style");
@@ -302,8 +314,10 @@ define('app/common',['bootstrap','moment'],function() {
 	        },
 	        //闪动提示
 	        initPulsate : function(ct){
+	        	var _pulsate = _queryContainer(ct).find('div.pulsate');
+	        	if(_pulsate.length == 0) return;
 	        	require(['jquery/pulsate'],function(){
-	        		_queryContainer(ct).find('div.pulsate').each(function(){
+	        		_pulsate.each(function(){
 	        			var _this = $(this);
 	        			_this.pulsate({
 	                        color: _this.attr('pulsate-color') ?  _this.attr('pulsate-color') : '#C43C35',
@@ -317,11 +331,22 @@ define('app/common',['bootstrap','moment'],function() {
 	        		});
 	        	});
 	        },
-	        initSwitch : function(ct){
+	        initSwitch : function(ct){	
+	        	var _bs_switch = _queryContainer(ct).find('.bs-switch');
+	        	if(_bs_switch.length == 0) return;
 	        	require(['switch'],function(){
-	        		_queryContainer(ct).find('.bs-switch').each(function(){
+	        		_bs_switch.each(function(){
 	        			var _this = $(this);
 	        			_this.bootstrapSwitch('destroy');
+	        			if(_this.data("dict-type")){//按字典数据初始化
+	        				var _dict_data = APP.getDictByType(_this.data("dict-type"));
+	        				if($.isArray(_dict_data) && _dict_data.length == 2){
+	        					_this.data("on-value",_dict_data[0].value);
+	        					_this.data("on-text",_dict_data[0].name);
+	        					_this.data("off-value",_dict_data[1].value);
+	        					_this.data("off-text",_dict_data[1].name);
+	        				}
+	        			}
 	        			_this.bootstrapSwitch({
 	        				'state' : _this.is(":checked"),
 	        				'onSwitchChange' : function(event, state){
@@ -607,7 +632,7 @@ define('app/common',['bootstrap','moment'],function() {
 	    css = {
 	    	"position": (default_options.ele === "body" ? "fixed" : "absolute"),
 	    	"margin": 1,
-	    	"z-index": "99999",
+	    	"z-index": "9999999",
 	    	"display": "none",
 	    	"width" : default_options.width-2 + "px"
 	    };
@@ -640,11 +665,12 @@ define('app/common',['bootstrap','moment'],function() {
 	            data:opts.param,
 	            dataType: "html",
 	            success: function(html) {
+	            	var _html = $(html);
+            		APP.initComponents(_html.first().get());
 	            	if(mid){
 		            	$('#'+mid).remove();
-		            	$('body').append(html);
+		            	$('body').append(_html);
 						$('#'+mid).modal('show');
-						APP.initComponents('#'+mid);
 	            	}else{
 	            		var _modal = $("<div class='modal fade' tabindex='-1' data-focus-on='input:first' role='dialog' data-backdrop='static'></div>");
 	            		var _modal_width = opts.width ? "style='width:"+opts.width+"px;'" : "";
@@ -653,7 +679,7 @@ define('app/common',['bootstrap','moment'],function() {
 	            		_modal_context.append("<div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-hidden='true'></button>"+
 	            				"<h4 class='modal-title'>"+opts.title+"</h4></div>");
 	            		var _modal_body = $("<div class='modal-body'></div>");
-	            		_modal_body.html(html);
+	            		_modal_body.html(_html);
 	            		_modal_context.append(_modal_body);
 	            		_modal_dialog.append(_modal_context);
 	            		_modal.append(_modal_dialog);
@@ -661,7 +687,6 @@ define('app/common',['bootstrap','moment'],function() {
 	            		_modal.on('hide.bs.modal', function () {
 	            			_modal.remove();
 	            		 });
-	            		APP.initComponents(_modal_body.get());
 	            	}
 	            	
 	            },

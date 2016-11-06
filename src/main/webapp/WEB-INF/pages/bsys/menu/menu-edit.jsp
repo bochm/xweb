@@ -62,7 +62,9 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						<label class="control-label col-md-4">状态</label>
-						<div class="col-md-8"><input type="checkbox" name="status" data-on-value="1" checked class="bs-switch form-control" data-off-text="不是"></div>
+						<div class="col-md-8">
+						<input type="checkbox" name="status"  checked class="bs-switch form-control" data-dict-type="on_off">
+						</div>
 					</div>
 				</div>
 			</div>
@@ -70,8 +72,8 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						<label class="control-label col-md-4">菜单类型</label>
-						<div class="col-md-8"><input type="checkbox" name="type" data-on-value="0" data-off-value="1" checked 
-						class="bs-switch form-control" data-on-text="<i class='fa fa-cog'></i> 模块" data-off-text="<i class='fa fa-pencil-square-o'></i> 功能" data-off-color="info"></div>
+						<div class="col-md-8"><input type="checkbox" name="type" checked
+						class="bs-switch form-control" data-off-color="info" data-dict-type="menu_type"></div>
 					</div>
 				</div>
 				<div class="col-md-6">

@@ -90,7 +90,7 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	$('.modal-footer .btn-primary').on('click',function(){
 		$('#bsys-dict-edit-form').submit();
 	});
-	
+	console.log(APP.getDictByType("on_off"));
 	$('table.datatable').initTable({
 		"scrollY": "400px",
 		"buttons":["addRecord","saveRecord","deleteRecord"],

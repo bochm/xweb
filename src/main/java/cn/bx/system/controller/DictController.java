@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,6 +23,10 @@ public class DictController {
 	@RequestMapping(value={"list",""})
 	public @ResponseBody List<Dict> listDict(@RequestBody Map<String,String> param){
 		return service.selectList("list", param);
+	}
+	@RequestMapping(value="query/{type}")
+	public @ResponseBody List<Dict> getDictByType(@PathVariable("type") String type){
+		return service.findDictByType(type);
 	}
 	@RequestMapping(value="add")
 	public @ResponseBody DataMessage addDict(Dict dict){

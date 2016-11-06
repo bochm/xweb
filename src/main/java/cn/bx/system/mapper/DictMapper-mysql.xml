@@ -36,7 +36,7 @@
 		select
 		<include refid="dictColumns"/>
 		from sys_dict a
-		WHERE a.type = #{type}
+		WHERE a.type = #{type} order by sort
 	</select>
 	<select id="list" resultType="cn.bx.system.entity.Dict">
 		select
