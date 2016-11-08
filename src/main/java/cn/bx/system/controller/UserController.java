@@ -17,15 +17,15 @@ import cn.bx.system.entity.User;
 import cn.bx.system.service.UserService;
 
 @Controller
-@RequestMapping("bsys/user")
+@RequestMapping("system/user")
 public class UserController {
 	
 	@Resource(name="UserService")
 	UserService userService;
 	
 	@RequestMapping("checkLoginName")
-	public @ResponseBody boolean checkLoginName(@RequestBody Map<String,String> param){
-		User u = userService.selectOne("checkUserExists", param);
+	public @ResponseBody boolean checkLoginName(@RequestBody Map<String,Object> param){
+		User u = userService.selectOne("checkUserExists", param.get("param"));
 		return u == null || u.getId() == null;
 	}
 	@RequestMapping(value={"list",""})

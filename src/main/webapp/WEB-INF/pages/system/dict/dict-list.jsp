@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/include/taglib.jsp" %>
 <div class="loading-page">
-<span id="table-bsys-dict-list-toolbar"></span>
-<table id="table-bsys-dict-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/system/dict" 
+<span id="table-system-dict-list-toolbar"></span>
+<table id="table-system-dict-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/system/dict" 
 	data-paging="true" data-info="true" data-ordering="true">
 		<thead><tr>
 			<th data-visible='false' data-column="id">id</th>
@@ -17,7 +17,7 @@
 </table>	
 
 <!-- 新增修改 http://www.cnblogs.com/wuhuacong/p/4784957.html-->
-<div class="modal fade" id="bsys-dict-list-edit" tabindex="-1" role="dialog" data-backdrop="static">
+<div class="modal fade" id="system-dict-list-edit" tabindex="-1" role="dialog" data-backdrop="static">
 <div class="modal-dialog">
       <div class="modal-content">
          <div class="modal-header">
@@ -25,7 +25,7 @@
             <h4 class="modal-title">字典维护</h4>
          </div>
          <div class="modal-body">
-            <form class="form-horizontal" action="${ctx}/system/dict" role="form" id="bsys-dict-edit-form" >
+            <form class="form-horizontal" action="${ctx}/system/dict" role="form" id="system-dict-edit-form" >
             	<input type="hidden" name="id">
             	<div class="form-body">
             		<div class="row">
@@ -79,7 +79,7 @@
          </div>
          <div class="modal-footer">
             <button type="button" class="btn  btn-default" data-dismiss="modal">关闭</button>
-            <button type="button" class="btn btn-primary">提交</button>
+            <button type="button" class="btn btn-primary" data-submit="#system-dict-edit-form">提交</button>
          </div>
       </div>
 </div>
@@ -87,24 +87,20 @@
 </div>
 <script type="text/javascript">
 require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){	
-	$('.modal-footer .btn-primary').on('click',function(){
-		$('#bsys-dict-edit-form').submit();
-	});
-	console.log(APP.getDictByType("on_off"));
 	$('table.datatable').initTable({
 		"scrollY": "400px",
 		"buttons":["addRecord","saveRecord","deleteRecord"],
 		"deleteRecord" : {"url" : '${ctx}/system/dict/delete',"id" : 'id'},
 		"addEditForm" : {
-			"el" : "#bsys-dict-edit-form",
+			"el" : "#system-dict-edit-form",
 			"rules":{
 				"name":{"checkExists":{stmid:'cn.bx.system.mapper.DictMapper.checkTypes',joinField:["type"]},"messages":{"checkExists" : "已存在该名称"}},
 				"value":{"checkExists":{stmid:'cn.bx.system.mapper.DictMapper.checkTypes',joinField:["type"]},"messages":{"checkExists" : "已存在该值"}}
 			}
 		}
 	},function(dt){
-		$("#bsys-dict-edit-form [name='type']").on('change',function(){
-			$("#bsys-dict-edit-form [name='typeDesc']").val($("#bsys-dict-edit-form [name='type'] :selected").text());
+		$("#system-dict-edit-form [name='type']").on('change',function(){
+			$("#system-dict-edit-form [name='typeDesc']").val($("#system-dict-edit-form [name='type'] :selected").text());
 		})
 		
 	});

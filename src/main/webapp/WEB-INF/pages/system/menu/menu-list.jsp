@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/include/taglib.jsp" %>
 <div class="loading-page">
-<span id="table-bsys-menu-list-toolbar"></span>
-<table id="table-bsys-menu-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/bsys/menu"></table>	
+<span id="table-system-menu-list-toolbar"></span>
+<table id="table-system-menu-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/system/menu"></table>	
 </div>
 <script type="text/javascript">
 require(['app/common','app/treetable'],function(APP,DT){
@@ -35,10 +35,10 @@ require(['app/common','app/treetable'],function(APP,DT){
 		"expandable": true,"expandBtn" : true,
 		"columns": columns,"columnDefs": columnDefs,
 		"buttons" : ['addRecord','saveRecord','deleteRecord'],
-		"addEditModal" : {"url" : "${ctx}/pages/bsys/menu/menu-edit","id":"bsys-menu-edit"},
+		"addEditModal" : {"url" : "${ctx}/pages/system/menu/menu-edit","id":"system-menu-edit"},
 		"deleteRecord" : function(dt,node,e){
 			APP.confirm('','是否删除选择的菜单及包含的所有子菜单?',function(){
-				APP.postJson("${ctx}/bsys/menu/delete",dt.selectedColumn("id"),null,function(ret,status){
+				APP.postJson("${ctx}/system/menu/delete",dt.selectedColumn("id"),null,function(ret,status){
 					if(ret.OK){
 						dt.deleteSelectedRow();
 						APP.success(ret[APP.MSG]);

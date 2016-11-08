@@ -15,7 +15,7 @@ import cn.bx.system.entity.Menu;
 import cn.bx.system.service.MenuService;
 
 @Controller
-@RequestMapping("bsys/menu")
+@RequestMapping("system/menu")
 public class MenuController {
 	
 	@Resource(name="MenuService")

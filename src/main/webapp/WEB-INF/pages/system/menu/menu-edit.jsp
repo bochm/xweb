@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/include/taglib.jsp" %>
-<div class="modal fade" id="bsys-menu-edit" tabindex="-1" role="dialog" data-backdrop="static">
+<div class="modal fade" id="system-menu-edit" tabindex="-1" role="dialog" data-backdrop="static">
 <div class="modal-dialog">
 <div class="modal-content">
 	<div class="modal-header">
@@ -8,7 +8,7 @@
 	   <h4 class="modal-title">菜单维护</h4>
 	</div>
 	<div class="modal-body">
-	   	<form  role="form" class="form-horizontal" id="bsys-menu-edit-form" action="${ctx}/bsys/menu/${param.act}.json">
+	   	<form  role="form" class="form-horizontal" id="system-menu-edit-form" action="${ctx}/system/menu/${param.act}.json">
 	   	<input type="hidden" name="id">
 	   	<div class="form-body">
 	   		<div class="row">
@@ -46,7 +46,7 @@
 						<input type="hidden"  name="parentTree" data-tree-for="parentMenuName"/>
 						<input type='hidden' name='parentId' data-id-for="parentMenuName"/>
 						<input type="text" name="parentMenuName" form-role="treeSelect" tree-key-pid="parent_id"
-						readonly="readonly"  class="form-control"  id="bsys_menu_forms_parentTree"
+						readonly="readonly"  class="form-control"  id="system_menu_forms_parentTree"
 						data-stmid="cn.bx.system.mapper.MenuMapper.selectAllMenuTree"/>
 						</div>
 					</div>
@@ -106,9 +106,9 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 	})
 	var act = '${param.act}';
 	$('.modal-footer .btn-primary').click(function(){
-		$('#bsys-menu-edit-form').submit();
+		$('#system-menu-edit-form').submit();
 	});
-	var table = DT.getTable('#table-bsys-menu-list');
+	var table = DT.getTable('#table-system-menu-list');
 	var _formInitOpt = {
 			 formAction : act,validate : {},clearForm : true,
 			 fieldOpts : {
@@ -116,7 +116,7 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 				 "parentMenuName" : {"view" : {"selectedMulti": false}}
 			 },
 			 onSuccess : function(ret){
-				 $.fn.zTree.getZTreeObj('bsys_menu_forms_parentTree').reAsyncChildNodes(null, "refresh");
+				 $.fn.zTree.getZTreeObj('system_menu_forms_parentTree').reAsyncChildNodes(null, "refresh");
 				 table.addRow(ret);
 			 }
 	};
@@ -126,11 +126,11 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 		_formInitOpt.clearForm = false;
 		_formInitOpt.fieldOpts.parentMenuName.param = {"parentMenu" : _formInitOpt.formData.id};
 		_formInitOpt.onSuccess = function(ret){
-			 $.fn.zTree.getZTreeObj('bsys_menu_forms_parentTree').reAsyncChildNodes(null, "refresh");
+			 $.fn.zTree.getZTreeObj('system_menu_forms_parentTree').reAsyncChildNodes(null, "refresh");
 			 table.updateSelectedRow(ret);
 		 }
 	}
-	$('#bsys-menu-edit-form').initForm(_formInitOpt);
+	$('#system-menu-edit-form').initForm(_formInitOpt);
 	
 });
 </script>

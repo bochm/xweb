@@ -181,7 +181,7 @@ define('app/common',['bootstrap','moment'],function() {
 			            dataType: "html",
 			            success: function(res) {
 			            	var _html = $(res);
-		            		APP.initComponents(_html.first().get());
+		            		APP.initComponents(_html.get());
 			            	APP.unblockUI(target);
 			            	$(target).html(_html);
 			            	if(typeof callback === 'function'){
@@ -285,22 +285,24 @@ define('app/common',['bootstrap','moment'],function() {
 	        //tab控件
 	        initTab : function(ct,reload,defaultIdx){
 	        	var _tab_toggle = _queryContainer(ct).find('a[data-toggle="tab"]');
-	        	_tab_toggle.attr('data-show','0');
+	        	if(_tab_toggle.length == 0) return;
+	        	_tab_toggle.data('show','0');
 	        	_tab_toggle.parent('li').removeClass("active");
-	        	
 	        	_tab_toggle.on('show.bs.tab', function (e) {
+	        		
 	    	    	var _target = $(e.target);
-	    	    	if(APP.isEmpty(_target.attr('data-url'))){
+	    	    	console.log(_target.data('url') + "," + _target.data('show') + "," + _target.attr('href'));
+	    	    	if(APP.isEmpty(_target.data('url'))){
 	    	    		return;
 	    	    	}
-	    	    	if(_target.attr('data-show') === '1') return;//只加载一次
-	    	    	APP.loadPage($(_target.attr('href')),_target.attr('data-url'));
-	    	    	if(reload) _target.attr('data-show','0');
-	    	    	else _target.attr('data-show','1');
+	    	    	if(_target.data('show') === '1') return;//只加载一次
+	    	    	APP.loadPage($(_target.attr('href')),_target.data('url'));
+	    	    	if(reload) _target.data('show','0');
+	    	    	else _target.data('show','1');
 	    	    });
 	        	var _default_idx = (defaultIdx !== undefined) ? defaultIdx : 0;
 	        	
-	        	if(!APP.isEmpty(_tab_toggle.eq(_default_idx).attr('data-url'))){
+	        	if(!APP.isEmpty(_tab_toggle.eq(_default_idx).data('url'))){
 	        		_tab_toggle.eq(_default_idx).tab('show');
 	        	}
 	        },
@@ -364,6 +366,7 @@ define('app/common',['bootstrap','moment'],function() {
 	        },
 	        //初始化控件
 	        initComponents: function(target){
+	        	
 	        	this.initTab(target,false);
 	        	this.initPopover(target);
 	        	this.initTooltip(target);
@@ -372,6 +375,13 @@ define('app/common',['bootstrap','moment'],function() {
 	        	APP.initDropdowns(target);
 	        	APP.initScroll('.scroller',target);
 	        	this.initSwitch(target);
+	        	//初始化提交按钮
+	        	_queryContainer(target).find(".btn[data-submit]").each(function(){
+	        		var _submit_btn = $(this);
+	        		_submit_btn.click(function(){
+	        			$(_submit_btn.data("submit")).submit();
+	        		});
+	        	});
 	        }
 		};
 	}

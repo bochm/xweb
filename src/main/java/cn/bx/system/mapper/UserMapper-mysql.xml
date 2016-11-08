@@ -54,7 +54,8 @@
 			update_date, 
 			remarks, 
 			login_flag, 
-			photo
+			photo,
+			status
 		) VALUES (
 			#{id}, 
 			111, 
@@ -67,13 +68,14 @@
 			#{tel}, 
 			#{mobile}, 
 			#{userType}, 
-			1, 
+			#{createBy}, 
 			#{createDate}, 
-			1, 
+			#{updateBy}, 
 			#{updateDate}, 
 			#{remarks}, 
 			#{loginFlag}, 
-			#{photo}
+			#{photo},
+			#{status}
 		)
 	</insert>
 	
@@ -93,7 +95,7 @@
 		update_date = #{updateDate}, 
 		login_flag = #{loginFlag},
 		photo = #{photo},
-		remarks = #{remarks}
+		remarks = #{remarks},status = #{status}
 		WHERE id = #{id}
 	</update>
 	
@@ -103,9 +105,10 @@
 	</delete>
 	
 	<select id="checkUserExists" resultType="cn.bx.system.entity.User">
-		select id from  sys_user where login_name = #{value}
-		<if test="oldloginname != null and oldloginname != ''">
-		and login_name != #{oldloginname}
+		select id from  sys_user where login_name = #{loginName}
+		<if test="o_loginName != null and o_loginName != ''">
+		and login_name != #{o_loginName}
 		</if>
+		 limit 1
 	</select>
 </mapper>

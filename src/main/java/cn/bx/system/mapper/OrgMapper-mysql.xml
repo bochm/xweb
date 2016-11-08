@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bx.system.mapper.OrgMapper"> 
+    <sql id="orgColumns">
+    	a.id,
+		a.parent_id as "parent.id",
+		a.parent_tree,
+		a.name,
+		a.type,
+		a.addr,
+		a.sort,
+		b.id as "master.id",
+		b.name as "master.name",
+		a.remarks,
+		p.name as "parent.name",
+		a.status
+    </sql>
+    <sql id="orgJoins">
+    	left join sys_user b on a.master_id = b.id
+		left join sys_org p on p.id = a.parent_id
+    </sql>
+    <select id="get" resultType="cn.bx.system.entity.Org">
+		select
+			<include refid="orgColumns"/>
+		from sys_org a
+		<include refid="orgJoins"/>
+		where a.id = #{id}
+	</select>
+    <select id="list" resultType="cn.bx.system.entity.Org">
+		select
+			<include refid="orgColumns"/>
+		from sys_org a
+		<include refid="orgJoins"/>
+		order by a.parent_tree
+	</select>
+	<!-- 新增修改时选择上级 修改时过滤自己及下级 -->
+	<select id="queryOrgTree" parameterType="map" resultType="map">
+		select id,name,parent_id,parent_tree,sort from sys_org
+		<where>
+			<if test="id != null and id != ''">
+				parent_id = #{parentOrg}
+			</if>
+			<if test="parentOrg != null and parentOrg != ''">
+				locate(#{parentOrg}, parent_tree) = 0 and id != #{parentOrg}
+			</if>
+		</where>
+	</select>
+	<insert id="add">
+		insert into sys_org(id,parent_id,parent_tree, name, type, addr, master_id, sort,create_by, create_date, update_by, update_date, remarks, status)
+		values(#{id},#{parentId},#{parentTree},#{name},#{type},#{addr},#{master.id},#{sort},#{createBy},#{createDate},#{updateBy},#{updateDate},
+		#{remarks},#{status})
+	</insert>
+	
+	<update id="save">
+		update sys_org set parent_id = #{parentId},parent_tree = #{parentTree},
+		name = #{name}, type = #{type}, master_id = #{master.id}, sort = #{sort}, addr = #{addr}, 
+		update_by = #{updateBy}, update_date = #{updateDate}, 
+		remarks = #{remarks}, status = #{status} where id = #{id}
+	</update>
+	<update id="updateChildren" parameterType="map">
+		update sys_org set parent_tree = replace(parent_tree,#{old.treeSort},#{new.treeSort})
+		where locate(#{new.id}, parent_tree) > 0
+	</update>
+	
+	<delete id="removeList">
+		delete from  sys_org where id in
+		<foreach collection="array" item="id" open="(" close=")" separator=",">#{id}</foreach>
+	</delete>
+	<delete id="removeChildren">
+		delete from  sys_org where locate(#{id}, parent_tree) > 0
+	</delete>
+</mapper>

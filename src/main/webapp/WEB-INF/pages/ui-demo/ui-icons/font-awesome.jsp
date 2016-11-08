@@ -1990,8 +1990,3 @@
 			</div>
 		</div>
 	</div>
-<script type="text/javascript">
-require(['app/common'],function(APP){
-	
-});
-</script>
