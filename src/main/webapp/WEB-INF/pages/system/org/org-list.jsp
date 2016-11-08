@@ -9,27 +9,14 @@ require(['app/common','app/treetable'],function(APP,DT){
 	var columns = [
 		{ "data": "id","visible" : false},
 		{ "data": "parentId","visible" : false},
-		{ "data": "name","title":"菜单名称"},
-		{ "data": "icon","title":"图标"},
-		{ "data": "target","title":"链接"},
-		{ "data": "status","title":"状态"},
-		{ "data": "sort","title":"排序号"}
+		{ "data": "name","title":"组织名称"},
+		{ "data": "type","title":"类型","dictType" :"org_type"},
+		{ "data": "addr","title":"地址"},
+		{ "data": "master.name","title":"地址"},
+		{ "data": "master.id","visible" : false},
+		{ "data": "status","title":"状态","dictType" :"on_off"},
+		{ "data": "sort","title":"排序"}
 	];
-	var columnDefs = [	{"targets": 2,
-		"render": function ( data, type, row ) {
-			if(row.type == '1'){ //0:模块 1:功能
-				return "<i class='fa fa-pencil-square-o'></i> "+data;
-			}else{
-				if(row.target == '#') return "<i class='fa fa-cog'></i> "+data;
-				else return "<i class='fa fa-link'></i> "+data;
-			}
-		}},
-	    {"targets": 3,"render": function ( data, type, row ) {
-	    	return "<i class='"+data+"'></i>";
-	    }},
-		{"targets": 5,"render": function ( data, type, row ) {
-			return data == "1" ? "启用" : "停用";
-		}}]
 	$('table.datatable').treetable({
 		"tid":"id","tpid":"parentId",
 		"expandable": true,"expandBtn" : true,

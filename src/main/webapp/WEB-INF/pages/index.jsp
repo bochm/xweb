@@ -122,7 +122,7 @@
 						<li><a href="pages/system/user/user-list" class="act-menu"><i class="iconfont icon-users"></i> 用户管理</a></li>
 						<li><a href="pages/system/menu/menu-list" class="act-menu"><i class="iconfont icon-heart"></i> 菜单管理</a></li>
 						<li><a href="pages/system/dict/dict-list" class="act-menu"><i class="iconfont icon-book"></i> 字典数据</a></li>
-						<li><a href="pages/system/org/org-list" class="act-menu"><i class="iconfont icon-book"></i> 组织机构</a></li>
+						<li><a href="pages/system/org/org-list" class="act-menu"><i class="iconfont icon-apartment"></i> 组织机构</a></li>
 					</ul>
 				</li>
 			</ul>

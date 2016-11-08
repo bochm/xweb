@@ -490,20 +490,39 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 	* @param  {Arrays} opts 初始化参数,兼容多表格的数组形式[{},{}]
 	**/
 	function _getDataTable($table,default_opt,callback){
-		
-		
-		if(APP.isMobile)  default_opt.buttons = [];
-		
 		default_opt.dataUrl = $table.data('url');
 		default_opt.serverSide = ($table.data('server-side') != undefined && $table.data('server-side') == "true");
 		
 		var ajax_params = {};
 		if(default_opt.params) ajax_params = default_opt.params;//页面定义Ajax请求参数
 		
+		
+		
 		if(default_opt.dataUrl != undefined){
 			var columnArray = (default_opt.columns ? default_opt.columns : new Array());
-			$table.find('th[data-column]').each(function(){
+			default_opt.columnDefs = default_opt.columnDefs || new Array();
+			for(var i=0;i<columnArray.length;i++){//增加字典数据解析
+				if(columnArray[i].dictType){
+					var _dict_map = APP.getDictMap(columnArray[i].dictType);
+					default_opt.columnDefs.push({
+						"targets" : i,
+						"render" : function ( data, type, row ) {
+							return _dict_map[data];
+						}
+					})
+				}
+			}
+			$table.find('th[data-column]').each(function(index){
 				columnArray.push({'data' : $(this).data('column')});
+				if($(this).data('dict-type')){ //增加字典数据解析
+					var _dict_map = APP.getDictMap($(this).data('dict-type'));
+					default_opt.columnDefs.push({
+						"targets" : index,
+						"render" : function ( data, type, row ) {
+							return _dict_map[data];
+						}
+					})
+				}
 			});
 			//treetable排序使用TreeBean中的treeSort(parentIds + id),否则显示层级不正确
 			if(default_opt.tableType == 'treetable'){

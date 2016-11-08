@@ -12,7 +12,7 @@ require(['app/common','app/treetable'],function(APP,DT){
 		{ "data": "name","title":"菜单名称"},
 		{ "data": "icon","title":"图标"},
 		{ "data": "target","title":"链接"},
-		{ "data": "status","title":"状态"},
+		{ "data": "status","title":"状态","dictType" : "on_off"},
 		{ "data": "sort","title":"排序号"}
 	];
 	var columnDefs = [	{"targets": 2,
@@ -26,10 +26,7 @@ require(['app/common','app/treetable'],function(APP,DT){
 		}},
 	    {"targets": 3,"render": function ( data, type, row ) {
 	    	return "<i class='"+data+"'></i>";
-	    }},
-		{"targets": 5,"render": function ( data, type, row ) {
-			return data == "1" ? "启用" : "停用";
-		}}]
+	    }}]
 	$('table.datatable').treetable({
 		"tid":"id","tpid":"parentId",
 		"expandable": true,"expandBtn" : true,

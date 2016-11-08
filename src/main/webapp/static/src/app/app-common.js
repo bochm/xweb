@@ -170,6 +170,16 @@ define('app/common',['bootstrap','moment'],function() {
 			getDictByType : function(type){
 				return this.getJsonData(this.ctx+_dict_srv_url+type);
 			},
+			getDictMap : function(type){
+				var _dict_array = this.getJsonData(this.ctx+_dict_srv_url+type);
+				var _dict_map = {};
+				if($.isArray(_dict_array)){
+					for(var i=0;i<_dict_array.length;i++){
+						_dict_map[_dict_array[i].value] = _dict_array[i].name;
+					}
+				}
+				return _dict_map;
+			},
 			loadPage : function(target,url,data,callback,errorback){
 				if(url){
 					APP.blockUI({target:target,message:'页面加载中',});
@@ -183,7 +193,7 @@ define('app/common',['bootstrap','moment'],function() {
 			            	var _html = $(res);
 		            		APP.initComponents(_html.get());
 			            	APP.unblockUI(target);
-			            	$(target).html(_html);
+			            	$(target).append(_html);
 			            	if(typeof callback === 'function'){
 			            		callback(res);
 			            	}
@@ -289,21 +299,22 @@ define('app/common',['bootstrap','moment'],function() {
 	        	_tab_toggle.data('show','0');
 	        	_tab_toggle.parent('li').removeClass("active");
 	        	_tab_toggle.on('show.bs.tab', function (e) {
-	        		
 	    	    	var _target = $(e.target);
-	    	    	console.log(_target.data('url') + "," + _target.data('show') + "," + _target.attr('href'));
 	    	    	if(APP.isEmpty(_target.data('url'))){
 	    	    		return;
 	    	    	}
 	    	    	if(_target.data('show') === '1') return;//只加载一次
-	    	    	APP.loadPage($(_target.attr('href')),_target.data('url'));
+	    	    	APP.loadPage(_target.attr('href'),_target.data('url'));
 	    	    	if(reload) _target.data('show','0');
 	    	    	else _target.data('show','1');
 	    	    });
 	        	var _default_idx = (defaultIdx !== undefined) ? defaultIdx : 0;
 	        	
 	        	if(!APP.isEmpty(_tab_toggle.eq(_default_idx).data('url'))){
-	        		_tab_toggle.eq(_default_idx).tab('show');
+	        		setTimeout(function(){//tab页在首次加载时需要延时，否则无法显示
+	        			_tab_toggle.eq(_default_idx).tab('show');
+	        		},10);
+	        		
 	        	}
 	        },
 	        //tooltip控件
@@ -367,14 +378,14 @@ define('app/common',['bootstrap','moment'],function() {
 	        //初始化控件
 	        initComponents: function(target){
 	        	
-	        	this.initTab(target,false);
-	        	this.initPopover(target);
-	        	this.initTooltip(target);
-	        	this.initPulsate(target);
+	        	APP.initTab(target,false);
+	        	APP.initPopover(target);
+	        	APP.initTooltip(target);
+	        	APP.initPulsate(target);
 	        	APP.initPortletPanel(target);
 	        	APP.initDropdowns(target);
 	        	APP.initScroll('.scroller',target);
-	        	this.initSwitch(target);
+	        	APP.initSwitch(target);
 	        	//初始化提交按钮
 	        	_queryContainer(target).find(".btn[data-submit]").each(function(){
 	        		var _submit_btn = $(this);
