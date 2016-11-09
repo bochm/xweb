@@ -1,8 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/include/taglib.jsp" %>
 <div class="loading-page">
 <span id="table-system-dict-list-toolbar"></span>
-<table id="table-system-dict-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/system/dict" 
+<table id="table-system-dict-list" class="table datatable table-bordered nowrap"  data-url="system/dict" 
 	data-paging="true" data-info="true" data-ordering="true">
 		<thead><tr>
 			<th data-visible='false' data-column="id">id</th>
@@ -16,7 +15,7 @@
 		</tbody>
 </table>	
 
-<!-- 新增修改 http://www.cnblogs.com/wuhuacong/p/4784957.html-->
+<!-- 新增修改-->
 <div class="modal fade" id="system-dict-list-edit" tabindex="-1" role="dialog" data-backdrop="static">
 <div class="modal-dialog">
       <div class="modal-content">
@@ -25,7 +24,7 @@
             <h4 class="modal-title">字典维护</h4>
          </div>
          <div class="modal-body">
-            <form class="form-horizontal" action="${ctx}/system/dict" role="form" id="system-dict-edit-form" >
+            <form class="form-horizontal" action="system/dict" role="form" id="system-dict-edit-form" >
             	<input type="hidden" name="id">
             	<div class="form-body">
             		<div class="row">
@@ -90,7 +89,7 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	$('table.datatable').initTable({
 		"scrollY": "400px",
 		"buttons":["addRecord","saveRecord","deleteRecord"],
-		"deleteRecord" : {"url" : '${ctx}/system/dict/delete',"id" : 'id'},
+		"deleteRecord" : {"url" : 'system/dict/delete',"id" : 'id'},
 		"addEditForm" : {
 			"el" : "#system-dict-edit-form",
 			"rules":{

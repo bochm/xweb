@@ -213,7 +213,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			return APP.postJson(p.url,paramData,false);
 		}else{
 			paramData.stmID = p.stmID || p.stmid || p.stmId;
-			return APP.isEmpty(APP.postJson(APP.ctx+'/app/common/selectMapByStmID',paramData,false));
+			return APP.isEmpty(APP.postJson('/app/common/selectMapByStmID',paramData,false));
 		}
 		
 	}, "已存在");
@@ -308,6 +308,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 				_this.append("<input type='hidden' name='form_action' value='"+opts.formAction+"'>");
 			}
 		}
+		opts.url = APP.ctx + opts.url;
 		var form_opt = $.extend(true,{
 			ajax:true,
 			beforeSubmit : function(formData, jqForm, options){
@@ -423,7 +424,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		var _select = $(this);
 		if(opts){
 			if((opts.jsonData||opts.stmID) && opts.data === undefined){//增加jsonData选项获取静态.json文件或者直接通过sqlMapper的sqlID获取数组数据
-				var url = APP.ctx+"app/common/selectArrayByStmID";
+				var url = "app/common/selectArrayByStmID";
 				var type = "POST";
 				if(opts.jsonData && opts.jsonData != ""){
 					url = opts.jsonData;

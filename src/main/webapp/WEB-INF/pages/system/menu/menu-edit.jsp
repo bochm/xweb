@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/include/taglib.jsp" %>
 <div class="modal fade" id="system-menu-edit" tabindex="-1" role="dialog" data-backdrop="static">
 <div class="modal-dialog">
 <div class="modal-content">
@@ -8,7 +7,7 @@
 	   <h4 class="modal-title">菜单维护</h4>
 	</div>
 	<div class="modal-body">
-	   	<form  role="form" class="form-horizontal" id="system-menu-edit-form" action="${ctx}/system/menu/${param.act}.json">
+	   	<form  role="form" class="form-horizontal" id="system-menu-edit-form">
 	   	<input type="hidden" name="id">
 	   	<div class="form-body">
 	   		<div class="row">
@@ -24,7 +23,7 @@
 					<div class="col-md-8">
 					<div class="input-icon left"> <i class="fa validate-icon"></i>
 					<select id="sys_menu_forms_icons" name="icon" form-role='select' placeholder='{"id":"icon-suitcase"}' 
-					data-json='${resourcePath}/jsons/icons' class="form-control required selectOpt"/>
+					data-json='static/resources/jsons/icons' class="form-control required selectOpt"/>
 					</div>
 					</div>
 				</div>
@@ -104,13 +103,13 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 		if(state) $("input[name='permission']").removeClass('required');
 		else $("input[name='permission']").addClass('required');
 	})
-	var act = '${param.act}';
+	var act = APP.getParameterByName("act");
 	$('.modal-footer .btn-primary').click(function(){
 		$('#system-menu-edit-form').submit();
 	});
 	var table = DT.getTable('#table-system-menu-list');
 	var _formInitOpt = {
-			 formAction : act,validate : {},clearForm : true,
+			 formAction : act,validate : {},clearForm : true,url:"system/menu/"+act,
 			 fieldOpts : {
 				 "icon" : {"templateResult" : sys_menuedit_formatResult, "templateSelection":sys_menuedit_formatResult},
 				 "parentMenuName" : {"view" : {"selectedMulti": false}}

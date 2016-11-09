@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/include/taglib.jsp" %>
 <div class="modal fade" id="system-org-edit" tabindex="-1" role="dialog" data-backdrop="static">
 <div class="modal-dialog">
 <div class="modal-content">
@@ -24,7 +23,7 @@
 					<div class="col-md-8">
 					<div class="input-icon left"> <i class="fa validate-icon"></i>
 					<select id="sys_org_forms_icons" name="icon" form-role='select' placeholder='{"id":"icon-suitcase"}' 
-					data-json='${resourcePath}/jsons/icons' class="form-control required selectOpt"/>
+					data-json='static/resource/jsons/icons' class="form-control required selectOpt"/>
 					</div>
 					</div>
 				</div>
@@ -95,7 +94,7 @@
 </div>
 <script>
 require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
-
+	alert( APP.getParameterByName("act"));
 	var act = APP.getParameterByName("act");
 	var table = DT.getTable('#table-system-menu-list');
 	var _formInitOpt = {

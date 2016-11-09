@@ -1,11 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/include/taglib.jsp" %>
 <div class="loading-page">
 <span id="table-system-user-list-toolbar">
 <a class="btn btn-sm btn-primary btn-saveRecord" id="system-user-list-edit-btn">修改用户</a>
 <a class="btn btn-sm btn-warning btn-deleteRecord" data-role="deleteRecord">删除用户</a>
 </span>
-<table id="table-system-user-list" class="table datatable table-bordered nowrap"  data-url="${ctx}/system/user" 
+<table id="table-system-user-list" class="table datatable table-bordered nowrap"  data-url="system/user" 
 	data-paging="true" data-info="true" data-ordering="true">
 		<thead><tr>
 			<th data-visible='false' data-column="id">id</th>
@@ -29,7 +28,7 @@
             <h4 class="modal-title">用户维护</h4>
          </div>
          <div class="modal-body">
-            <form class="form-horizontal" action="${ctx}/system/user/add.json" role="form" id="system-user-edit-form" >
+            <form class="form-horizontal" action="system/user/add.json" role="form" id="system-user-edit-form" >
             	<input type="hidden" name="id">
             	<div class="form-body">
             		<div class="row">
@@ -140,16 +139,16 @@
 <script type="text/javascript">
 require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	var userTable;
-	var form_rules = {"loginName":{"checkExists":{"url":"${ctx}/system/user/checkLoginName"},"messages":{"checkExists" : "登录名已存在"}}};
+	var form_rules = {"loginName":{"checkExists":{"url":"system/user/checkLoginName"},"messages":{"checkExists" : "登录名已存在"}}};
 	$('table.datatable').initTable({
 		params : {'pcompany':1}, //测试
 		"scrollY": "400px",
 		"buttons":["addRecord"],
-		"deleteRecord" : {url : '${ctx}/system/user/delete',id : 'id'},
+		"deleteRecord" : {url : 'system/user/delete',id : 'id'},
 		"addRecord" : function(dt){
 			if(!$('#sys-user-password').hasClass('required'))$('#sys-user-password').addClass('required');//新增必须输入密码
 			$('#system-user-edit-form').initForm({
-				url : "${ctx}/system/user/add.json",clearForm : true,formAction : "add",autoClear : true,type : 'post',rules : form_rules
+				url : "system/user/add.json",clearForm : true,formAction : "add",autoClear : true,type : 'post',rules : form_rules
 			},function(data){
 				dt.addRow(data);
 			});
@@ -166,7 +165,7 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 		}
 		$('#sys-user-password').removeClass('required');//密码不填写视为不修改密码
 		$('#system-user-edit-form').initForm({
-			url : "${ctx}/system/user/save.json",clearForm : false,formAction : "save",autoClear : true,type : 'post',rules : form_rules,
+			url : "system/user/save.json",clearForm : false,formAction : "save",autoClear : true,type : 'post',rules : form_rules,
 			formData : userTable.selectedRows()[0]
 		},function(data){
 			userTable.updateSelectedRow(data);

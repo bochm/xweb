@@ -57,10 +57,11 @@ define('app/common',['bootstrap','moment'],function() {
 			"device" : device,
 			"isMobile" :  (device.androidPhone() || device.iphone() || device.ipod() || device.windowsPhone()),
 			"isTablet" : (device.ipad() || device.androidTablet() || device.windowsTablet()),
+			"currentUrl" : "index",
 			getParameterByName : function(name) {
 		        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
 		        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-		            results = regex.exec(location.search);
+		            results = regex.exec(APP.currentUrl);
 		        return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 		    },
 	        
@@ -130,8 +131,7 @@ define('app/common',['bootstrap','moment'],function() {
 				var retData;
 				$.ajax({ 
 				        type:type, 
-				        //url:_ctx+url, 
-				        url: (url.indexOf("?") >0) ? (url.split("?")[0]+".json?" + url.split("?")[1]) : url+".json", 
+				        url: APP.ctx+((url.indexOf("?") >0) ? (url.split("?")[0]+".json?" + url.split("?")[1]) : url+".json"), 
 				        contentType : 'application/json;charset=utf-8',             
 				        data: JSON.stringify(data),
 				        async:async,
@@ -168,10 +168,10 @@ define('app/common',['bootstrap','moment'],function() {
 				return _data;
 			},
 			getDictByType : function(type){
-				return this.getJsonData(this.ctx+_dict_srv_url+type);
+				return this.getJsonData(_dict_srv_url+type);
 			},
 			getDictMap : function(type){
-				var _dict_array = this.getJsonData(this.ctx+_dict_srv_url+type);
+				var _dict_array = this.getJsonData(_dict_srv_url+type);
 				var _dict_map = {};
 				if($.isArray(_dict_array)){
 					for(var i=0;i<_dict_array.length;i++){
@@ -186,10 +186,11 @@ define('app/common',['bootstrap','moment'],function() {
 					$.ajax({
 			            type: "GET",
 			            cache: false,
-			            url: url,
+			            url: APP.ctx+url,
 			            data: data,
 			            dataType: "html",
 			            success: function(res) {
+			            	APP.currentUrl = url;
 			            	var _html = $(res);
 		            		APP.initComponents(_html.get());
 			            	APP.unblockUI(target);
@@ -682,10 +683,11 @@ define('app/common',['bootstrap','moment'],function() {
 			$.ajax({
 	            type: "GET",
 	            cache: false,
-	            url: src,
+	            url: APP.ctx+src,
 	            data:opts.param,
 	            dataType: "html",
 	            success: function(html) {
+	            	APP.currentUrl = src;
 	            	var _html = $(html);
             		APP.initComponents(_html.first().get());
 	            	if(mid){

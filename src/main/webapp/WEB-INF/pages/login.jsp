@@ -5,7 +5,7 @@
 <body class="login">
 <div style="display: none;">
 <div class="content">
-	<form class="login-form" action="${ctx }/login" method="post">
+	<form class="login-form" action="login" method="post">
 		<h3 class="form-title">登&nbsp;&nbsp;录</h3>
 		<div class="form-group">
 			<label class="control-label visible-ie8 visible-ie9">用户名</label>

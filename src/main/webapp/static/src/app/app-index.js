@@ -172,7 +172,6 @@ define(['app/common'],function(APP) {
         
         if(actMenu.attr("href")){
         	var url = actMenu.attr("href");
-        	url = APP.ctx+url;
         	$('.page-content-wrapper>.page-content').children().remove();
         	$('.page-content-wrapper>.page-content').css('display','none');
         	APP.loadPage(pageContent,url,{},function(){
