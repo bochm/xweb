@@ -10,7 +10,7 @@ require(['app/common','app/treetable'],function(APP,DT){
 		{ "data": "id","visible" : false},
 		{ "data": "parentId","visible" : false},
 		{ "data": "name","title":"组织名称"},
-		{ "data": "type","title":"类型","dictType" :"org_type"},
+		{ "data": "type","title":"类型","dictType" :"sys_org_type"},
 		{ "data": "addr","title":"地址"},
 		{ "data": "master.name","title":"地址"},
 		{ "data": "master.id","visible" : false},
@@ -18,9 +18,7 @@ require(['app/common','app/treetable'],function(APP,DT){
 		{ "data": "sort","title":"排序"}
 	];
 	$('table.datatable').treetable({
-		"tid":"id","tpid":"parentId",
-		"expandable": true,"expandBtn" : true,
-		"columns": columns,"columnDefs": columnDefs,
+		"tid":"id","tpid":"parentId","expandable": true,"expandBtn" : true,"columns": columns,
 		"buttons" : ['addRecord','saveRecord','deleteRecord'],
 		"addEditModal" : {"url" : "${ctx}/pages/system/org/org-edit","id":"system-org-edit"},
 		"deleteRecord" : function(dt,node,e){
@@ -34,6 +32,7 @@ require(['app/common','app/treetable'],function(APP,DT){
 					}
 				});
 			})
+			
 		}
 	});
 })

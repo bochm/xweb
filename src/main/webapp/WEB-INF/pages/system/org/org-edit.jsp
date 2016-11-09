@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/include/taglib.jsp" %>
-<div class="modal fade" id="system-menu-edit" tabindex="-1" role="dialog" data-backdrop="static">
+<div class="modal fade" id="system-org-edit" tabindex="-1" role="dialog" data-backdrop="static">
 <div class="modal-dialog">
 <div class="modal-content">
 	<div class="modal-header">
@@ -8,7 +8,7 @@
 	   <h4 class="modal-title">菜单维护</h4>
 	</div>
 	<div class="modal-body">
-	   	<form  role="form" class="form-horizontal" id="system-menu-edit-form" action="${ctx}/system/menu/${param.act}.json">
+	   	<form  role="form" class="form-horizontal" id="system-org-edit-form" action="${ctx}/system/org/${param.act}.json">
 	   	<input type="hidden" name="id">
 	   	<div class="form-body">
 	   		<div class="row">
@@ -23,7 +23,7 @@
 					<label class="control-label col-md-4">菜单图标</label>
 					<div class="col-md-8">
 					<div class="input-icon left"> <i class="fa validate-icon"></i>
-					<select id="sys_menu_forms_icons" name="icon" form-role='select' placeholder='{"id":"icon-suitcase"}' 
+					<select id="sys_org_forms_icons" name="icon" form-role='select' placeholder='{"id":"icon-suitcase"}' 
 					data-json='${resourcePath}/jsons/icons' class="form-control required selectOpt"/>
 					</div>
 					</div>
@@ -43,11 +43,11 @@
 					<div class="form-group">
 						<label class="control-label col-md-2">上级菜单</label>
 						<div class="col-md-10">
-						<input type="hidden"  name="parentTree" data-tree-for="parentMenuName"/>
-						<input type='hidden' name='parentId' data-id-for="parentMenuName"/>
-						<input type="text" name="parentMenuName" form-role="treeSelect" tree-key-pid="parent_id"
-						readonly="readonly"  class="form-control"  id="system_menu_forms_parentTree"
-						data-stmid="cn.bx.system.mapper.MenuMapper.selectAllMenuTree"/>
+						<input type="hidden"  name="parentTree" data-tree-for="parentOrgName"/>
+						<input type='hidden' name='parentId' data-id-for="parentOrgName"/>
+						<input type="text" name="parentOrgName" form-role="treeSelect" tree-key-pid="parent_id"
+						readonly="readonly"  class="form-control"  id="system_org_forms_parentTree"
+						data-stmid="cn.bx.system.mapper.OrgMapper.selectAllMenuTree"/>
 						</div>
 					</div>
 				</div>
