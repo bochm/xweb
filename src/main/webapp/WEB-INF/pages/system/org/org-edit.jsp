@@ -5,10 +5,10 @@
 <div class="modal-content">
 	<div class="modal-header">
 	   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-	   <h4 class="modal-title">菜单维护</h4>
+	   <h4 class="modal-title">组织机构维护</h4>
 	</div>
 	<div class="modal-body">
-	   	<form  role="form" class="form-horizontal" id="system-org-edit-form" action="${ctx}/system/org/${param.act}.json">
+	   	<form  role="form" class="form-horizontal" id="system-org-edit-form">
 	   	<input type="hidden" name="id">
 	   	<div class="form-body">
 	   		<div class="row">
@@ -88,26 +88,15 @@
 	</div>
 	<div class="modal-footer">
 	   <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-	   <button type="button" class="btn btn-primary">提交</button>
+	   <button type="button" class="btn btn-primary" data-submit="#system-org-edit-form">提交</button>
 	</div>
 </div>
 </div>
 </div>
 <script>
 require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
-	function sys_menuedit_formatResult(data){
-		if (!data.id && !data.icons) { return data.text; }
-		var icons = data.icons ? data.icons : data.id;
-		return $("<span align='left'><i class='"+icons+"'></i>&nbsp;"+data.text+"</span>");
-	}
-	$("input[name='type']").on("switch:change",function(e,state){
-		if(state) $("input[name='permission']").removeClass('required');
-		else $("input[name='permission']").addClass('required');
-	})
-	var act = '${param.act}';
-	$('.modal-footer .btn-primary').click(function(){
-		$('#system-menu-edit-form').submit();
-	});
+
+	var act = APP.getParameterByName("act");
 	var table = DT.getTable('#table-system-menu-list');
 	var _formInitOpt = {
 			 formAction : act,validate : {},clearForm : true,
