@@ -5,17 +5,15 @@
 </div>
 <script type="text/javascript">
 require(['app/common','app/treetable'],function(APP,DT){
-	alert(APP.ctx);
 	var columns = [
 		{ "data": "id","visible" : false},
 		{ "data": "parentId","visible" : false},
 		{ "data": "name","title":"组织名称"},
-		{ "data": "type","title":"类型","dictType" :"sys_org_type"},
+		{ "data": "type","title":"类型","render" : function(data){return APP.getDictName("sys_org_type",data)}},
 		{ "data": "addr","title":"地址"},
-		{ "data": "master.name","title":"地址"},
+		{ "data": "master.name","title":"负责人"},
 		{ "data": "master.id","visible" : false},
-		{ "data": "status","title":"状态","dictType" :"on_off"},
-		{ "data": "sort","title":"排序"}
+		{ "data": "status","title":"状态","render" : function(data){return APP.getDictName("on_off",data)}}
 	];
 	$('table.datatable').treetable({
 		"tid":"id","tpid":"parentId","expandable": true,"expandBtn" : true,"columns": columns,

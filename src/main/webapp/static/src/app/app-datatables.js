@@ -500,29 +500,8 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 		
 		if(default_opt.dataUrl != undefined){
 			var columnArray = (default_opt.columns ? default_opt.columns : new Array());
-			default_opt.columnDefs = default_opt.columnDefs || new Array();
-			for(var i=0;i<columnArray.length;i++){//增加字典数据解析
-				if(columnArray[i].dictType){
-					var _dict_map = APP.getDictMap(columnArray[i].dictType);
-					default_opt.columnDefs.push({
-						"targets" : i,
-						"render" : function ( data, type, row ) {
-							return _dict_map[data];
-						}
-					})
-				}
-			}
 			$table.find('th[data-column]').each(function(index){
 				columnArray.push({'data' : $(this).data('column')});
-				if($(this).data('dict-type')){ //增加字典数据解析
-					var _dict_map = APP.getDictMap($(this).data('dict-type'));
-					default_opt.columnDefs.push({
-						"targets" : index,
-						"render" : function ( data, type, row ) {
-							return _dict_map[data];
-						}
-					})
-				}
 			});
 			//treetable排序使用TreeBean中的treeSort(parentIds + id),否则显示层级不正确
 			if(default_opt.tableType == 'treetable'){
@@ -597,6 +576,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      * 增加一行数据
      */
 	DataTable.Api.register( 'addRow()', function (row) {
+		console.log(row);
 		var newRow = this.row.add(row).draw();
 		//treetable调用move方法保持树形结构
 		if(this.init().tableType == 'treetable'){

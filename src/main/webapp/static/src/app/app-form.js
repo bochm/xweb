@@ -282,7 +282,17 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 					if(formField.attr('placeholder') && !isInitValue) _selectOpt.placeholder = JSON.parse(formField.attr('placeholder'));
 				}catch(e){alert("placeholder属性值必须为json字符串");}
 				if(formField.data('json')) _selectOpt.jsonData = formField.data('json');
-				if(formField.data('stmid')) _selectOpt.stmID = formField.data('stmid');
+				else if(formField.data('stmid')) _selectOpt.stmID = formField.data('stmid');
+				else if(formField.data('dict-type')){
+					_selectOpt.data = APP.getDictByType(formField.data('dict-type'));
+					if($.isArray(_selectOpt.data)){
+						for(var i=0;i<_selectOpt.data.length;i++){//select2使用text显示
+							_selectOpt.data[i].id = _selectOpt.data[i].value;
+							_selectOpt.data[i].text = _selectOpt.data[i].name;
+						}
+					}
+					
+				}
 				formField.select(_selectOpt);
 			}
 			if(_fieldRole == 'treeSelect'){
@@ -493,9 +503,11 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			}
 			var default_opt = $.extend(true,select2_default_opts,opts);
 			_select.select2(default_opt);
+			console.log(_select.val());
 			if(_select.data("original") || _select.data("init")) _select.val((_select.data("original") || _select.data("init"))).trigger("change");
 			else _select.val(_select.val()).trigger("change");
 			_select.on("select2:select", function (e) { 
+				alert(_select.find("option:selected").text());
 				if(_select.val() != '-1' && _select.val() != ''){
 					_select.closest('.form-group').removeClass('has-error');
 					_select.siblings("span#"+_select.attr("id")+"-error").remove();
@@ -509,8 +521,16 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		return _select;
 	};
 	
-	
-	
+	FORM.getSelectedVal = function(sel){
+		require(['jquery/select2'],function(){
+			return $(sel).val();
+		})
+	}
+	FORM.getSelectedText = function(sel){
+		require(['jquery/select2'],function(){
+			return $(sel).find("option:selected").text();
+		})
+	}
 	/**
 	 * 基于ztree的treeSelect
 	 * 定义了默认的onClick方法

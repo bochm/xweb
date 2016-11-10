@@ -58,6 +58,7 @@ define('app/common',['bootstrap','moment'],function() {
 			"isMobile" :  (device.androidPhone() || device.iphone() || device.ipod() || device.windowsPhone()),
 			"isTablet" : (device.ipad() || device.androidTablet() || device.windowsTablet()),
 			"currentUrl" : "index",
+			"dict" : {},
 			getParameterByName : function(name) {
 		        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
 		        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -168,10 +169,16 @@ define('app/common',['bootstrap','moment'],function() {
 				return _data;
 			},
 			getDictByType : function(type){
-				return this.getJsonData(_dict_srv_url+type);
+				if(this.isEmpty(this.dict[type])) {
+					var _dict_list = this.getJsonData(_dict_srv_url+type);
+					if($.isArray(_dict_list) && _dict_list.length > 0){
+						this.dict[type] = _dict_list;
+					}
+				}
+				return this.dict[type];
 			},
 			getDictMap : function(type){
-				var _dict_array = this.getJsonData(_dict_srv_url+type);
+				var _dict_array = this.getDictByType(type);
 				var _dict_map = {};
 				if($.isArray(_dict_array)){
 					for(var i=0;i<_dict_array.length;i++){
@@ -179,6 +186,11 @@ define('app/common',['bootstrap','moment'],function() {
 					}
 				}
 				return _dict_map;
+			},
+			getDictName : function(type,value){
+				var _dict_map = this.getDictMap(type);
+				if(_dict_map[value]) return _dict_map[value];
+				else return "";
 			},
 			loadPage : function(target,url,data,callback,errorback){
 				if(url){
