@@ -85,10 +85,9 @@
 <script>
 require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 	var act = APP.getParameterByName("act");
-	function _add_master_name(ret){
-		alert(FORM.getSelectedVal("#system-org-edit-form [name='master.id']"));
-		ret.master.name = _master_sel.children("[value='"+_master_sel.val()+"']").text();
-	}
+	$("#system-org-edit-form [name='master.id']").on("change",function(){
+		$("#system-org-edit-form [name='master.name']").val($(this).children(":selected").text());
+	})
 	
 	var table = DT.getTable('#table-system-org-list');
 	var _formInitOpt = {
@@ -98,7 +97,6 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 			 },
 			 onSuccess : function(ret){
 				 $.fn.zTree.getZTreeObj('system_org_parentTree').reAsyncChildNodes(null, "refresh");
-				 _add_master_name(ret);
 				 table.addRow(ret);
 			 }
 	};
@@ -109,7 +107,6 @@ require(['app/common','app/form','app/treetable'],function(APP,FORM,DT){
 		_formInitOpt.fieldOpts.parentOrgName.param = {"parentOrg" : _formInitOpt.formData.id};
 		_formInitOpt.onSuccess = function(ret){
 			 $.fn.zTree.getZTreeObj('system_org_parentTree').reAsyncChildNodes(null, "refresh");
-			 _add_master_name(ret);
 			 table.updateSelectedRow(ret);
 		 }
 	}
