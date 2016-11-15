@@ -62,9 +62,6 @@
 				</where>
 			</if>
 		</if>
-		
-			
-		
 	</select>
 	<insert id="add">
 		insert into sys_org(id,parent_id,parent_tree, name, type, addr, master_id, sort,create_by, create_date, update_by, update_date, remarks, status)

@@ -33,10 +33,6 @@ define('app/common',['bootstrap','moment'],function() {
 
     //部分常量(DATA、MSG等)必须和AppConstants类中定义的一致(取消调用/app/common/constrants获取常量的方式)
 	var _dict_srv_url = "system/dict/query/";//服务端字典数据获取URL
-	
-	function _sleep(numberMillis) { 
-		
-	}
 
 	if(! ('APP' in window) ){
 		window['APP'] = {
@@ -59,6 +55,9 @@ define('app/common',['bootstrap','moment'],function() {
 			"isTablet" : (device.ipad() || device.androidTablet() || device.windowsTablet()),
 			"currentUrl" : "index",
 			"dict" : {},
+			"stmidMapUrl" : "app/common/selectMapByStmID",//服务端根据sqlmapper ID获取map数据URL
+			"stmidListUrl" : "app/common/selectMapByStmID",//服务端根据sqlmapper ID获取List数据URL
+			"stmidMapListUrl" : "app/common/selectMapListByStmID",//服务端根据sqlmapper ID获取mapList数据URL,需要在param中指定key
 			getParameterByName : function(name) {
 		        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
 		        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -155,18 +154,27 @@ define('app/common',['bootstrap','moment'],function() {
 				});
 				return retData;  
 			},
-			postJson : function(url,data,isSync,callback,errorback){
-				return this.ajax(url,data,'POST',isSync,callback,errorback);  
+			postJson : function(url,param,isSync,callback,errorback){
+				return this.ajax(url,param,'POST',isSync,callback,errorback);  
 			},
-			getJson : function(url,data,isSync,callback,errorback){
-				return this.ajax(url,data,'GET',isSync,callback,errorback);  
+			getJson : function(url,param,isSync,callback,errorback){
+				return this.ajax(url,param,'GET',isSync,callback,errorback);  
 			},
-			getJsonData : function(url,data){
+			getJsonData : function(url,param){
 				var _data;
-				this.getJson(url,data || {},false,function(ret){
+				this.getJson(url,param || {},false,function(ret){
 					_data = ret;
 				});
 				return _data;
+			},
+			getMapByStmId : function(param){
+				return this.getJsonData(APP.stmidMapUrl,param);
+			},
+			getListByStmId : function(param){
+				return this.getJsonData(APP.stmidListUrl,param);
+			},
+			getMapListByStmId : function(param){
+				return this.getJsonData(APP.stmidMapListUrl,param);
 			},
 			getDictByType : function(type){
 				if(this.isEmpty(this.dict[type])) {
