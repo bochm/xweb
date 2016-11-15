@@ -195,15 +195,15 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 		if(p.joinField){//参与验证字段值
 			if($.isArray(p.joinField)){
 				for(var i=0;i<p.joinField.length;i++){
-					var joinField = $(element).closest("form").find("[name='"+p.joinField[i]+"']");
-					paramData.param[p.joinField[i]] = joinField.val();
+					var joinField = $(p.joinField[i]);
+					paramData.param[joinField.attr("name")] = joinField.val();
 					if(joinField.data("original") && joinField.data("original") != joinField.val()) {//当参与验证字段值发生变化的时候，则取消当前字段的初始值验证
 						paramData.param["o_"+element.name] = "";
 					}
 				}
 			}else{
-				var joinField = $(element).closest("form").find("[name='"+p.joinField+"']");
-				paramData.param[p.joinField] = joinField.val();
+				var joinField = $(p.joinField);
+				paramData.param[joinField.attr("name")] = joinField.val();
 				if(joinField.data("original") && joinField.data("original") != joinField.val()) {//当参与验证字段值发生变化的时候，则取消当前字段的初始值验证
 					paramData.param["o_"+element.name] = "";
 				}
@@ -260,6 +260,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 						}
 					}else{
 						formField.val(_fieldValue);
+						if(formField.data("init")) formField.data("init",_fieldValue);
 					}
 					formField.data("original",_fieldValue);//记录该字段的初始值,验证唯一性使用
 				}
@@ -430,39 +431,54 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 	 * 
 	 * @return {Object} select控件
 	 */
-	$.fn.select = function ( opts ) {
-		var _select = $(this);
-		if(opts){
-			if((opts.jsonData||opts.stmID) && opts.data === undefined){//增加jsonData选项获取静态.json文件或者直接通过sqlMapper的sqlID获取数组数据
-				var url = "app/common/selectArrayByStmID";
-				var type = "POST";
-				if(opts.jsonData && opts.jsonData != ""){
-					url = opts.jsonData;
-					type = "GET";
-				}
-				var paramData = {};
-				if(opts.stmID) paramData.stmID=opts.stmID;
-				if(opts.param) paramData.param=opts.param;
-				//同步方式防止数据量大是无法加载
-				APP.ajax(url,paramData,type,false,function(ret){
-					opts.data = ret;
-				});
-			}else if(opts.url && opts.ajax === undefined){//默认ajax方法
-				opts.ajax = {
-					delay: 250,
-					url : opts.url,
-					data: function (params) {
-					    var queryParameters = {
-					      q: params.term
-					    }
-					    return queryParameters;
-					}
-				};
+	function _fill_options(_select,opt_data){
+		_select.empty();
+		if($.isArray(opt_data)){
+			for(var i=0;i<opt_data.length;i++){
+				_select.append("<option value='"+opt_data[i].id+"'>"+opt_data[i].text+"</option>");
 			}
 		}
+		_select.change();
+	}
+	$.fn.select = function ( opts ) {
+		var _select = $(this);
+		
 		require(['jquery/select2'],function(){
 			select2_default_opts.data = null;
 			select2_default_opts.ajax = null;
+			
+			if(opts){
+				if((opts.jsonData||opts.stmID) && opts.data === undefined){//增加jsonData选项获取静态.json文件或者直接通过sqlMapper的sqlID获取数组数据
+					if(_select.data("parent-for")){
+						var _parent_sel = $(_select.data("parent-for"));
+						opts.param[_parent_sel.attr("name")] = _parent_sel.val();
+					}
+					var url = opts.url || "app/common/selectArrayByStmID";
+					var type = "POST";
+					if(opts.jsonData && opts.jsonData != ""){
+						url = opts.jsonData;
+						type = "GET";
+					}
+					var paramData = {};
+					if(opts.stmID) paramData.stmID=opts.stmID;
+					if(opts.param) paramData.param=opts.param;
+					//同步方式防止数据量大是无法加载
+					APP.ajax(url,paramData,type,false,function(ret){
+						opts.data = ret;
+					});
+				}else if(opts.url && opts.ajax === undefined){//默认ajax方法
+					opts.ajax = {
+						delay: 250,
+						url : opts.url,
+						data: function (params) {
+						    var queryParameters = {
+						      q: params.term
+						    }
+						    return queryParameters;
+						}
+					};
+				}
+			}
 			//允许增加选项
 			if(opts.allowAdd || _select.data("allow-add")){
 				if(_select.parent('.input-group').length > 0){
@@ -505,6 +521,7 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			_select.select2(default_opt);
 			if(_select.data("original") || _select.data("init")) _select.val((_select.data("original") || _select.data("init"))).trigger("change");
 			else _select.val(_select.val()).trigger("change");
+
 			_select.on("select2:select", function (e) { 
 				if(_select.val() != '-1' && _select.val() != ''){
 					_select.closest('.form-group').removeClass('has-error');
@@ -512,7 +529,22 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 					_select.siblings("i.validate-icon").removeClass("fa-check fa-warning").removeAttr("data-original-title");
 				}
 			});
-			
+			//级联下拉框
+			if(_select.data("parent-for")){
+				$(_select.data("parent-for")).on("change",function(){
+					opts.param[$(this).attr("name")] = $(this).val();
+					var url = opts.url || "app/common/selectArrayByStmID";
+					var type = "POST";
+					var paramData = {};
+					if(opts.stmID) paramData.stmID=opts.stmID;
+					if(opts.param) paramData.param=opts.param;
+					//同步方式防止数据量大是无法加载
+					APP.ajax(url,paramData,type,false,function(ret){
+						_fill_options(_select,ret);
+					});
+					
+				});
+			}
 			
 		});
 		

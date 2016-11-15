@@ -93,8 +93,9 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 		"addEditForm" : {
 			"el" : "#system-dict-edit-form",
 			"rules":{
-				"name":{"checkExists":{stmid:'cn.bx.system.mapper.DictMapper.checkTypes',joinField:["type"]},"messages":{"checkExists" : "已存在该名称"}},
-				"value":{"checkExists":{stmid:'cn.bx.system.mapper.DictMapper.checkTypes',joinField:["type"]},"messages":{"checkExists" : "已存在该值"}}
+				//joinField可以为数组或单值 为jquery选择器
+				"name":{"checkExists":{stmid:'cn.bx.system.mapper.DictMapper.checkTypes',joinField:["select[name='type']"]},"messages":{"checkExists" : "已存在该名称"}},
+				"value":{"checkExists":{stmid:'cn.bx.system.mapper.DictMapper.checkTypes',joinField:"select[name='type']"},"messages":{"checkExists" : "已存在该值"}}
 			}
 		}
 	},function(dt){

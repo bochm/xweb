@@ -45,8 +45,26 @@
 			</if>
 		</where>
 	</select>
+	<!-- 机构主管选择 -->
 	<select id="queryOrgMaster" resultType="hashmap">
-		select id,name as text from sys_user where status = '1'
+		select id,name as text from sys_user a join <include refid="cn.bx.system.mapper.DictMapper.dictOn"/> b on a.status = b.status
+	</select>
+	<!-- 公司部门下拉选择 -->
+	<select id="queryOrgByType" resultType="hashmap">
+		select a.id,a.name as text from sys_org a
+		join <include refid="cn.bx.system.mapper.DictMapper.dictOn"/> b on a.status = b.status
+		join sys_dict c on a.type = c.value and c.type = 'sys_org_type' 
+		<if test="type != null and type != ''">
+			and c.name = #{type}
+			<if test="type == '部门'">
+				<where>
+				locate(#{companyId}, a.parent_tree) > 0
+				</where>
+			</if>
+		</if>
+		
+			
+		
 	</select>
 	<insert id="add">
 		insert into sys_org(id,parent_id,parent_tree, name, type, addr, master_id, sort,create_by, create_date, update_by, update_date, remarks, status)

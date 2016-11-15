@@ -576,7 +576,6 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      * 增加一行数据
      */
 	DataTable.Api.register( 'addRow()', function (row) {
-		console.log(row);
 		var newRow = this.row.add(row).draw();
 		//treetable调用move方法保持树形结构
 		if(this.init().tableType == 'treetable'){

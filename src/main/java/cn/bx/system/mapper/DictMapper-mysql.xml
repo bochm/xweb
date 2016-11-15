@@ -11,6 +11,10 @@
     	a.sort,
 		a.remarks
     </sql>
+    <!-- 启用状态 -->
+    <sql id="dictOn">(select value as status from sys_dict where type='on_off' and name = '启用')</sql>
+    <!-- 停用状态 -->
+    <sql id="dictOff">(select value as status from sys_dict where type='on_off' and name = '停用')</sql>
 	<select id="queryDictTypes" resultType="hashmap">
 		select distinct type as id,type_desc as text
 		from sys_dict

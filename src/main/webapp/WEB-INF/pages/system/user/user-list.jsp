@@ -68,6 +68,30 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
+								<label class="control-label col-md-4">公司</label>
+								<div class="col-md-8">
+									<div class="input-icon left"> <i class="fa validate-icon"></i>
+									<select name="companyId" form-role='select' data-stmid='cn.bx.system.mapper.OrgMapper.queryOrgByType' 
+									class="form-control required selectOpt" data-init="-1"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label col-md-5">部门</label>
+								<div class="col-md-7">
+									<div class="input-icon left"> <i class="fa validate-icon"></i>
+									<select name="deptId" form-role='select' data-stmid='cn.bx.system.mapper.OrgMapper.queryOrgByType' 
+									data-parent-for="select[name='companyId']" class="form-control required selectOpt"/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
 								<label class="control-label col-md-4">email</label>
 								<div class="col-md-8">
 									<div class="input-group">
@@ -140,6 +164,10 @@
 require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 	var userTable;
 	var form_rules = {"loginName":{"checkExists":{"url":"system/user/checkLoginName"},"messages":{"checkExists" : "登录名已存在"}}};
+	var field_opts = {
+			companyId : {param : {type : "公司"}},
+			deptId : {param : {type : "部门"}}
+	}
 	$('table.datatable').initTable({
 		params : {'pcompany':1}, //测试
 		"scrollY": "400px",
@@ -148,7 +176,8 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 		"addRecord" : function(dt){
 			if(!$('#sys-user-password').hasClass('required'))$('#sys-user-password').addClass('required');//新增必须输入密码
 			$('#system-user-edit-form').initForm({
-				url : "system/user/add.json",clearForm : true,formAction : "add",autoClear : true,type : 'post',rules : form_rules
+				url : "system/user/add.json",clearForm : true,formAction : "add",autoClear : true,type : 'post',rules : form_rules,
+				fieldOpts : field_opts
 			},function(data){
 				dt.addRow(data);
 			});
@@ -166,11 +195,11 @@ require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){
 		$('#sys-user-password').removeClass('required');//密码不填写视为不修改密码
 		$('#system-user-edit-form').initForm({
 			url : "system/user/save.json",clearForm : false,formAction : "save",autoClear : true,type : 'post',rules : form_rules,
-			formData : userTable.selectedRows()[0]
+			formData : userTable.selectedRows()[0],fieldOpts : field_opts
 		},function(data){
 			userTable.updateSelectedRow(data);
 		});
-		//密码显示为空
+		//修改时密码显示为空
 		$('#sys-user-password').attr('type','text');
 		$('#sys-user-password').val('');
 		$('#sys-user-password').attr('type','password');
