@@ -12,7 +12,7 @@
 			<th  data-column="name" >姓名</th>
 			<th  data-column="no">工号</th>
 			<th data-column="email" >email</th>
-			<th  data-column="userType" >用户类型</th>
+			<th  data-column="company.name" >公司</th>
 			<th  data-column="remarks" >备注</th>
 		</tr></thead>
 		<tbody>
@@ -70,8 +70,9 @@
 							<div class="form-group">
 								<label class="control-label col-md-4">公司</label>
 								<div class="col-md-8">
+									<input name="company.name" type="hidden">
 									<div class="input-icon left"> <i class="fa validate-icon"></i>
-									<select name="companyId" form-role='select' data-stmid='cn.bx.system.mapper.OrgMapper.queryOrgByType' 
+									<select name="company.id" form-role='select' data-stmid='cn.bx.system.mapper.OrgMapper.queryOrgByType' 
 									class="form-control required selectOpt" data-init="-1"/>
 									</div>
 								</div>
@@ -82,8 +83,8 @@
 								<label class="control-label col-md-5">部门</label>
 								<div class="col-md-7">
 									<div class="input-icon left"> <i class="fa validate-icon"></i>
-									<select name="deptId" form-role='select' data-stmid='cn.bx.system.mapper.OrgMapper.queryOrgByType' 
-									data-parent-for="select[name='companyId']" class="form-control required selectOpt"/>
+									<select name="dept.id" form-role='select' data-stmid='cn.bx.system.mapper.OrgMapper.queryOrgByType' 
+									data-parent-for="select[name='company.id']" class="form-control required selectOpt"/>
 									</div>
 								</div>
 							</div>

@@ -4,99 +4,41 @@
 <mapper namespace="cn.bx.system.mapper.UserMapper"> 
 	
     <sql id="userColumns">
-    	a.id,
-    	a.company_id,
-    	a.dept_id,
-    	a.login_name,
-    	a.password,
-    	a.no,
-		a.name,
-		a.email,
-		a.phone,
-		a.mobile,
-		a.user_type,
-		a.login_ip,
-		a.login_date,
-		a.remarks,
-		a.login_flag,
-		a.photo,
-		a.status
+    	a.id,a.company_id as "company.id",a.dept_id as "dept.id",c.name as "company.name",d.name as "dept.name",
+    	a.login_name,a.password,a.no,a.name,a.email,a.phone,a.mobile,a.user_type,a.login_ip,a.login_date,
+    	a.remarks,a.login_flag,a.photo,a.status
+    </sql>
+    <sql id="orgJoins">
+    	left join sys_org c on a.company_id = c.id
+		left join sys_org d on a.dept_id = d.id
     </sql>
     <!-- 根据登录名查询用户 -->
-    
 	<select id="findUserByLoginName" resultType="cn.bx.system.entity.User">
-		SELECT
-		<include refid="userColumns"/>
-		FROM sys_user a
-		WHERE a.login_name = #{loginname}
+		select <include refid="userColumns"/> from sys_user a
+		<include refid="orgJoins"/>
+		where a.login_name = #{loginname}
 	</select>
 	<select id="listUser" resultType="cn.bx.system.entity.User">
-		SELECT
-		<include refid="userColumns"/>
-		FROM sys_user a
+		select <include refid="userColumns"/> from sys_user a
+		<include refid="orgJoins"/>
 	</select>
 	<insert id="addUser">
-		INSERT INTO sys_user(
-			id, 
-			company_id, 
-			dept_id, 
-			login_name, 
-			password, 
-			no, 
-			name, 
-			email, 
-			phone, 
-			mobile, 
-			user_type, 
-			create_by, 
-			create_date, 
-			update_by, 
-			update_date, 
-			remarks, 
-			login_flag, 
-			photo,
-			status
-		) VALUES (
-			#{id}, 
-			111, 
-			222, 
-			#{loginName}, 
-			#{password}, 
-			#{no}, 
-			#{name}, 
-			#{email}, 
-			#{tel}, 
-			#{mobile}, 
-			#{userType}, 
-			#{createBy}, 
-			#{createDate}, 
-			#{updateBy}, 
-			#{updateDate}, 
-			#{remarks}, 
-			#{loginFlag}, 
-			#{photo},
-			#{status}
-		)
+		insert into sys_user(id, company_id, dept_id, login_name, password, no, name, email, phone, 
+		mobile, user_type, create_by, create_date, update_by, update_date, remarks, login_flag, photo,status) 
+		values (#{id}, #{company.id},#{dept.id} ,#{loginName}, #{password}, #{no}, #{name}, #{email}, #{tel}, 
+		#{mobile}, #{userType}, #{createBy}, #{createDate}, #{updateBy}, #{updateDate}, #{remarks}, 
+		#{loginFlag}, #{photo},#{status})
 	</insert>
 	
 	<update id="saveUser">
-		update sys_user set
-		login_name = #{loginName}, 
+		update sys_user set login_name = #{loginName}, company_id=#{company.id},dept_id=#{dept.id},
 		<if test="password != null and password != ''">
 		password = #{password}, 
 		</if>
-		no = #{no}, 
-		name = #{name}, 
-		email = #{email}, 
-		phone = #{tel}, 
-		mobile = #{mobile}, 
-		user_type = #{userType}, 
-		update_by = #{updateBy}, 
-		update_date = #{updateDate}, 
-		login_flag = #{loginFlag},
-		photo = #{photo},
-		remarks = #{remarks},status = #{status}
-		WHERE id = #{id}
+		no = #{no}, name = #{name}, email = #{email}, phone = #{tel}, mobile = #{mobile}, 
+		user_type = #{userType}, update_by = #{updateBy}, update_date = #{updateDate}, 
+		login_flag = #{loginFlag},photo = #{photo},remarks = #{remarks},status = #{status}
+		where id = #{id}
 	</update>
 	
 	<delete id="deleteUser">

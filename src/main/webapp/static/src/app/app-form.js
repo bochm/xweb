@@ -449,11 +449,12 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			
 			if(opts){
 				if((opts.jsonData||opts.stmID) && opts.data === undefined){//增加jsonData选项获取静态.json文件或者直接通过sqlMapper的sqlID获取数组数据
+					if(APP.isEmpty(opts.param)) opts.param = {};
 					if(_select.data("parent-for")){
 						var _parent_sel = $(_select.data("parent-for"));
-						opts.param[_parent_sel.attr("name")] = _parent_sel.val();
+						opts.param[_parent_sel.attr("name").replace(".","_")] = _parent_sel.val();//替换参数中的. 否则mapper文件会无法识别
 					}
-					var url = opts.url || "app/common/selectArrayByStmID";
+					var url = opts.url || APP.stmidListUrl;
 					var type = "POST";
 					if(opts.jsonData && opts.jsonData != ""){
 						url = opts.jsonData;
@@ -532,8 +533,8 @@ define('app/form',["app/common","moment","jquery/validate","jquery/form"],functi
 			//级联下拉框
 			if(_select.data("parent-for")){
 				$(_select.data("parent-for")).on("change",function(){
-					opts.param[$(this).attr("name")] = $(this).val();
-					var url = opts.url || "app/common/selectArrayByStmID";
+					opts.param[$(this).attr("name").replace(".","_")] = $(this).val(); //替换参数中的. 否则mapper文件会无法识别
+					var url = opts.url || APP.stmidListUrl;
 					var type = "POST";
 					var paramData = {};
 					if(opts.stmID) paramData.stmID=opts.stmID;

@@ -56,7 +56,7 @@ define('app/common',['bootstrap','moment'],function() {
 			"currentUrl" : "index",
 			"dict" : {},
 			"stmidMapUrl" : "app/common/selectMapByStmID",//服务端根据sqlmapper ID获取map数据URL
-			"stmidListUrl" : "app/common/selectMapByStmID",//服务端根据sqlmapper ID获取List数据URL
+			"stmidListUrl" : "app/common/selectArrayByStmID",//服务端根据sqlmapper ID获取List数据URL
 			"stmidMapListUrl" : "app/common/selectMapListByStmID",//服务端根据sqlmapper ID获取mapList数据URL,需要在param中指定key
 			getParameterByName : function(name) {
 		        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -206,7 +206,7 @@ define('app/common',['bootstrap','moment'],function() {
 					$.ajax({
 			            type: "GET",
 			            cache: false,
-			            url: APP.ctx+url,
+			            url: url,
 			            data: data,
 			            dataType: "html",
 			            success: function(res) {

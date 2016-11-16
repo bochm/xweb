@@ -3,13 +3,7 @@
 
 <mapper namespace="cn.bx.system.mapper.DictMapper"> 
     <sql id="dictColumns">
-    	a.id,
-    	a.value,
-    	a.name,
-    	a.type,
-    	a.type_desc,
-    	a.sort,
-		a.remarks
+    	a.id,a.value,a.name,a.type,a.type_desc,a.sort,a.remarks
     </sql>
     <!-- 启用状态 -->
     <sql id="dictOn">(select value as status from sys_dict where type='on_off' and name = '启用')</sql>
@@ -37,20 +31,18 @@
 	</select>
     <!-- 根据类型查询字典数据 -->
 	<select id="findDictByType" resultType="cn.bx.system.entity.Dict">
-		select
-		<include refid="dictColumns"/>
+		select <include refid="dictColumns"/>
 		from sys_dict a
-		WHERE a.type = #{type} order by sort
+		where a.type = #{type} order by sort
 	</select>
 	<select id="list" resultType="cn.bx.system.entity.Dict">
-		select
-		<include refid="dictColumns"/>
+		select <include refid="dictColumns"/>
 		from sys_dict a
 	</select>
 	<insert id="add">
 		insert into sys_dict(id, value, name, type, type_desc, sort, create_by, create_date, update_by, 
 		update_date, remarks) 
-		VALUES (#{id}, #{value},#{name},#{type},#{typeDesc},#{sort}, #{createBy}, #{createDate},#{updateBy},
+		values (#{id}, #{value},#{name},#{type},#{typeDesc},#{sort}, #{createBy}, #{createDate},#{updateBy},
 		#{updateDate}, #{remarks})
 	</insert>
 	<update id="save">

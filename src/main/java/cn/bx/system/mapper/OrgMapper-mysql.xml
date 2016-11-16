@@ -2,33 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.bx.system.mapper.OrgMapper"> 
     <sql id="orgColumns">
-    	a.id,
-		a.parent_id as "parent.id",
-		a.parent_tree,
-		a.name,
-		a.type,
-		a.addr,
-		a.sort,
-		b.id as "master.id",
-		b.name as "master.name",
-		a.remarks,
-		p.name as "parent.name",
-		a.status
+    	a.id,a.parent_id as "parent.id",a.parent_tree,a.name,a.type,a.addr,a.sort,b.id as "master.id",
+		b.name as "master.name",a.remarks,p.name as "parent.name",a.status
     </sql>
     <sql id="orgJoins">
     	left join sys_user b on a.master_id = b.id
 		left join sys_org p on p.id = a.parent_id
     </sql>
     <select id="get" resultType="cn.bx.system.entity.Org">
-		select
-			<include refid="orgColumns"/>
+		select <include refid="orgColumns"/>
 		from sys_org a
 		<include refid="orgJoins"/>
 		where a.id = #{id}
 	</select>
     <select id="list" resultType="cn.bx.system.entity.Org">
-		select
-			<include refid="orgColumns"/>
+		select <include refid="orgColumns"/>
 		from sys_org a
 		<include refid="orgJoins"/>
 		order by a.parent_tree
@@ -47,10 +35,11 @@
 	</select>
 	<!-- 机构主管选择 -->
 	<select id="queryOrgMaster" resultType="hashmap">
-		select id,name as text from sys_user a join <include refid="cn.bx.system.mapper.DictMapper.dictOn"/> b on a.status = b.status
+		select id,name as text from sys_user a 
+		join <include refid="cn.bx.system.mapper.DictMapper.dictOn"/> b on a.status = b.status
 	</select>
 	<!-- 公司部门下拉选择 -->
-	<select id="queryOrgByType" resultType="hashmap">
+	<select id="queryOrgByType" resultType="hashmap" parameterType="hashmap">
 		select a.id,a.name as text from sys_org a
 		join <include refid="cn.bx.system.mapper.DictMapper.dictOn"/> b on a.status = b.status
 		join sys_dict c on a.type = c.value and c.type = 'sys_org_type' 
@@ -58,7 +47,7 @@
 			and c.name = #{type}
 			<if test="type == '部门'">
 				<where>
-				locate(#{companyId}, a.parent_tree) > 0
+				locate(#{company_id}, a.parent_tree) > 0
 				</where>
 			</if>
 		</if>

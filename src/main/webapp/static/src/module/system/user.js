@@ -1,5 +1,4 @@
 define('module/system/user',['app/common','app/datatables','app/form'],function(APP,DT,FORM) {
-	var mapdata = APP.getMapListByStmId({"key":"","stmid" : ""});
 	var userTable;
 	var form_rules = {
 		"loginName":{
@@ -12,8 +11,8 @@ define('module/system/user',['app/common','app/datatables','app/form'],function(
 		}
 	}
 	var field_opts = {
-		companyId : {param : {type : "公司"}},
-		deptId : {param : {type : "部门"}}
+		"company.id" : {param : {type : "公司"}},
+		"dept.id" : {param : {type : "部门"}}
 	}
 	
 	function inti_table(param){
@@ -55,6 +54,9 @@ define('module/system/user',['app/common','app/datatables','app/form'],function(
 			$('#sys-user-password').attr('type','password');
 			$('#system-user-list-edit').modal('show');
 		});
+		$("#system-user-edit-form [name='company.id']").on("change",function(){
+			$("#system-user-edit-form [name='company.name']").val($(this).children(":selected").text());
+		})
 	}
 	return {
 		inti_table : inti_table,
