@@ -9,7 +9,7 @@ import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 
-import cn.bx.system.entity.LoginUser;
+import cn.bx.system.entity.User;
 import cn.bx.system.utils.UserUtils;
 /**
  * <p>Author: bcm
@@ -39,8 +39,8 @@ public class SysHashedCredentialsMatcher extends HashedCredentialsMatcher {
         boolean matches = super.doCredentialsMatch(token, info);
         if(matches) {
             passwordRetryCache.remove(username);
-            LoginUser loginuser = (LoginUser)info.getPrincipals().getPrimaryPrincipal();
-            UserUtils.putUserInCache(loginuser.getUser());
+            User loginuser = (User)info.getPrincipals().getPrimaryPrincipal();
+            UserUtils.putUserInCache(loginuser);
         }
         return matches;
     }

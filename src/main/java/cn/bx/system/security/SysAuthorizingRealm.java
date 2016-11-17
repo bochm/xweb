@@ -19,7 +19,6 @@ import org.apache.shiro.util.ByteSource;
 
 import cn.bx.bframe.common.config.AppConstants;
 import cn.bx.bframe.common.security.PasswordUtil;
-import cn.bx.system.entity.LoginUser;
 import cn.bx.system.entity.User;
 import cn.bx.system.service.SystemService;
 
@@ -33,7 +32,7 @@ public class SysAuthorizingRealm extends AuthorizingRealm {
 	 */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-    	LoginUser principal = (LoginUser) getAvailablePrincipal(principals);
+    	User principal = (User) getAvailablePrincipal(principals);
     	System.out.println("@@@@@@@@@@@@@@"+principal);
         //User user = systemService.findUserByLoginName(principal.getLoginName());
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
@@ -57,7 +56,7 @@ public class SysAuthorizingRealm extends AuthorizingRealm {
 			throw new AuthenticationException("msg:该帐号已停用");
 		}
         return new SimpleAuthenticationInfo(
-        		new LoginUser(user, token.isMobileLogin()),
+        		user,
         		PasswordUtil.decryptPassword(user.getPassword()),
                 ByteSource.Util.bytes(PasswordUtil.decryptSalt(user.getPassword())),
                 getName()
