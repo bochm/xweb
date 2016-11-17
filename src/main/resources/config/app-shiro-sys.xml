@@ -8,7 +8,7 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 	
-	<!-- 凭证输入次数匹配器 -->
+	<!-- 凭证输入匹配器 -->
     <bean id="credentialsMatcher" class="cn.bx.system.security.SysHashedCredentialsMatcher">
         <constructor-arg ref="shiroCacheManager"/>
         <property name="hashAlgorithmName" value="SHA-1"/>
