@@ -3,7 +3,8 @@
  * @author bx
  * @ignore
  */
-define(["app/common","datatables","datatables/buttons/flash","datatables/buttons/print","datatables/select",
+define(["app/common","datatables.net","datatables/buttons/flash",
+        "datatables/buttons/print","datatables/select",
         "datatables/responsive","datatables/fixedHeader",
         "css!lib/jquery/datatables/dataTables.bootstrap.css"],function(APP,DataTable) {
 	//-------------------默认参数初始化及修改----------------------------------
@@ -19,7 +20,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
      * 默认参数设置
      */
 	var default_opts = {
-			"dom": "<'dataTables_btn_toolbar'B><'dataTables_filter'><'table-scrollable'tr<'table-foot-bar' ilp>>",//f改为自定义回车搜索
+			"dom": "Bfrtip",//f改为自定义回车搜索
 			"oLanguage": {
 				"sLengthMenu": "_MENU_/页",
 				"sSearch":"<div class='input-icon input-icon-sm'><i class='iconfont icon-search'></i>_INPUT_</div>",
@@ -232,7 +233,7 @@ define(["app/common","datatables","datatables/buttons/flash","datatables/buttons
 	} );
 	
 	
-	$.fn.dataTable.Buttons.swfPath = APP.jsPath+'/lib/jquery/datatables/swf/flashExport.swf';
+	DataTable.Buttons.swfPath = APP.jsPath+'/lib/jquery/datatables/swf/flashExport.swf';
 	
 	/**
      * 表格默认新增修改方法

@@ -27,6 +27,7 @@ require.config({
 		'sweetalert':'lib/bootstrap/sweetalert/sweet-alert',//弹出窗口
 		'switch':'lib/bootstrap/switch/bootstrap-switch',//开关选择
 		'moment':'lib/utils/moment',//时间工具
+		'jquery':'lib/jquery/jquery-1.12.0.min',
 		'jquery/migrate':'lib/jquery/jquery-migrate-min',//jquery版本迁移插件
 		'jquery/scrolltotop':'lib/jquery/scrolltotop',//返回顶部
 		'jquery/scrollbar':'lib/jquery/scrollbar/jquery.slimscroll',//滚动条
@@ -38,8 +39,8 @@ require.config({
 		'jquery/validate':'lib/jquery/validate/jquery.validate',//验证
 		'jquery/select2':'lib/jquery/select2/select2.full',//下拉列表
 		'jquery/ztree':'lib/jquery/ztree/jquery.ztree.all',//树形
-		'datatables':'lib/jquery/datatables/jquery.dataTables',
-		'datatables/buttons':'lib/jquery/datatables/dataTables.buttons',
+		'datatables.net':'lib/jquery/datatables/jquery.dataTables',
+		'datatables.net-buttons':'lib/jquery/datatables/dataTables.buttons',
 		'datatables/buttons/flash':'lib/jquery/datatables/buttons.flash',
 		'datatables/buttons/print':'lib/jquery/datatables/buttons.print',
 		'datatables/select':'lib/jquery/datatables/dataTables.select',
@@ -51,19 +52,23 @@ require.config({
         '*': {'css': 'css-builder'}//css加载css-builder。js
     },
 	shim:{
-		'jquery/gritter':['css!lib/jquery/gritter/jquery.gritter.css'],
-		'jquery/carousel':['css!lib/jquery/carousel/owl.carousel.css'],
-		'jquery/select2':['css!lib/jquery/select2/select2.css'],
-		'jquery/ztree':['css!lib/jquery/ztree/metroStyle.css'],
+		'bootstrap':['jquery'],
+		'jquery/scrolltotop' : ['jquery'],
+		'jquery/gritter':['jquery','css!lib/jquery/gritter/jquery.gritter.css'],
+		'jquery/carousel':['jquery','css!lib/jquery/carousel/owl.carousel.css'],
+		'jquery/select2':['jquery','css!lib/jquery/select2/select2.css'],
+		'jquery/ztree':['jquery','css!lib/jquery/ztree/metroStyle.css'],
 		'bootstrap/daterangepicker':['bootstrap','moment','css!lib/bootstrap/daterangepicker/daterangepicker.css'],
 		'bootstrap/datepicker':['bootstrap','css!lib/bootstrap/datepicker/bootstrap-datepicker3.css'],
-		'sweetalert':['css!lib/bootstrap/sweetalert/sweet-alert.css']
+		'sweetalert':['jquery','css!lib/bootstrap/sweetalert/sweet-alert.css']
     }
 });
 
 //$("body").append("<div  id=\"pageLoadTop\" style=\"width:100%;height:100%;left:0;top:0;position:absolute;z-index:20000;background:#000000 url('"+_app_img_base_url+"/logo.png') no-repeat center;\"></div>");
 
 define(['app/index','moment','jquery/scrolltotop',
+        'css!lib/bootstrap/bootstrap.css',
+        'css!lib/font-awesome/font-awesome.css',
         'css!app/main.css',
         'css!app/main-layout.css',
         'css!app/main-component.css'],function(APP,moment){
