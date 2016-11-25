@@ -663,7 +663,7 @@ define(['app/common','app/datatables'],function(APP,DataTable){
 				  var treetable = methods.init.call(_this, method);
 				  //初始化按钮
 				  if(init_opts.expandBtn){
-					  $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar>.dt-buttons").prepend(
+					  $("div#"+tableid+"_wrapper>.dt-buttons").prepend(
 						"<div class='btn-group'>" +
 						"<button type='button' class='btn btn-sm btn-primary dropdown-toggle' data-toggle='dropdown'><i class='fa fa-minus-square-o'></i> 展开 <i class='fa fa-angle-down'></i></button>" + 
 						"<ul class='dropdown-menu' role='menu'>"+

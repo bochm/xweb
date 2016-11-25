@@ -20,7 +20,10 @@ define(["app/common","datatables.net","datatables/buttons/flash",
      * 默认参数设置
      */
 	var default_opts = {
-			"dom": "Bfrtip",//f改为自定义回车搜索
+			//B不能包含在任何自定义div中，否则flash导出失效
+			//f改为自定义回车搜索
+			"dom": "B<'dataTables_filter'><'table-scrollable'tr<'table-foot-bar' ilp>>",
+			//"dom": "Bfrtip",//
 			"oLanguage": {
 				"sLengthMenu": "_MENU_/页",
 				"sSearch":"<div class='input-icon input-icon-sm'><i class='iconfont icon-search'></i>_INPUT_</div>",
@@ -403,9 +406,9 @@ define(["app/common","datatables.net","datatables/buttons/flash",
 		return _getDataTable(_table,default_opt,function(otable){
 			//初始化表格工具栏 ，增加ID约束
 			
-			var toolbar = $("div#"+tableid+"_wrapper>div.dataTables_btn_toolbar>div.dt-buttons");
+			var toolbar = $("div#"+tableid+"_wrapper>div.dt-buttons");
 			var pageToolbar = $("#"+(default_opt.toolbar ? default_opt.toolbar : (tableid+"-toolbar")));
-			
+			console.log(pageToolbar);
 			pageToolbar.find('.btn[data-role]').each(function(){
 				var _btn = $(this);
 				var _btn_type = _btn.data('role');

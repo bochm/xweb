@@ -88,7 +88,7 @@
 require(['app/common','app/datatables','app/form'],function(APP,DT,FORM){	
 	$('table.datatable').initTable({
 		"scrollY": "400px",
-		"buttons":["addRecord","saveRecord","deleteRecord"],
+		"buttons":["excel","addRecord","saveRecord","deleteRecord"],
 		"deleteRecord" : {"url" : 'system/dict/delete',"id" : 'id'},
 		"addEditForm" : {
 			"el" : "#system-dict-edit-form",
