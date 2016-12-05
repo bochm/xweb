@@ -1,6 +1,7 @@
 package cn.bx.system.security;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -21,6 +22,7 @@ import cn.bx.bframe.common.config.AppConstants;
 import cn.bx.bframe.common.security.PasswordUtil;
 import cn.bx.system.entity.User;
 import cn.bx.system.service.SystemService;
+import cn.bx.system.utils.UserUtils;
 
 public class SysAuthorizingRealm extends AuthorizingRealm {
 
@@ -48,17 +50,17 @@ public class SysAuthorizingRealm extends AuthorizingRealm {
     	UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
         String username = token.getUsername();
         System.out.println(username+","+getName()+","+new String(token.getPassword()));
-        User user = systemService.findUserByLoginName(username);
+        HashMap<String,String> user = systemService.findUserByLoginName(username);
         if(user == null) {
             throw new UnknownAccountException();//没找到帐号
         }
-        if (AppConstants.NO.equals(user.getLoginFlag())){
+        if (AppConstants.NO.equals(UserUtils.getStatus(user))){
 			throw new AuthenticationException("msg:该帐号已停用");
 		}
         return new SimpleAuthenticationInfo(
         		user,
-        		PasswordUtil.decryptPassword(user.getPassword()),
-                ByteSource.Util.bytes(PasswordUtil.decryptSalt(user.getPassword())),
+        		PasswordUtil.decryptPassword(UserUtils.getPassword(user)),
+                ByteSource.Util.bytes(PasswordUtil.decryptSalt(UserUtils.getPassword(user))),
                 getName()
         );
     }

@@ -1,5 +1,7 @@
 package cn.bx.xweb.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -8,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.HandlerMapping;
 
-import cn.bx.system.entity.User;
 import cn.bx.system.utils.UserUtils;
 
 
@@ -27,8 +28,8 @@ public class PagesController {
 	}
 	@RequestMapping("/login")
 	public String login(){
-		User user = UserUtils.getUser();
-		return (user != null && user.getId() != null) ? indexUrl : loginUrl;
+		Map<String, String> user = UserUtils.getUser();
+		return (user != null && UserUtils.getUserId(user) != null) ? indexUrl : loginUrl;
 	}
 	@RequestMapping("${pages.url}**")
 	public String pages(HttpServletRequest request) {

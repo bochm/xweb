@@ -1,5 +1,6 @@
 package cn.bx.system.security;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -9,7 +10,6 @@ import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 
-import cn.bx.system.entity.User;
 import cn.bx.system.utils.UserUtils;
 /**
  * <p>Author: bcm
@@ -24,7 +24,8 @@ public class SysHashedCredentialsMatcher extends HashedCredentialsMatcher {
         passwordRetryCache = cacheManager.getCache(UserUtils.PWD_RETRY_CACHE);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
         String username = (String)token.getPrincipal();
         AtomicInteger retryCount = passwordRetryCache.get(username);
@@ -39,7 +40,7 @@ public class SysHashedCredentialsMatcher extends HashedCredentialsMatcher {
         boolean matches = super.doCredentialsMatch(token, info);
         if(matches) {
             passwordRetryCache.remove(username);
-            User loginuser = (User)info.getPrincipals().getPrimaryPrincipal();
+            Map<String,String> loginuser = (Map<String,String>)info.getPrincipals().getPrimaryPrincipal();
             UserUtils.putUserInCache(loginuser);
         }
         return matches;
