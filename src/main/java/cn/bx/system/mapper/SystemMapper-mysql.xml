@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.bx.system.mapper.SystemMapper"> 
+    <!-- 根据登录名查询用户 -->
+	<select id="findUserByLoginName" resultType="hashmap">
+		select a.id,a.company_id,a.dept_id,c.name as "company_name",d.name as "dept_name",
+    	a.login_name as "loginname",a.password,a.no,a.name,a.user_type,a.login_ip,
+    	a.remarks,a.photo,a.status from sys_user a
+		left join sys_org c on a.company_id = c.id
+		left join sys_org d on a.dept_id = d.id
+		where a.login_name = #{loginname}
+	</select>
+	<select id="listMenuByRules" resultType="hashmap">
+		select a.id,a.parent_id as "parent.id",a.name,a.target,a.icon,a.type,a.permission from sys_menu a
+		join sys_role_menu b on a.id = b.menu_id
+		where b.role_id in 
+		<foreach collection="array" item="id" open="(" close=")" separator=",">#{id}</foreach>
+		order by a.parent_tree
+	</select>
+</mapper>
